@@ -96,6 +96,74 @@ The agent workflow exists, but no project-specific implementation task has been 
 - Confirm the queue state matches each ticket's `State` field.
 - Confirm every implementation ticket includes `Skill Context` and TDD expectations.
 - Confirm memory templates are installed and instructions distinguish memory from tickets.
+- Confirm handoff gates are present and state transitions require completion or waiver.
+
+## Handoff Gates
+
+### Backlog -> Ready
+
+- [x] Problem is clear.
+- [x] Scope and out-of-scope are written.
+- [x] Acceptance criteria are written.
+- [x] Likely files or modules are listed.
+- [x] Risks are listed.
+- [x] `Skill Context` is filled, including role-specific skills or `None`.
+- [x] Verification plan exists.
+- [x] `Designer Review` is marked `Yes` or `No`.
+- [x] TDD plan exists for behavior changes, or a waiver explains why it does not apply.
+- Waiver: TDD waived because this is documentation/workflow setup.
+
+### Ready -> Design
+
+- [x] Designer owner is assigned.
+- [x] Relevant UI files, design-system notes, and memory entries are listed.
+- [x] Output needed from Designer is stated.
+- [x] Open design/product questions are listed or explicitly marked `None`.
+- Waiver: Designer not required because this ticket does not change UI.
+
+### Design -> Ready
+
+- [x] Design brief is complete.
+- [x] UI acceptance criteria are concrete enough for Executor.
+- [x] Accessibility, responsive/platform behavior, states, and edge cases are documented.
+- [x] Assets/icons/copy needs are documented or explicitly marked `None`.
+- Waiver: Designer not required because this ticket does not change UI.
+
+### Ready -> In Progress
+
+- [x] Executor owner is assigned.
+- [x] Relevant files are listed.
+- [x] Relevant memory entries are listed.
+- [x] Acceptance criteria are restated or referenced.
+- [x] Expected executor output is stated.
+- [x] Verification command or manual check is stated.
+- Waiver: None.
+
+### In Progress -> Review
+
+- [x] Files changed are listed.
+- [x] Implementation notes are written.
+- [x] Red/green evidence is recorded, or TDD waiver is referenced.
+- [x] Commands run are recorded.
+- [x] Known gaps are recorded or explicitly marked `None`.
+- Waiver: TDD waived because this is documentation/workflow setup.
+
+### Review -> Test
+
+- [x] Spec compliance review is complete.
+- [x] Code quality review is complete.
+- [x] Open review issues are resolved, waived with reason, or ticket is blocked.
+- [x] Test scope is identified.
+- Waiver: None.
+
+### Test -> Done
+
+- [ ] Fresh verification evidence is recorded.
+- [ ] Failures or coverage gaps are recorded or explicitly marked `None`.
+- [ ] Durable memory updates are promoted to `.memory/` or explicitly marked `None`.
+- [ ] Follow-up tickets are created or explicitly marked `None`.
+- [ ] Final ticket state matches `.tickets/queue.md`.
+- Waiver:
 
 ## Review Plan
 
@@ -107,6 +175,7 @@ The agent workflow exists, but no project-specific implementation task has been 
 - Use local Markdown tickets as the initial system.
 - External issue trackers can be added later if the workflow grows.
 - Use `.memory/` for durable project knowledge, separate from active ticket notes.
+- Use handoff gates to make state transitions explicit.
 
 ## Implementation Notes
 

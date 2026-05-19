@@ -7,6 +7,7 @@ This project is a portable agent workflow pack. It is not an application.
 - `.agents/README.md`: role overview and model defaults.
 - `.agents/runbook.md`: orchestration workflow.
 - `.agents/prompts.md`: spawn prompts for each role.
+- `.agents/handoff.md`: required gates for moving tickets between roles and states.
 - `.skills/registry.md`: language, framework, platform, and task skill routing.
 - `.skills/principles.md`: reusable practices from Axiom, PFW, Superpowers, and workflow-audit guidance.
 - `.tickets/template.md`: ticket shape.
@@ -18,6 +19,7 @@ This project is a portable agent workflow pack. It is not an application.
 - Do not make Axiom, PFW, or any other skill family mandatory unless the user or project instructions explicitly require it.
 - Use `Skill Context` as the single source of truth for role-specific skill assignment.
 - Use `.memory/` for durable project knowledge only. Keep active task notes in `.tickets/`.
+- Do not move a ticket between states unless the relevant handoff gate is complete or explicitly waived with a reason.
 - Keep installer behavior conservative: no overwrites unless `--force` is explicitly passed.
 - Prefer Markdown instructions that are easy to copy into project-local workflows.
 

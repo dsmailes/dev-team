@@ -11,6 +11,7 @@ This directory defines reusable role prompts for coordinating subagents on large
 - `tester.md`: verifies behavior and reports coverage gaps.
 - `prompts.md`: spawn prompts for each role.
 - `runbook.md`: orchestration flow for the full loop.
+- `handoff.md`: required gates for moving tickets between roles and states.
 - `../.skills/registry.md`: skill routing by language, framework, platform, and task type.
 - `../.skills/principles.md`: reusable practices borrowed from Axiom, PFW, Superpowers, and workflow audit guidance.
 - `../.memory/`: durable project knowledge such as verified commands, decisions, and pitfalls.
@@ -50,6 +51,7 @@ Each handoff should include:
 ## Coordination Rules
 
 - Only the orchestrator assigns tickets.
+- The orchestrator may not move a ticket to the next state until the relevant handoff gate in `.agents/handoff.md` is complete or explicitly waived in the ticket.
 - Agents should not edit the same files in parallel unless the orchestrator explicitly coordinates the overlap.
 - Agents should use only the role-relevant skills assigned in the ticket's `Skill Context`.
 - Ticket updates should preserve previous notes instead of replacing them.

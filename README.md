@@ -97,4 +97,6 @@ After global install, use the global template from any project:
 
 The key field is `Skill Context` in each ticket. It records language, framework, platform, project type, task type, and which skills each role should use.
 
+State changes are guarded by `Handoff Gates` in each ticket. The orchestrator should not move a ticket to the next state until the relevant gate is complete or explicitly waived with a reason.
+
 Use `.memory/` for durable knowledge only: verified commands, architectural decisions, project orientation, and pitfalls. Keep active task notes in `.tickets/`.
