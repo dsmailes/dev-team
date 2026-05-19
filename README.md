@@ -36,7 +36,7 @@ Tester: gpt-5.4, medium
 
 This copies `.agents`, `.skills`, `.tickets`, and `.memory` into the target project.
 
-By default, the installer refuses to overwrite existing directories. To replace them:
+By default, the installer refuses to overwrite existing directories or top-level `README.md`/`AGENTS.md`. To replace them:
 
 ```sh
 ./install.sh --project /path/to/project --force
@@ -64,6 +64,8 @@ README.md
 Open Codex from that project root so it reads the installed `AGENTS.md`.
 
 Manual copying works too, but the installer is preferred because it preserves the expected folder layout and refuses accidental overwrites.
+
+If the target project already has its own `README.md` or `AGENTS.md`, review before using `--force`; it will replace those files.
 
 ## Install As A Global Template
 
