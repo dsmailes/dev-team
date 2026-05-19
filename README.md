@@ -36,7 +36,9 @@ Tester: gpt-5.4, medium
 
 This copies `.agents`, `.skills`, `.tickets`, and `.memory` into the target project.
 
-By default, the installer refuses to overwrite existing directories or top-level `README.md`/`AGENTS.md`. To replace them:
+It also copies this pack's README as `DEV-TEAM-WORKFLOW.md`, so the target project's own `README.md` is not replaced.
+
+By default, the installer refuses to overwrite existing workflow directories, `DEV-TEAM-WORKFLOW.md`, or `AGENTS.md`. To replace them:
 
 ```sh
 ./install.sh --project /path/to/project --force
@@ -58,14 +60,14 @@ The project root will then contain:
 .tickets/
 .memory/
 AGENTS.md
-README.md
+DEV-TEAM-WORKFLOW.md
 ```
 
 Open Codex from that project root so it reads the installed `AGENTS.md`.
 
 Manual copying works too, but the installer is preferred because it preserves the expected folder layout and refuses accidental overwrites.
 
-If the target project already has its own `README.md` or `AGENTS.md`, review before using `--force`; it will replace those files.
+If the target project already has its own `AGENTS.md`, review before using `--force`; it will replace that file. The installer does not replace the target project's `README.md`.
 
 ## Install As A Global Template
 

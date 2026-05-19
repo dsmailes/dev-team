@@ -10,7 +10,7 @@ Usage:
 Options:
   --project PATH   Install .agents, .skills, .tickets, and .memory into PATH.
   --global         Install this pack to ~/.codex/agent-workflows/dev-team.
-  --force          Replace existing installed .agents, .skills, .tickets, and .memory.
+  --force          Replace existing installed workflow directories and workflow docs.
   --help           Show this help.
 USAGE
 }
@@ -79,9 +79,10 @@ copy_dir() {
 }
 
 copy_file() {
-  name=$1
-  source=$SOURCE_DIR/$name
-  target=$TARGET_DIR/$name
+  source_name=$1
+  target_name=${2:-$1}
+  source=$SOURCE_DIR/$source_name
+  target=$TARGET_DIR/$target_name
 
   if [ ! -f "$source" ]; then
     echo "error: missing source file: $source" >&2
@@ -103,7 +104,7 @@ copy_dir .agents
 copy_dir .skills
 copy_dir .tickets
 copy_dir .memory
-copy_file README.md
+copy_file README.md DEV-TEAM-WORKFLOW.md
 copy_file AGENTS.md
 
 echo "Installed dev-team agent workflow pack to $TARGET_DIR"
