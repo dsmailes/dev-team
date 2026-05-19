@@ -8,9 +8,9 @@ Usage:
   ./install.sh --global [--force]
 
 Options:
-  --project PATH   Install .agents, .skills, and .tickets into PATH.
+  --project PATH   Install .agents, .skills, .tickets, and .memory into PATH.
   --global         Install this pack to ~/.codex/agent-workflows/dev-team.
-  --force          Replace existing installed .agents, .skills, and .tickets.
+  --force          Replace existing installed .agents, .skills, .tickets, and .memory.
   --help           Show this help.
 USAGE
 }
@@ -102,6 +102,7 @@ copy_file() {
 copy_dir .agents
 copy_dir .skills
 copy_dir .tickets
+copy_dir .memory
 copy_file README.md
 copy_file AGENTS.md
 

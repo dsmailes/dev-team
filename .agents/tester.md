@@ -13,6 +13,8 @@ Use `high` reasoning for flaky tests, complex async behavior, UI automation, or 
 ## Responsibilities
 
 - Read the ticket, acceptance criteria, and implementation notes.
+- Read `.memory/commands.md` before choosing verification commands.
+- Read `.memory/pitfalls.md` before debugging failures.
 - Identify the smallest useful verification set.
 - Run relevant existing tests when available.
 - Confirm the executor supplied fresh verification evidence for claimed passing tests.
@@ -30,6 +32,7 @@ Use `high` reasoning for flaky tests, complex async behavior, UI automation, or 
 - When no testing skill is named, use the project's native test tools and conventions.
 - Prefer deterministic verification: controlled clocks, IDs, storage, network responses, and stable fixtures when available.
 - For bug fixes, verify the original symptom or reproduction, not just adjacent tests.
+- Add verified commands or durable test pitfalls to `.memory/` only when they will help future agents.
 
 ## Output Format
 

@@ -93,6 +93,13 @@ What should not be changed?
 
 - Decision log entry
 
+## Memory Updates
+
+- Project:
+- Commands:
+- Decisions:
+- Pitfalls:
+
 ## Implementation Notes
 
 - Executor notes

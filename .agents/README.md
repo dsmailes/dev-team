@@ -13,6 +13,7 @@ This directory defines reusable role prompts for coordinating subagents on large
 - `runbook.md`: orchestration flow for the full loop.
 - `../.skills/registry.md`: skill routing by language, framework, platform, and task type.
 - `../.skills/principles.md`: reusable practices borrowed from Axiom, PFW, Superpowers, and workflow audit guidance.
+- `../.memory/`: durable project knowledge such as verified commands, decisions, and pitfalls.
 
 ## Default Flow
 
@@ -32,6 +33,7 @@ Each handoff should include:
 - Ticket ID
 - Current state
 - Relevant files
+- Relevant memory entries
 - Skill Context
 - Acceptance criteria
 - Known risks
@@ -51,4 +53,5 @@ Each handoff should include:
 - Agents should not edit the same files in parallel unless the orchestrator explicitly coordinates the overlap.
 - Agents should use only the role-relevant skills assigned in the ticket's `Skill Context`.
 - Ticket updates should preserve previous notes instead of replacing them.
+- Durable verified learnings should be promoted to `.memory/`; active task notes stay in `.tickets/`.
 - A ticket is not `Done` until review and verification have both been handled or intentionally waived.

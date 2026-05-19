@@ -7,6 +7,7 @@ Portable role prompts, ticket templates, and skill-routing guidance for running 
 - `.agents/`: role definitions, model defaults, prompts, and runbook.
 - `.skills/`: skill registry and cross-skill principles.
 - `.tickets/`: local ticket queue, ticket template, and starter ticket.
+- `.memory/`: durable project knowledge that future agents should not rediscover.
 
 ## Agent Roles
 
@@ -33,7 +34,7 @@ Tester: gpt-5.4, medium
 ./install.sh --project /path/to/project
 ```
 
-This copies `.agents`, `.skills`, and `.tickets` into the target project.
+This copies `.agents`, `.skills`, `.tickets`, and `.memory` into the target project.
 
 By default, the installer refuses to overwrite existing directories. To replace them:
 
@@ -64,3 +65,5 @@ You can then copy it into projects later.
 5. Run Tester before marking the ticket `Done`.
 
 The key field is `Skill Context` in each ticket. It records language, framework, platform, project type, task type, and which skills each role should use.
+
+Use `.memory/` for durable knowledge only: verified commands, architectural decisions, project orientation, and pitfalls. Keep active task notes in `.tickets/`.

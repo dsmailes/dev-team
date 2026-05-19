@@ -30,6 +30,7 @@ This directory is a lightweight local ticketing system for agent-coordinated wor
 - Review should include spec compliance first, then code quality.
 - Completion requires fresh verification evidence, not assumed success.
 - Follow-up work should become new tickets rather than expanding active scope.
+- Durable verified knowledge should be promoted to `.memory/`; active task notes should stay in tickets.
 
 ## Example Lifecycle
 

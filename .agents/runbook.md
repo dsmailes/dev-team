@@ -2,6 +2,17 @@
 
 This runbook describes how to run the architect, executor, reviewer, and tester loop.
 
+## Read Project Memory
+
+Before planning or execution, read `.memory/` when present:
+
+- `project.md` for orientation.
+- `commands.md` before running setup, build, lint, test, or run commands.
+- `decisions.md` before proposing architecture changes.
+- `pitfalls.md` before debugging or changing fragile areas.
+
+Only write durable verified knowledge to `.memory/`. Keep active task notes in `.tickets/`.
+
 ## Start A Task
 
 1. Send the user request to the architect.
@@ -31,7 +42,7 @@ Use the designer only when a ticket changes screens, flows, visual hierarchy, in
 1. Spawn the executor with model `gpt-5.3-codex` and `medium` reasoning.
 2. Assign exactly one ticket unless the tickets share the same files and scope.
 3. Tell the executor which files or modules it owns.
-4. Provide exact context in the prompt: ticket text, relevant files, `Skill Context`, acceptance criteria, and expected verification.
+4. Provide exact context in the prompt: ticket text, relevant files, relevant memory entries, `Skill Context`, acceptance criteria, and expected verification.
 5. For behavior changes, require red/green TDD evidence unless TDD is explicitly waived in the ticket.
 6. When implementation returns, inspect the changed files before review.
 
@@ -75,6 +86,7 @@ Avoid parallel splits when:
 - Keep old notes; append new dated or role-labeled entries.
 - Move blocked work to `Blocked` with the exact blocker.
 - Prefer creating follow-up tickets over expanding a ticket after execution starts.
+- Promote only durable, verified project knowledge from tickets into `.memory/`.
 
 ## Completion Standard
 

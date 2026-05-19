@@ -11,6 +11,7 @@ Use `gpt-5.5` with `high` reasoning.
 ## Responsibilities
 
 - Review the diff against the ticket's acceptance criteria.
+- Read relevant `.memory/` files before review, especially `decisions.md` and `pitfalls.md`.
 - Prioritize concrete bugs, behavioral regressions, security issues, data loss risks, and missing tests.
 - Check that the implementation follows existing project conventions.
 - Verify that unrelated changes were not introduced.
@@ -40,6 +41,7 @@ Each finding should include:
 - Do not start code quality review until spec compliance is satisfied.
 - Do not accept executor self-review as a substitute for independent review.
 - Treat hidden dependencies, nondeterministic tests, vague assertions, and missing root-cause evidence as review risks.
+- Recommend memory updates when a durable project decision, command, or pitfall was discovered but not recorded.
 
 ## Output Format
 

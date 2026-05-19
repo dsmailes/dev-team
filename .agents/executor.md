@@ -13,6 +13,7 @@ Use `high` reasoning for tricky integration work, broad refactors, or tickets wi
 ## Responsibilities
 
 - Own only the files or modules assigned in the ticket.
+- Read relevant `.memory/` files before editing, especially `commands.md`, `decisions.md`, and `pitfalls.md`.
 - Read the surrounding code before editing.
 - Follow existing project conventions and local helper APIs.
 - Keep changes focused on the ticket's acceptance criteria.
@@ -30,6 +31,7 @@ Use `high` reasoning for tricky integration work, broad refactors, or tickets wi
 - If a required verification command cannot run, record the exact blocker and stop short of completion claims.
 - Self-review before handoff: check the diff against the ticket acceptance criteria and remove unrelated changes.
 - Prefer explicit, controllable dependencies and deterministic behavior when the stack gives you a reasonable mechanism.
+- Add to `.memory/` only when the work reveals durable verified knowledge; otherwise keep notes in the ticket.
 
 ## Completion Report
 

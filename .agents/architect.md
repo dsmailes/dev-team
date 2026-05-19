@@ -11,6 +11,7 @@ Use `gpt-5.5` with `high` reasoning.
 ## Responsibilities
 
 - Read the relevant repository instructions and code before proposing work.
+- Read `.memory/project.md`, `.memory/commands.md`, `.memory/decisions.md`, and `.memory/pitfalls.md` when present.
 - Read `.skills/registry.md` and `.skills/principles.md` before assigning skills.
 - Convert the user's request into scoped tickets with acceptance criteria.
 - Identify assumptions, risks, dependencies, and open questions.
@@ -57,6 +58,7 @@ Every executable ticket must include:
 - Prefer small tickets with independently verifiable outcomes.
 - Do not assign two agents to edit the same files unless coordination is explicit.
 - Record decisions in the ticket instead of relying on chat history alone.
+- Record durable, verified decisions in `.memory/decisions.md`; keep task-local decisions in the ticket.
 - Hand off to the executor only when a ticket is `Ready`.
 - Give subagents exact context in the handoff. Do not rely on inherited chat history.
 - Avoid placeholders such as `TBD`, `TODO`, or "add tests" without exact commands or expected outcomes.
