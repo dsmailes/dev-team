@@ -42,6 +42,29 @@ By default, the installer refuses to overwrite existing directories. To replace 
 ./install.sh --project /path/to/project --force
 ```
 
+## Use With A New Project
+
+For a new project, install the workflow pack into the project root:
+
+```sh
+/path/to/dev-team/install.sh --project /path/to/new-project
+```
+
+The project root will then contain:
+
+```text
+.agents/
+.skills/
+.tickets/
+.memory/
+AGENTS.md
+README.md
+```
+
+Open Codex from that project root so it reads the installed `AGENTS.md`.
+
+Manual copying works too, but the installer is preferred because it preserves the expected folder layout and refuses accidental overwrites.
+
 ## Install As A Global Template
 
 ```sh
@@ -55,6 +78,12 @@ This installs the pack to:
 ```
 
 You can then copy it into projects later.
+
+After global install, use the global template from any project:
+
+```sh
+~/.codex/agent-workflows/dev-team/install.sh --project /path/to/project
+```
 
 ## Use In A Project
 
