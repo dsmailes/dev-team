@@ -1,0 +1,32 @@
+# Dev Team Agent Workflow Pack Instructions
+
+This project is a portable agent workflow pack. It is not an application.
+
+## Source Of Truth
+
+- `.agents/README.md`: role overview and model defaults.
+- `.agents/runbook.md`: orchestration workflow.
+- `.agents/prompts.md`: spawn prompts for each role.
+- `.skills/registry.md`: language, framework, platform, and task skill routing.
+- `.skills/principles.md`: reusable practices from Axiom, PFW, Superpowers, and workflow-audit guidance.
+- `.tickets/template.md`: ticket shape.
+
+## Operating Rules
+
+- Keep this pack framework-neutral.
+- Do not make Axiom, PFW, or any other skill family mandatory unless the user or project instructions explicitly require it.
+- Use `Skill Context` as the single source of truth for role-specific skill assignment.
+- Keep installer behavior conservative: no overwrites unless `--force` is explicitly passed.
+- Prefer Markdown instructions that are easy to copy into project-local workflows.
+
+## Verification
+
+For installer changes, verify with a temporary target:
+
+```sh
+tmpdir="$(mktemp -d)"
+./install.sh --project "$tmpdir"
+find "$tmpdir" -maxdepth 2 -type f | sort
+```
+
+Do not claim installer success without running a fresh verification command.
