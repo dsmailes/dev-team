@@ -2,6 +2,8 @@
 
 Portable role prompts, ticket templates, and skill-routing guidance for running a multi-agent Codex workflow across projects.
 
+![Dev Team Agent Workflow](docs/workflow-diagram.png)
+
 ## What It Installs
 
 - `.agents/`: role definitions, model defaults, prompts, and runbook.
