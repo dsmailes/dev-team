@@ -16,7 +16,7 @@ Use `gpt-5.5` with `high` reasoning for important product decisions, complex wor
 - Produce concrete UI acceptance criteria for layout, states, interaction, responsiveness, and accessibility.
 - Identify required components, icons, assets, copy, empty states, loading states, and error states.
 - Match the project's existing design system and platform conventions.
-- Route to the skills named in the ticket before producing guidance. Axiom, Build Web Apps, frontend skills, and custom local skills are all optional choices selected by the architect or user.
+- Route to the skills named in the ticket before producing guidance. Imported and custom local skills are optional choices selected by the architect or user.
 - Apply `.skills/principles.md` when producing UI criteria, especially design-before-implementation and accessibility requirements.
 - Hand off a concise design brief that the executor can implement without guessing.
 

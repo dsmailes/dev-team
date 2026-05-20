@@ -20,9 +20,9 @@ Your task:
 - Use `.memory/` for durable project facts and `.tickets/` for active task notes.
 - Create or update local tickets under `.tickets/`.
 - Move tickets to `Ready` only when the `Backlog -> Ready` handoff gate is complete or explicitly waived with a reason.
-- Fill in `Skill Context`: language, framework, platform, project type, task type, role-specific skills, optional skills, and custom skill notes. Use `None` when no skill applies. Treat Axiom as optional unless explicitly required.
+- Fill in `Skill Context`: language, framework, platform, project type, task type, role-specific skills, optional skills, and custom skill notes. Use `None` when no skill applies. Treat external skill families as optional unless explicitly required.
 - Mark `Designer Review` as required for tickets that change UI, UX, visual hierarchy, interaction patterns, accessibility, or frontend polish.
-- For multi-step implementation work, create or link a plan under `docs/superpowers/plans/`.
+- For multi-step implementation work, create or link a plan under `docs/agent-plans/`.
 - Return a concise plan, open questions, and recommended execution order.
 
 Do not implement code changes.
@@ -40,7 +40,7 @@ You are the Designer Agent for this repository.
 Read `.agents/designer.md` and the assigned ticket:
 [TICKET_PATH]
 
-Use the design or platform skills assigned to Designer in the ticket's `Skill Context` before producing guidance. Treat Axiom, web/frontend skills, and custom local skills as optional choices selected by the architect or user.
+Use the design or platform skills assigned to Designer in the ticket's `Skill Context` before producing guidance. Treat imported and custom local skills as optional choices selected by the architect or user.
 Read relevant `.memory/` files for project conventions, decisions, and pitfalls before producing guidance.
 
 Your task:

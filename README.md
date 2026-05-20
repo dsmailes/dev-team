@@ -55,6 +55,24 @@ For a new project, install the workflow pack into the project root:
 /path/to/dev-team/install.sh --project /path/to/new-project
 ```
 
+During an interactive project install, the installer asks whether to import a local skill registry. Imported skill names are written to:
+
+```text
+.skills/imported.md
+```
+
+For non-interactive installs, pass a registry file explicitly:
+
+```sh
+/path/to/dev-team/install.sh --project /path/to/new-project --import-skills /path/to/local-skills.md
+```
+
+Or skip import prompts:
+
+```sh
+/path/to/dev-team/install.sh --project /path/to/new-project --no-import-skills
+```
+
 The project root will then contain:
 
 ```text
@@ -98,6 +116,13 @@ AGENTS.md
 .tickets/queue.md
 .tickets/ARCH-*.md and other project tickets
 .memory/
+.skills/imported.md unless a new import file is provided
+```
+
+To refresh local skill names during an update:
+
+```sh
+/path/to/dev-team/install.sh --project /path/to/project --update --import-skills /path/to/local-skills.md
 ```
 
 Use `--force` only for a full reinstall where replacing project-local workflow state is intentional.

@@ -26,9 +26,9 @@ Only write durable verified knowledge to `.memory/`. Keep active task notes in `
 5. If a ticket includes UI/UX work, complete `Ready -> Design`, route it through the designer, then complete `Design -> Ready`.
 6. Select one `Ready` ticket for execution.
 
-For multi-step implementation work, the architect should also create or link an implementation plan under `docs/superpowers/plans/`. Tickets can represent the executable slices of that plan.
+For multi-step implementation work, the architect should also create or link an implementation plan under `docs/agent-plans/`. Tickets can represent the executable slices of that plan.
 
-The architect must fill in `Skill Context` before execution starts, including role-specific skills or `None` where no skill applies. Axiom is available as an optional Apple-platform skill family, but it is not mandatory for Swift or Apple work unless the ticket, user, or project instructions require it.
+The architect must fill in `Skill Context` before execution starts, including role-specific skills or `None` where no skill applies. External skill families are optional unless the ticket, user, imported registry, or project instructions require them.
 
 Skill selection comes from `.skills/registry.md`, `.skills/principles.md`, project instructions, and user-provided custom skills. Assign skills per role so each subagent reads only what it needs.
 

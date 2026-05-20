@@ -6,11 +6,16 @@ usage() {
 Usage:
   ./install.sh --project /path/to/project [--force]
   ./install.sh --project /path/to/project --update
+  ./install.sh --project /path/to/project --import-skills /path/to/skills.md
   ./install.sh --global [--force]
 
 Options:
   --project PATH   Install .agents, .skills, .tickets, and .memory into PATH.
   --update         Update reusable workflow files while preserving project tickets, memory, README.md, and AGENTS.md.
+  --import-skills PATH
+                   Import a local skill registry into .skills/imported.md.
+  --no-import-skills
+                   Do not prompt for skill import during interactive project installs.
   --global         Install this pack to ~/.codex/agent-workflows/dev-team.
   --force          Replace existing installed workflow directories and workflow docs.
   --help           Show this help.
@@ -22,6 +27,8 @@ TARGET_DIR=""
 TARGET_KIND=""
 FORCE=0
 UPDATE=0
+IMPORT_SKILLS_PATH=""
+NO_IMPORT_SKILLS=0
 
 while [ "$#" -gt 0 ]; do
   case "$1" in
@@ -49,6 +56,18 @@ while [ "$#" -gt 0 ]; do
       ;;
     --update)
       UPDATE=1
+      shift
+      ;;
+    --import-skills)
+      if [ "$#" -lt 2 ]; then
+        echo "error: --import-skills requires a path" >&2
+        exit 2
+      fi
+      IMPORT_SKILLS_PATH=$2
+      shift 2
+      ;;
+    --no-import-skills)
+      NO_IMPORT_SKILLS=1
       shift
       ;;
     --force)
@@ -80,6 +99,11 @@ fi
 
 if [ "$UPDATE" -eq 1 ] && [ "$TARGET_KIND" != project ]; then
   echo "error: --update is only supported with --project PATH" >&2
+  exit 2
+fi
+
+if [ "$NO_IMPORT_SKILLS" -eq 1 ] && [ -n "$IMPORT_SKILLS_PATH" ]; then
+  echo "error: choose either --import-skills PATH or --no-import-skills, not both" >&2
   exit 2
 fi
 
@@ -168,13 +192,60 @@ replace_file() {
   cp "$source" "$target"
 }
 
+maybe_prompt_for_skill_import() {
+  if [ "$TARGET_KIND" != project ]; then
+    return
+  fi
+
+  if [ "$NO_IMPORT_SKILLS" -eq 1 ] || [ -n "$IMPORT_SKILLS_PATH" ]; then
+    return
+  fi
+
+  if [ ! -t 0 ]; then
+    return
+  fi
+
+  printf "Import a local skill registry into .skills/imported.md? [y/N] "
+  read answer
+  case "$answer" in
+    y|Y|yes|YES)
+      printf "Path to skill registry markdown file: "
+      read IMPORT_SKILLS_PATH
+      ;;
+    *)
+      NO_IMPORT_SKILLS=1
+      ;;
+  esac
+}
+
+import_skills() {
+  if [ -z "$IMPORT_SKILLS_PATH" ]; then
+    return
+  fi
+
+  if [ ! -f "$IMPORT_SKILLS_PATH" ]; then
+    echo "error: skill registry import file does not exist: $IMPORT_SKILLS_PATH" >&2
+    exit 1
+  fi
+
+  mkdir -p "$TARGET_DIR/.skills"
+  cp "$IMPORT_SKILLS_PATH" "$TARGET_DIR/.skills/imported.md"
+  echo "Imported local skill registry to $TARGET_DIR/.skills/imported.md"
+}
+
+maybe_prompt_for_skill_import
+
 if [ "$UPDATE" -eq 1 ]; then
   replace_dir .agents
-  replace_dir .skills
+  mkdir -p "$TARGET_DIR/.skills"
+  replace_file .skills/README.md .skills/README.md
+  replace_file .skills/principles.md .skills/principles.md
+  replace_file .skills/registry.md .skills/registry.md
   mkdir -p "$TARGET_DIR/.tickets"
   replace_file .tickets/README.md .tickets/README.md
   replace_file .tickets/template.md .tickets/template.md
   replace_file README.md DEV-TEAM-WORKFLOW.md
+  import_skills
   echo "Updated reusable dev-team workflow files in $TARGET_DIR"
 else
   copy_dir .agents
@@ -183,5 +254,6 @@ else
   copy_dir .memory
   copy_file README.md DEV-TEAM-WORKFLOW.md
   copy_file AGENTS.md
+  import_skills
   echo "Installed dev-team agent workflow pack to $TARGET_DIR"
 fi

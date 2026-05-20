@@ -13,7 +13,7 @@ This directory defines reusable role prompts for coordinating subagents on large
 - `runbook.md`: orchestration flow for the full loop.
 - `handoff.md`: required gates for moving tickets between roles and states.
 - `../.skills/registry.md`: skill routing by language, framework, platform, and task type.
-- `../.skills/principles.md`: reusable practices borrowed from Axiom, PFW, Superpowers, and workflow audit guidance.
+- `../.skills/principles.md`: reusable engineering and handoff practices.
 - `../.memory/`: durable project knowledge such as verified commands, decisions, and pitfalls.
 
 ## Default Flow

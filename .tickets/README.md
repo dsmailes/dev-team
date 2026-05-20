@@ -25,7 +25,7 @@ This directory is a lightweight local ticketing system for agent-coordinated wor
 - Each implementation ticket should include a verification plan.
 - Each implementation ticket should include `Skill Context` before execution, with role-specific skills or `None` when no skill applies.
 - Each ticket should complete the relevant `Handoff Gates` checklist before moving state.
-- Axiom is optional unless the ticket, user, or project instructions explicitly require it.
+- External skill families are optional unless the ticket, user, imported registry, or project instructions explicitly require them.
 - Tickets that change UI, UX, visual hierarchy, interaction patterns, accessibility, or frontend polish should set `Designer Review` to `Required: Yes`.
 - Behavior changes should include a TDD plan with red/green verification, unless explicitly waived.
 - Review should include spec compliance first, then code quality.

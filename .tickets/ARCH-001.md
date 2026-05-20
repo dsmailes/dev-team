@@ -53,13 +53,13 @@ The agent workflow exists, but no project-specific implementation task has been 
 - Project type: Agent workflow documentation
 - Task type: Workflow setup
 - Required skills:
-  - Architect: `superpowers:writing-plans`, `superpowers:subagent-driven-development`
+  - Architect: Planning and delegation skills if imported; otherwise `None`
   - Designer: `None`
   - Executor: `None`
-  - Reviewer: `superpowers:requesting-code-review`
-  - Tester: `superpowers:verification-before-completion`
+  - Reviewer: Review skills if imported; otherwise `None`
+  - Tester: Verification skills if imported; otherwise `None`
 - Optional skills:
-  - `agent-workflow-audit`
+  - Local workflow-audit skill if imported; otherwise `None`
 - Custom skill notes:
   - Use `.skills/registry.md` for future framework and language routing.
 
