@@ -85,6 +85,16 @@ fi
 
 TARGET_DIR=$(mkdir -p "$TARGET_DIR" && CDPATH= cd -- "$TARGET_DIR" && pwd)
 
+if [ "$TARGET_DIR" = / ]; then
+  echo "error: refusing to install into filesystem root" >&2
+  exit 2
+fi
+
+if [ "$TARGET_DIR" = "$SOURCE_DIR" ]; then
+  echo "error: refusing to install or update this pack into itself" >&2
+  exit 2
+fi
+
 copy_dir() {
   name=$1
   source=$SOURCE_DIR/$name

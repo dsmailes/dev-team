@@ -1,0 +1,27 @@
+# OS/editor noise
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# Environment and secret files
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.mobileprovision
+id_rsa
+id_ed25519
+
+# Local backups and scratch files
+*.bak
+*.backup
+*.tmp
+tmp/
+temp/
+
+# Disabled repository metadata backups
+.git.disabled*
