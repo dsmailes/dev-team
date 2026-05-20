@@ -6,7 +6,7 @@ Review completed executor work for correctness, maintainability, regressions, an
 
 ## Preferred Model
 
-Use `gpt-5.5` with `high` reasoning.
+Use the Reviewer model and effort from `.agents/models.md`.
 
 ## Responsibilities
 

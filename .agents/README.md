@@ -9,6 +9,7 @@ This directory defines reusable role prompts for coordinating subagents on large
 - `executor.md`: implements one ready ticket at a time.
 - `reviewer.md`: reviews executor changes against the ticket.
 - `tester.md`: verifies behavior and reports coverage gaps.
+- `models.md`: project-local model/provider choices for each role.
 - `prompts.md`: spawn prompts for each role.
 - `runbook.md`: orchestration flow for the full loop.
 - `handoff.md`: required gates for moving tickets between roles and states.
@@ -40,13 +41,11 @@ Each handoff should include:
 - Known risks
 - Expected output from the receiving role
 
-## Model Defaults
+## Model Configuration
 
-- Architect: `gpt-5.5`, `high`.
-- Designer: `gpt-5.4`, `high`; use `gpt-5.5`, `high` for important product/UI decisions.
-- Executor: `gpt-5.3-codex-spark`, `high` by default; escalate to `gpt-5.3-codex`, `gpt-5.4`, or `gpt-5.5` as complexity and risk increase.
-- Reviewer: `gpt-5.5`, `high`.
-- Tester: `gpt-5.4`, `medium`; raise to `high` for flaky tests or complex async/UI issues.
+Use `.agents/models.md` as the source of truth for model names, effort levels, and provider-specific mappings.
+
+The packaged default is a Codex profile that uses Spark for routine execution and stronger reasoning models for architecture, review, and high-risk work. Project installs may replace this with exact local model IDs or inferred provider-class placeholders.
 
 ## Coordination Rules
 

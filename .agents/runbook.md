@@ -6,6 +6,8 @@ Read `.agents/handoff.md` before moving any ticket between states.
 
 The orchestrator may not move a ticket to the next state until that transition's handoff gate is complete or explicitly waived with a reason in the ticket.
 
+Use `.agents/models.md` as the source of truth for model names and effort levels when spawning each role.
+
 ## Read Project Memory
 
 Before planning or execution, read `.memory/` when present:
@@ -36,16 +38,16 @@ Skill selection comes from `.skills/registry.md`, `.skills/principles.md`, proje
 
 Use the designer only when a ticket changes screens, flows, visual hierarchy, interaction design, accessibility, or frontend polish.
 
-1. Spawn the designer with model `gpt-5.4` and `high` reasoning.
-2. Use `gpt-5.5` and `high` reasoning when the ticket involves important product decisions, broad workflow design, brand-sensitive UI, or major design-system changes.
+1. Spawn the designer with the Designer model and effort from `.agents/models.md`.
+2. Escalate according to `.agents/models.md` when the ticket involves important product decisions, broad workflow design, brand-sensitive UI, or major design-system changes.
 3. Give the designer the ticket, relevant existing UI files, design-system context, target platform, and constraints.
 4. Ask the designer to update the ticket's `Designer Review` and `Design Brief` sections.
 5. Move the ticket to execution only after the `Design -> Ready` handoff gate is complete.
 
 ## Execute A Ticket
 
-1. Spawn the executor with model `gpt-5.3-codex-spark` and `high` reasoning by default.
-2. Escalate Executor to `gpt-5.3-codex`, `gpt-5.4`, or `gpt-5.5` when the ticket's complexity, ambiguity, or risk requires it.
+1. Spawn the executor with the Executor model and effort from `.agents/models.md`.
+2. Escalate Executor according to `.agents/models.md` when the ticket's complexity, ambiguity, or risk requires it.
 3. Assign exactly one ticket unless the tickets share the same files and scope.
 4. Tell the executor which files or modules it owns.
 5. Provide exact context in the prompt: ticket text, relevant files, relevant memory entries, `Skill Context`, acceptance criteria, and expected verification.
@@ -55,7 +57,7 @@ Use the designer only when a ticket changes screens, flows, visual hierarchy, in
 
 ## Review A Ticket
 
-1. Spawn or assign the reviewer with model `gpt-5.5` and `high` reasoning after implementation.
+1. Spawn or assign the reviewer with the Reviewer model and effort from `.agents/models.md` after implementation.
 2. Give the reviewer the ticket path and the diff context.
 3. Run spec compliance review first.
 4. Run code quality review only after spec compliance is satisfied.
@@ -64,7 +66,7 @@ Use the designer only when a ticket changes screens, flows, visual hierarchy, in
 
 ## Test A Ticket
 
-1. Spawn or assign the tester with model `gpt-5.4` and `medium` reasoning after review.
+1. Spawn or assign the tester with the Tester model and effort from `.agents/models.md` after review.
 2. Give the tester the ticket path and expected verification scope.
 3. Require fresh command output or documented manual-check evidence before accepting a pass.
 4. If verification passes, complete `Test -> Done` before moving the ticket to `Done`.

@@ -6,9 +6,9 @@ Shape UI and UX work before implementation when a ticket changes screens, flows,
 
 ## Preferred Model
 
-Use `gpt-5.4` with `high` reasoning for ordinary UI work.
+Use the Designer model and effort from `.agents/models.md`.
 
-Use `gpt-5.5` with `high` reasoning for important product decisions, complex workflows, brand-sensitive UI, or broad design-system changes.
+Use the escalation guidance in `.agents/models.md` for important product decisions, complex workflows, brand-sensitive UI, or broad design-system changes.
 
 ## Responsibilities
 

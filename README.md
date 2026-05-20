@@ -6,7 +6,7 @@ Portable role prompts, ticket templates, and skill-routing guidance for running 
 
 ## What It Installs
 
-- `.agents/`: role definitions, model defaults, prompts, and runbook.
+- `.agents/`: role definitions, project-local model config, prompts, and runbook.
 - `.skills/`: skill registry and cross-skill principles.
 - `.tickets/`: local ticket queue, ticket template, and starter ticket.
 - `.memory/`: durable project knowledge that future agents should not rediscover.
@@ -19,17 +19,19 @@ Portable role prompts, ticket templates, and skill-routing guidance for running 
 - Reviewer: checks spec compliance first, then code quality.
 - Tester: verifies behavior with fresh evidence.
 
-## Model Defaults
+## Model Configuration
 
-```text
-Architect: gpt-5.5, high
-Designer: gpt-5.4, high
-Designer for major product/UI decisions: gpt-5.5, high
-Executor default: gpt-5.3-codex-spark, high
-Executor escalation: gpt-5.3-codex medium/high, gpt-5.4 high, or gpt-5.5 high for the most complex implementation work
-Reviewer: gpt-5.5, high
-Tester: gpt-5.4, medium
-```
+Model choices live in `.agents/models.md`.
+
+The default profile is Codex:
+
+- Architect: strongest reasoning model.
+- Designer: strong balanced model; escalate for major UI/product decisions.
+- Executor: Spark by default; escalate for broader or riskier implementation.
+- Reviewer: strongest reasoning model.
+- Tester: balanced model with medium effort by default.
+
+For other providers, the installer can infer provider-class placeholders such as `anthropic-fast-coding` or `google-best-reasoning`. Replace those with exact model IDs supported by your local runner.
 
 ## Install Into A Project
 
@@ -73,6 +75,26 @@ Or skip import prompts:
 /path/to/dev-team/install.sh --project /path/to/new-project --no-import-skills
 ```
 
+The installer also asks which model provider to use. Press enter to use the Codex defaults, or enter another provider name to generate an inferred `.agents/models.md`.
+
+For non-interactive installs:
+
+```sh
+/path/to/dev-team/install.sh --project /path/to/new-project --models-provider codex
+```
+
+To import exact model IDs from a prepared file:
+
+```sh
+/path/to/dev-team/install.sh --project /path/to/new-project --models-file /path/to/models.md
+```
+
+To skip model prompts and use the packaged defaults:
+
+```sh
+/path/to/dev-team/install.sh --project /path/to/new-project --no-model-prompt
+```
+
 The project root will then contain:
 
 ```text
@@ -113,6 +135,7 @@ Update mode preserves:
 ```text
 README.md
 AGENTS.md
+.agents/models.md unless a new model provider or model file is provided
 .tickets/queue.md
 .tickets/ARCH-*.md and other project tickets
 .memory/
@@ -123,6 +146,12 @@ To refresh local skill names during an update:
 
 ```sh
 /path/to/dev-team/install.sh --project /path/to/project --update --import-skills /path/to/local-skills.md
+```
+
+To refresh model choices during an update:
+
+```sh
+/path/to/dev-team/install.sh --project /path/to/project --update --models-provider codex
 ```
 
 Use `--force` only for a full reinstall where replacing project-local workflow state is intentional.

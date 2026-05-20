@@ -4,7 +4,8 @@ This project is a portable agent workflow pack. It is not an application.
 
 ## Source Of Truth
 
-- `.agents/README.md`: role overview and model defaults.
+- `.agents/README.md`: role overview and coordination rules.
+- `.agents/models.md`: project-local model/provider choices for each role.
 - `.agents/runbook.md`: orchestration workflow.
 - `.agents/prompts.md`: spawn prompts for each role.
 - `.agents/handoff.md`: required gates for moving tickets between roles and states.
@@ -29,7 +30,7 @@ For installer changes, verify with a temporary target:
 
 ```sh
 tmpdir="$(mktemp -d)"
-./install.sh --project "$tmpdir"
+./install.sh --project "$tmpdir" --no-import-skills --no-model-prompt
 find "$tmpdir" -maxdepth 2 -type f | sort
 ```
 

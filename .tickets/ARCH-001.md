@@ -67,8 +67,8 @@ The agent workflow exists, but no project-specific implementation task has been 
 
 - Required: `No`
 - Reason: This ticket defines workflow documentation and does not change user-facing UI.
-- Preferred model: `gpt-5.4`
-- Preferred effort: `high`
+- Preferred model: See `.agents/models.md`.
+- Preferred effort: See `.agents/models.md`.
 - Output needed: None.
 
 ## Design Brief

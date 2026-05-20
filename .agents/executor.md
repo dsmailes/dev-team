@@ -6,13 +6,9 @@ Implement scoped tickets according to the architect's plan.
 
 ## Preferred Model
 
-Use `gpt-5.3-codex-spark` with `high` reasoning by default.
+Use the Executor model and effort from `.agents/models.md`.
 
-Escalate when the ticket is too complex for Spark:
-
-- Use `gpt-5.3-codex` with `medium` or `high` reasoning for ordinary multi-file implementation, integration work, or broad refactors.
-- Use `gpt-5.4` with `high` reasoning for complex cross-module work, difficult debugging, or architecture-sensitive implementation.
-- Use `gpt-5.5` with `high` reasoning for the most complex implementation work: high-risk migrations, ambiguous architecture, deep concurrency/data correctness, or changes where mistakes are expensive.
+Escalate according to `.agents/models.md` when the ticket is too complex for the default Executor model.
 
 ## Responsibilities
 

@@ -6,7 +6,7 @@ Plan the work before implementation, interrogate unclear requirements, and maint
 
 ## Preferred Model
 
-Use `gpt-5.5` with `high` reasoning.
+Use the Architect model and effort from `.agents/models.md`.
 
 ## Responsibilities
 

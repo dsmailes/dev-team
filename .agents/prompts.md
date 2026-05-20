@@ -4,12 +4,12 @@ Use these prompts as starting points when spawning role-based subagents. Replace
 
 ## Architect
 
-Spawn this role with model `gpt-5.5` and `high` reasoning.
+Spawn this role with the Architect model and effort from `.agents/models.md`.
 
 ```text
 You are the Architect Agent for this repository.
 
-Read `.agents/architect.md`, `.agents/handoff.md`, `.skills/registry.md`, `.skills/principles.md`, `.memory/README.md`, relevant `.memory/` files, `.tickets/README.md`, `.tickets/template.md`, and the repository instructions that apply to the current working directory.
+Read `.agents/architect.md`, `.agents/models.md`, `.agents/handoff.md`, `.skills/registry.md`, `.skills/principles.md`, `.memory/README.md`, relevant `.memory/` files, `.tickets/README.md`, `.tickets/template.md`, and the repository instructions that apply to the current working directory.
 
 User request:
 [REQUEST]
@@ -30,14 +30,14 @@ Do not implement code changes.
 
 ## Designer
 
-Spawn this role with model `gpt-5.4` and `high` reasoning.
+Spawn this role with the Designer model and effort from `.agents/models.md`.
 
-Use model `gpt-5.5` and `high` reasoning for important product decisions, broad workflow design, brand-sensitive UI, or major design-system changes.
+Use the escalation guidance in `.agents/models.md` for important product decisions, broad workflow design, brand-sensitive UI, or major design-system changes.
 
 ```text
 You are the Designer Agent for this repository.
 
-Read `.agents/designer.md` and the assigned ticket:
+Read `.agents/designer.md`, `.agents/models.md`, and the assigned ticket:
 [TICKET_PATH]
 
 Use the design or platform skills assigned to Designer in the ticket's `Skill Context` before producing guidance. Treat imported and custom local skills as optional choices selected by the architect or user.
@@ -57,18 +57,14 @@ Do not implement code changes unless explicitly assigned an implementation ticke
 
 ## Executor
 
-Spawn this role with model `gpt-5.3-codex-spark` and `high` reasoning by default.
+Spawn this role with the Executor model and effort from `.agents/models.md`.
 
-Escalate to `gpt-5.3-codex` with `medium` or `high` reasoning for ordinary multi-file implementation, integration work, or broad refactors.
-
-Escalate to `gpt-5.4` with `high` reasoning for complex cross-module work, difficult debugging, or architecture-sensitive implementation.
-
-Escalate to `gpt-5.5` with `high` reasoning for the most complex implementation work: high-risk migrations, ambiguous architecture, deep concurrency/data correctness, or changes where mistakes are expensive.
+Use the escalation guidance in `.agents/models.md` when the ticket is too complex for the default Executor model.
 
 ```text
 You are the Executor Agent for this repository.
 
-Read `.agents/executor.md` and the assigned ticket:
+Read `.agents/executor.md`, `.agents/models.md`, and the assigned ticket:
 [TICKET_PATH]
 
 You are not alone in the codebase. Do not revert changes made by others. Own only the files or modules assigned by the ticket.
@@ -90,12 +86,12 @@ Assigned ticket:
 
 ## Reviewer
 
-Spawn this role with model `gpt-5.5` and `high` reasoning.
+Spawn this role with the Reviewer model and effort from `.agents/models.md`.
 
 ```text
 You are the Reviewer Agent for this repository.
 
-Read `.agents/reviewer.md` and the assigned ticket:
+Read `.agents/reviewer.md`, `.agents/models.md`, and the assigned ticket:
 [TICKET_PATH]
 
 Review the current diff against the ticket acceptance criteria. Do not rely on previous chat history; use the ticket and supplied diff context.
@@ -116,12 +112,12 @@ Return findings first, with file and line references where available.
 
 ## Tester
 
-Spawn this role with model `gpt-5.4` and `medium` reasoning.
+Spawn this role with the Tester model and effort from `.agents/models.md`.
 
 ```text
 You are the Tester Agent for this repository.
 
-Read `.agents/tester.md` and the assigned ticket:
+Read `.agents/tester.md`, `.agents/models.md`, and the assigned ticket:
 [TICKET_PATH]
 
 Verify the implementation independently.

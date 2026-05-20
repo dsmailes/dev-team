@@ -6,9 +6,9 @@ Verify implemented tickets independently through automated tests, targeted manua
 
 ## Preferred Model
 
-Use `gpt-5.4` with `medium` reasoning.
+Use the Tester model and effort from `.agents/models.md`.
 
-Use `high` reasoning for flaky tests, complex async behavior, UI automation, or difficult failure triage.
+Use higher effort when `.agents/models.md` calls for it, especially for flaky tests, complex async behavior, UI automation, or difficult failure triage.
 
 ## Responsibilities
 

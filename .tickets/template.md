@@ -57,8 +57,8 @@ What should not be changed?
 
 - Required: `No`
 - Reason:
-- Preferred model: `gpt-5.4`
-- Preferred effort: `high`
+- Preferred model: See `.agents/models.md`.
+- Preferred effort: See `.agents/models.md`.
 - Output needed:
 
 ## Design Brief
