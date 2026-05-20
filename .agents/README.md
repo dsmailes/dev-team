@@ -44,7 +44,7 @@ Each handoff should include:
 
 - Architect: `gpt-5.5`, `high`.
 - Designer: `gpt-5.4`, `high`; use `gpt-5.5`, `high` for important product/UI decisions.
-- Executor: `gpt-5.3-codex`, `medium`; raise to `high` for tricky integration or refactors.
+- Executor: `gpt-5.3-codex-spark`, `high` by default; escalate to `gpt-5.3-codex`, `gpt-5.4`, or `gpt-5.5` as complexity and risk increase.
 - Reviewer: `gpt-5.5`, `high`.
 - Tester: `gpt-5.4`, `medium`; raise to `high` for flaky tests or complex async/UI issues.
 

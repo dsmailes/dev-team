@@ -23,7 +23,8 @@ Portable role prompts, ticket templates, and skill-routing guidance for running 
 Architect: gpt-5.5, high
 Designer: gpt-5.4, high
 Designer for major product/UI decisions: gpt-5.5, high
-Executor: gpt-5.3-codex, medium
+Executor default: gpt-5.3-codex-spark, high
+Executor escalation: gpt-5.3-codex medium/high, gpt-5.4 high, or gpt-5.5 high for the most complex implementation work
 Reviewer: gpt-5.5, high
 Tester: gpt-5.4, medium
 ```

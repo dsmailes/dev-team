@@ -44,13 +44,14 @@ Use the designer only when a ticket changes screens, flows, visual hierarchy, in
 
 ## Execute A Ticket
 
-1. Spawn the executor with model `gpt-5.3-codex` and `medium` reasoning.
-2. Assign exactly one ticket unless the tickets share the same files and scope.
-3. Tell the executor which files or modules it owns.
-4. Provide exact context in the prompt: ticket text, relevant files, relevant memory entries, `Skill Context`, acceptance criteria, and expected verification.
-5. For behavior changes, require red/green TDD evidence unless TDD is explicitly waived in the ticket.
-6. Complete the `Ready -> In Progress` handoff gate before Executor starts.
-7. When implementation returns, inspect the changed files and complete `In Progress -> Review` before review.
+1. Spawn the executor with model `gpt-5.3-codex-spark` and `high` reasoning by default.
+2. Escalate Executor to `gpt-5.3-codex`, `gpt-5.4`, or `gpt-5.5` when the ticket's complexity, ambiguity, or risk requires it.
+3. Assign exactly one ticket unless the tickets share the same files and scope.
+4. Tell the executor which files or modules it owns.
+5. Provide exact context in the prompt: ticket text, relevant files, relevant memory entries, `Skill Context`, acceptance criteria, and expected verification.
+6. For behavior changes, require red/green TDD evidence unless TDD is explicitly waived in the ticket.
+7. Complete the `Ready -> In Progress` handoff gate before Executor starts.
+8. When implementation returns, inspect the changed files and complete `In Progress -> Review` before review.
 
 ## Review A Ticket
 

@@ -57,7 +57,13 @@ Do not implement code changes unless explicitly assigned an implementation ticke
 
 ## Executor
 
-Spawn this role with model `gpt-5.3-codex` and `medium` reasoning.
+Spawn this role with model `gpt-5.3-codex-spark` and `high` reasoning by default.
+
+Escalate to `gpt-5.3-codex` with `medium` or `high` reasoning for ordinary multi-file implementation, integration work, or broad refactors.
+
+Escalate to `gpt-5.4` with `high` reasoning for complex cross-module work, difficult debugging, or architecture-sensitive implementation.
+
+Escalate to `gpt-5.5` with `high` reasoning for the most complex implementation work: high-risk migrations, ambiguous architecture, deep concurrency/data correctness, or changes where mistakes are expensive.
 
 ```text
 You are the Executor Agent for this repository.
