@@ -70,6 +70,36 @@ Manual copying works too, but the installer is preferred because it preserves th
 
 If the target project already has its own `AGENTS.md`, review before using `--force`; it will replace that file. The installer does not replace the target project's `README.md`.
 
+## Update An Existing Project
+
+For projects that already use this workflow, update only the reusable workflow files:
+
+```sh
+/path/to/dev-team/install.sh --project /path/to/project --update
+```
+
+Update mode refreshes:
+
+```text
+.agents/
+.skills/
+.tickets/README.md
+.tickets/template.md
+DEV-TEAM-WORKFLOW.md
+```
+
+Update mode preserves:
+
+```text
+README.md
+AGENTS.md
+.tickets/queue.md
+.tickets/ARCH-*.md and other project tickets
+.memory/
+```
+
+Use `--force` only for a full reinstall where replacing project-local workflow state is intentional.
+
 ## Install As A Global Template
 
 ```sh
