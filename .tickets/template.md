@@ -62,6 +62,11 @@ What should not be changed?
   - Reviewer:
   - Tester:
 - Optional skills:
+- Design tooling:
+  - Required: `No`
+  - Capabilities:
+  - Source:
+  - Notes:
 - Custom skill notes:
 
 ## Designer Review
@@ -70,6 +75,7 @@ What should not be changed?
 - Reason:
 - Preferred model: See `.agents/models.md`.
 - Preferred effort: See `.agents/models.md`.
+- Design tooling needed:
 - Output needed:
 
 ## Design Brief
@@ -81,6 +87,7 @@ What should not be changed?
 - Accessibility:
 - Responsive or platform-specific behavior:
 - Assets and icons:
+- Design tooling used:
 - Executor notes:
 
 ## TDD Plan

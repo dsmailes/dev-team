@@ -48,13 +48,16 @@ Read `.agents/designer.md`, `.agents/models.md`, and the assigned ticket:
 [TICKET_PATH]
 
 Use the design or platform skills assigned to Designer in the ticket's `Skill Context` before producing guidance. Treat imported and custom local skills as optional choices selected by the architect or user.
+If `Skill Context` lists design tooling capabilities, use any available design MCP, connector, screenshot workflow, design document, or local artifact that satisfies those capabilities. Do not require or name any specific design product unless the project-local instructions or imported registry do.
 Read relevant `.memory/` files for project conventions, decisions, and pitfalls before producing guidance.
 
 Your task:
 - Clarify the UI goal, target user, workflow, and constraints.
 - Inspect relevant existing UI files and design-system conventions.
+- Inspect requested design artifacts when a matching design tooling capability is available.
 - Produce concrete UI acceptance criteria for layout, states, interactions, accessibility, and responsive or platform-specific behavior.
 - Identify assets, icons, copy, loading states, empty states, and error states.
+- Record any design tooling used and the tokens, components, states, assets, or constraints discovered.
 - Update the ticket's `Designer Review` and `Design Brief` sections.
 - Complete the design-related handoff gate fields you own.
 - Report open product/design questions that would block implementation.

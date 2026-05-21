@@ -72,6 +72,11 @@ The agent workflow exists, but no project-specific implementation task has been 
   - Tester: Verification skills if imported; otherwise `None`
 - Optional skills:
   - Local workflow-audit skill if imported; otherwise `None`
+- Design tooling:
+  - Required: `No`
+  - Capabilities: `None`
+  - Source: `None`
+  - Notes: Add product-neutral capability names when UI tickets need design artifact inspection.
 - Custom skill notes:
   - Use `.skills/registry.md` for future framework and language routing.
 
@@ -81,6 +86,7 @@ The agent workflow exists, but no project-specific implementation task has been 
 - Reason: This ticket defines workflow documentation and does not change user-facing UI.
 - Preferred model: See `.agents/models.md`.
 - Preferred effort: See `.agents/models.md`.
+- Design tooling needed: None.
 - Output needed: None.
 
 ## Design Brief
@@ -92,6 +98,7 @@ The agent workflow exists, but no project-specific implementation task has been 
 - Accessibility: Not applicable.
 - Responsive or platform-specific behavior: Not applicable.
 - Assets and icons: Not applicable.
+- Design tooling used: None.
 - Executor notes: Not applicable.
 
 ## TDD Plan

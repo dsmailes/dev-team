@@ -71,6 +71,35 @@ Agent usage:
 - Reviewer: check visual regression, accessibility risk, and state coverage.
 - Tester: verify rendered behavior with the project's UI test or inspection tools.
 
+### Optional Design Tooling
+
+Applies when:
+
+- A ticket needs inspection of design artifacts, design-system source material, screenshots, flows, tokens, components, or assets.
+- A project has a design MCP, connector, local design workspace, design documents, or screenshot workflow available.
+
+Capability routing:
+
+- `design-inspection`: inspect design artifacts, screens, flows, and component structure.
+- `design-token-extraction`: extract or infer color, typography, spacing, radius, shadow, motion, and density decisions.
+- `component-reference`: identify existing components, variants, states, and implementation counterparts.
+- `layout-comparison`: compare proposed UI criteria or implementation against source designs or screenshots.
+- `asset-guidance`: identify images, icons, export needs, aspect ratios, and asset constraints.
+
+Skill selection:
+
+- Do not name or require a specific design product in the core workflow.
+- If a project-local design MCP, connector, document set, screenshot workflow, or imported skill satisfies the capability, assign it in `Skill Context`.
+- If no design tooling is available, write `None` and proceed from repository files, screenshots, platform conventions, and design-system docs.
+
+Agent usage:
+
+- Architect: decide whether design tooling is required or optional, list capability names, and identify likely design sources if known.
+- Designer: use available tools that satisfy the requested capabilities, then record what was inspected and what constraints were discovered.
+- Executor: implement the design brief; do not independently reinterpret design artifacts unless assigned.
+- Reviewer: check whether design-tool-derived constraints were followed or explicitly waived.
+- Tester: verify rendered behavior against the ticket's design brief and any available screenshots or artifacts.
+
 ## Framework And Platform Skills
 
 ### Web Frontend
