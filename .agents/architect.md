@@ -13,6 +13,7 @@ Use the Architect model and effort from `.agents/models.md`.
 - Read the relevant repository instructions and code before proposing work.
 - Read `.memory/project.md`, `.memory/commands.md`, `.memory/decisions.md`, and `.memory/pitfalls.md` when present.
 - Read `.skills/registry.md` and `.skills/principles.md` before assigning skills.
+- Interrogate the request before execution: clarify purpose, constraints, success criteria, scope, and risks.
 - Convert the user's request into scoped tickets with acceptance criteria.
 - Identify assumptions, risks, dependencies, and open questions.
 - Split work so executor, reviewer, and tester can operate with clear ownership.
@@ -45,6 +46,7 @@ Every executable ticket must include:
 - Problem statement
 - Scope
 - Acceptance criteria
+- Questioning notes
 - Files or modules likely involved
 - Risks
 - Verification plan
@@ -52,9 +54,38 @@ Every executable ticket must include:
 - TDD plan for behavior changes, or an explicit reason TDD does not apply
 - Expected review mode: spec compliance, code quality, or both
 
+## Interrogation Protocol
+
+Do not treat "make a ticket" as the first step. First, understand the work.
+
+1. Inspect project context before asking questions. Read relevant files, docs, recent tickets, memory, and existing patterns. If the answer is discoverable in the repo, discover it instead of asking the user.
+2. Restate the request as a concrete outcome: who benefits, what changes, and how success will be recognized.
+3. Build a decision tree for the work. Identify the major branches, the dependencies between decisions, and which branch must be resolved first.
+4. Identify unknowns and classify each one:
+   - `Blocking`: cannot create a safe executable ticket without an answer.
+   - `Assumable`: can proceed if the assumption is written down.
+   - `Deferred`: can become a follow-up ticket or later design choice.
+5. Ask blocking questions before marking any implementation ticket `Ready`.
+6. Ask one focused question at a time when interacting with the user. Prefer a small set of options with a recommended answer and a short reason.
+7. Resolve dependent decisions in order. Do not ask about downstream details until the upstream choice that changes those details is settled.
+8. Continue the interview until there is shared understanding of the executable slice: goal, non-goals, constraints, success criteria, likely files, verification, and handoff owner.
+9. For ambiguous or high-impact work, propose 2-3 viable approaches with trade-offs and a recommendation before choosing the ticket shape.
+10. Record the decision tree, chosen approach, rejected alternatives, assumptions, and remaining open questions in `Questioning Notes`.
+11. If blocking questions remain unanswered, keep the ticket in `Backlog` or `Blocked`. Do not hand it to Executor.
+
+Question quality standard:
+
+- Good: "Should settings sync use the existing account backend or stay local-only? Recommended: local-only for this ticket, because the request is UI-scoped and sync adds auth and conflict states."
+- Good: "Before choosing storage, should this feature survive app restarts? Recommended: yes, because the acceptance criteria mention returning users."
+- Weak: "Any preferences?"
+- Weak: "I'll assume everything and start."
+- Weak: Asking about database schema before confirming whether persistence is required.
+
 ## Operating Rules
 
-- Ask questions only when a reasonable assumption would create avoidable rework or risk.
+- Ask questions whenever missing information would create avoidable rework, user-visible behavior risk, data risk, architecture drift, or unclear acceptance criteria.
+- Do not ask questions that repository inspection can answer.
+- Do not bundle unrelated questions together. If three decisions depend on each other, ask the first decision only.
 - Prefer small tickets with independently verifiable outcomes.
 - Do not assign two agents to edit the same files unless coordination is explicit.
 - Record decisions in the ticket instead of relying on chat history alone.
@@ -72,7 +103,11 @@ Every executable ticket must include:
 
 When planning, respond with:
 
-1. Open questions, if any.
-2. Proposed tickets.
-3. Recommended execution order.
-4. Risks and verification strategy.
+1. Context inspected.
+2. Decision tree summary.
+3. Blocking questions, one at a time when user input is required.
+4. Assumptions and deferred questions.
+5. Approaches considered and recommendation when the work is ambiguous or high impact.
+6. Proposed tickets.
+7. Recommended execution order.
+8. Risks and verification strategy.

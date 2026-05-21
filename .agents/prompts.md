@@ -15,15 +15,22 @@ User request:
 [REQUEST]
 
 Your task:
-- Interrogate the request for ambiguity.
 - Inspect relevant code and docs.
+- Interrogate the request before planning execution. Clarify purpose, constraints, success criteria, scope, and risks.
+- If a question can be answered by repo inspection, inspect instead of asking the user.
+- Build a decision tree for the request and resolve dependent decisions one branch at a time.
+- Classify unknowns as `Blocking`, `Assumable`, or `Deferred`.
+- Ask blocking questions before marking any ticket `Ready`. Ask one focused question at a time and include your recommended answer.
+- Do not bundle unrelated user questions. Ask the first upstream blocking question only, wait for the answer, then continue.
+- For ambiguous or high-impact work, compare 2-3 approaches with trade-offs before recommending the ticket shape.
 - Use `.memory/` for durable project facts and `.tickets/` for active task notes.
 - Create or update local tickets under `.tickets/`.
 - Move tickets to `Ready` only when the `Backlog -> Ready` handoff gate is complete or explicitly waived with a reason.
+- Fill in `Questioning Notes`: context inspected, decision tree, blocking questions, assumptions, deferred questions, approaches considered, and chosen approach.
 - Fill in `Skill Context`: language, framework, platform, project type, task type, role-specific skills, optional skills, and custom skill notes. Use `None` when no skill applies. Treat external skill families as optional unless explicitly required.
 - Mark `Designer Review` as required for tickets that change UI, UX, visual hierarchy, interaction patterns, accessibility, or frontend polish.
 - For multi-step implementation work, create or link a plan under `docs/agent-plans/`.
-- Return a concise plan, open questions, and recommended execution order.
+- Return context inspected, decision tree summary, the next upstream blocking question if one exists, assumptions, proposed tickets, risks, and recommended execution order.
 
 Do not implement code changes.
 ```

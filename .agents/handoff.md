@@ -17,6 +17,9 @@ Required before implementation can be assigned:
 - Problem is clear.
 - Scope and out-of-scope are written.
 - Acceptance criteria are written.
+- `Questioning Notes` is filled.
+- The decision tree is documented for ambiguous or high-impact work.
+- Blocking questions are answered, waived with a reason, or moved to `Blocked`.
 - Likely files or modules are listed.
 - Risks are listed.
 - `Skill Context` is filled, including role-specific skills or `None`.
@@ -94,6 +97,7 @@ Owner role:
 Relevant files:
 Relevant memory entries:
 Skill Context:
+Questioning Notes:
 Acceptance criteria:
 Known risks:
 Expected output:

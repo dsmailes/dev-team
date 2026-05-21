@@ -29,6 +29,17 @@ What should not be changed?
 - Criterion 1
 - Criterion 2
 
+## Questioning Notes
+
+- Context inspected:
+- Decision tree:
+- Blocking questions:
+- Assumptions:
+- Deferred questions:
+- Approaches considered:
+- Chosen approach:
+- Rejected alternatives:
+
 ## Likely Files
 
 - `path/to/file`
@@ -91,6 +102,8 @@ What should not be changed?
 - [ ] Problem is clear.
 - [ ] Scope and out-of-scope are written.
 - [ ] Acceptance criteria are written.
+- [ ] `Questioning Notes` is filled.
+- [ ] Blocking questions are answered, waived with a reason, or moved to `Blocked`.
 - [ ] Likely files or modules are listed.
 - [ ] Risks are listed.
 - [ ] `Skill Context` is filled, including role-specific skills or `None`.

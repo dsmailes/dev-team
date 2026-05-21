@@ -22,15 +22,20 @@ Only write durable verified knowledge to `.memory/`. Keep active task notes in `
 ## Start A Task
 
 1. Send the user request to the architect.
-2. Ask the architect to create or update tickets.
-3. Complete the `Backlog -> Ready` handoff gate before marking a ticket `Ready`.
-4. Review open questions with the user only when needed.
-5. If a ticket includes UI/UX work, complete `Ready -> Design`, route it through the designer, then complete `Design -> Ready`.
-6. Select one `Ready` ticket for execution.
+2. Ask the architect to inspect project context before asking the user anything.
+3. Ask the architect to sketch the decision tree and identify upstream decisions that change downstream scope.
+4. Ask the architect to classify unknowns as `Blocking`, `Assumable`, or `Deferred`.
+5. Review the highest-leverage upstream blocking question with the user before implementation. The architect should ask one focused question at a time and include a recommended answer.
+6. Ask the architect to create or update tickets only after blocking questions are resolved or explicitly waived.
+7. Complete the `Backlog -> Ready` handoff gate before marking a ticket `Ready`.
+8. If a ticket includes UI/UX work, complete `Ready -> Design`, route it through the designer, then complete `Design -> Ready`.
+9. Select one `Ready` ticket for execution.
 
 For multi-step implementation work, the architect should also create or link an implementation plan under `docs/agent-plans/`. Tickets can represent the executable slices of that plan.
 
 The architect must fill in `Skill Context` before execution starts, including role-specific skills or `None` where no skill applies. External skill families are optional unless the ticket, user, imported registry, or project instructions require them.
+
+The architect must also fill in `Questioning Notes` before execution starts, including the decision tree. A ticket with unresolved `Blocking` questions cannot move to `Ready` unless the gate includes an explicit waiver and reason.
 
 Skill selection comes from `.skills/registry.md`, `.skills/principles.md`, project instructions, and user-provided custom skills. Assign skills per role so each subagent reads only what it needs.
 

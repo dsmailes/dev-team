@@ -29,6 +29,7 @@ The agent workflow exists, but no project-specific implementation task has been 
 
 - The user request is represented as one or more tickets.
 - Each implementation ticket has scope, acceptance criteria, likely files, risks, and verification plan.
+- Each implementation ticket records `Questioning Notes`, including blocking questions, assumptions, and deferred questions.
 - At least one ticket is moved to `Ready` if enough information is available.
 - Blockers are explicit if no ticket can be made ready.
 - Durable project knowledge is recorded in `.memory/` rather than active ticket notes.
@@ -44,6 +45,17 @@ The agent workflow exists, but no project-specific implementation task has been 
 - Creating tickets that are too broad for a single executor.
 - Missing repository-specific conventions if local shell inspection is unavailable.
 - Letting `.memory/` become a transcript instead of durable verified knowledge.
+
+## Questioning Notes
+
+- Context inspected: Workflow pack docs, ticket template, and memory templates.
+- Decision tree: First identify the user's project task, then determine whether it needs design, implementation, review, verification, or memory updates before creating executable tickets.
+- Blocking questions: The next user-requested project task is not known yet.
+- Assumptions: Future project tasks should be interrogated before execution tickets are marked `Ready`.
+- Deferred questions: Exact language, framework, platform, and verification commands depend on the future project.
+- Approaches considered: Create one broad starter ticket; create no starter ticket; create a starter ticket that captures the next request and forces questioning before execution.
+- Chosen approach: Keep a starter ticket, but require future implementation tickets to include `Questioning Notes`.
+- Rejected alternatives: No starter ticket would leave the first workflow step unclear; a broad starter ticket could encourage premature execution.
 
 ## Skill Context
 
@@ -105,6 +117,8 @@ The agent workflow exists, but no project-specific implementation task has been 
 - [x] Problem is clear.
 - [x] Scope and out-of-scope are written.
 - [x] Acceptance criteria are written.
+- [x] `Questioning Notes` is filled.
+- [x] Blocking questions are answered, waived with a reason, or moved to `Blocked`.
 - [x] Likely files or modules are listed.
 - [x] Risks are listed.
 - [x] `Skill Context` is filled, including role-specific skills or `None`.
