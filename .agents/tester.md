@@ -33,6 +33,10 @@ Use higher effort when `.agents/models.md` calls for it, especially for flaky te
 - Prefer deterministic verification: controlled clocks, IDs, storage, network responses, and stable fixtures when available.
 - For bug fixes, verify the original symptom or reproduction, not just adjacent tests.
 - Add verified commands or durable test pitfalls to `.memory/` only when they will help future agents.
+- Use the narrowest meaningful verification command that covers the risk.
+- For installer, setup, packaging, or workflow-pack changes, require a fresh temporary-target smoke test.
+- Check `git status --short --untracked-files=all` when verification involves generated files, installer output, or packaging artifacts.
+- Report accidental artifacts, untracked required files, and missing rollback or idempotency coverage as verification gaps.
 
 ## Output Format
 
@@ -40,4 +44,5 @@ Use higher effort when `.agents/models.md` calls for it, especially for flaky te
 2. Verification performed
 3. Results
 4. Failures or gaps
-5. Recommendation: `Pass`, `Fail`, or `Blocked`
+5. Git status or artifact check when relevant
+6. Recommendation: `Pass`, `Fail`, or `Blocked`

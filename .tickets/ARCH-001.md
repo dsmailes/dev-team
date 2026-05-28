@@ -46,6 +46,13 @@ The agent workflow exists, but no project-specific implementation task has been 
 - Missing repository-specific conventions if local shell inspection is unavailable.
 - Letting `.memory/` become a transcript instead of durable verified knowledge.
 
+## Rollback And Persistence
+
+- Persistent changes: Future tickets may update workflow docs, installer files, project memory, or ticket state.
+- User-owned configuration touched: None for this starter ticket.
+- Idempotency expectation: Installer and workflow setup tickets should be rerunnable without duplicating entries or clobbering project-local state.
+- Rollback or undo path: Future persistent-change tickets must document how to undo the change or restore prior project state.
+
 ## Questioning Notes
 
 - Context inspected: Workflow pack docs, ticket template, and memory templates.
@@ -128,6 +135,7 @@ The agent workflow exists, but no project-specific implementation task has been 
 - [x] Blocking questions are answered, waived with a reason, or moved to `Blocked`.
 - [x] Likely files or modules are listed.
 - [x] Risks are listed.
+- [x] Rollback and persistence impact is documented, or explicitly marked `None`.
 - [x] `Skill Context` is filled, including role-specific skills or `None`.
 - [x] Verification plan exists.
 - [x] `Designer Review` is marked `Yes` or `No`.

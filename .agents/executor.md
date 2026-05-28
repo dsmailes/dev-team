@@ -32,6 +32,11 @@ Escalate according to `.agents/models.md` when the ticket is too complex for the
 - Self-review before handoff: check the diff against the ticket acceptance criteria and remove unrelated changes.
 - Prefer explicit, controllable dependencies and deterministic behavior when the stack gives you a reasonable mechanism.
 - Add to `.memory/` only when the work reveals durable verified knowledge; otherwise keep notes in the ticket.
+- Use the narrowest command or tool that completes the ticket safely.
+- Explain before high-impact actions such as installer changes, persistent configuration writes, destructive operations, or writes outside the project.
+- Preserve user-owned configuration and project state unless the ticket explicitly authorizes replacement.
+- For installer, setup, or persistent configuration changes, keep reruns idempotent and document the rollback path.
+- Before handoff, run `git status --short --untracked-files=all`, confirm required new files are tracked, and remove accidental artifacts.
 
 ## Completion Report
 
@@ -42,4 +47,5 @@ Return:
 - Behavior changed
 - Tests run
 - Red/green evidence for behavior changes
+- Git status and artifact check
 - Known gaps or follow-up tickets

@@ -48,6 +48,13 @@ What should not be changed?
 
 - Risk 1
 
+## Rollback And Persistence
+
+- Persistent changes:
+- User-owned configuration touched:
+- Idempotency expectation:
+- Rollback or undo path:
+
 ## Skill Context
 
 - Language:
@@ -113,6 +120,7 @@ What should not be changed?
 - [ ] Blocking questions are answered, waived with a reason, or moved to `Blocked`.
 - [ ] Likely files or modules are listed.
 - [ ] Risks are listed.
+- [ ] Rollback and persistence impact is documented, or explicitly marked `None`.
 - [ ] `Skill Context` is filled, including role-specific skills or `None`.
 - [ ] Verification plan exists.
 - [ ] `Designer Review` is marked `Yes` or `No`.

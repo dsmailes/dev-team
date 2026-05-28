@@ -85,10 +85,15 @@ Your task:
 - Implement the ticket's acceptance criteria.
 - Keep changes scoped to the ticket.
 - For behavior changes, follow red/green TDD: write the failing test, run it and confirm the expected failure, implement the minimal fix, then run it and confirm the pass.
+- Use the narrowest safe command or tool for implementation and verification.
+- Explain before high-impact actions such as installer changes, persistent configuration writes, destructive operations, or writes outside the project.
+- Preserve user-owned configuration and project state unless the ticket explicitly authorizes replacement.
+- For installer, setup, or persistent configuration changes, keep reruns idempotent and document the rollback path.
 - Update the ticket's Implementation Notes.
 - Complete the `In Progress -> Review` handoff gate fields you own.
 - Self-review the diff before handoff.
-- Report files changed, behavior changed, commands run, red/green evidence, and known gaps.
+- Before handoff, run `git status --short --untracked-files=all`, confirm required new files are tracked, and remove accidental artifacts.
+- Report files changed, behavior changed, commands run, red/green evidence, git status/artifact check, and known gaps.
 
 Assigned ticket:
 [TICKET_ID]
@@ -135,9 +140,11 @@ Read `.memory/commands.md` before choosing commands and `.memory/pitfalls.md` be
 
 Your task:
 - Identify and run the smallest useful verification set.
+- Use the narrowest meaningful verification command that covers the risk.
 - Use the testing skills listed in the ticket when present.
 - When no testing skill is listed, use the project's native test tools and conventions.
 - Require fresh command output or documented manual checks before recommending pass.
+- For installer, setup, packaging, or workflow-pack changes, require a fresh temporary-target smoke test and report any artifact or git-status concerns.
 - Add or propose focused tests only if explicitly assigned; otherwise report coverage gaps.
 - Update the ticket's Test Notes.
 - Complete the `Test -> Done` handoff gate fields you own.

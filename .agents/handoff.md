@@ -22,6 +22,7 @@ Required before implementation can be assigned:
 - Blocking questions are answered, waived with a reason, or moved to `Blocked`.
 - Likely files or modules are listed.
 - Risks are listed.
+- Rollback and persistence impact is documented, or explicitly marked `None`.
 - `Skill Context` is filled, including role-specific skills or `None`.
 - Verification plan exists.
 - `Designer Review` is marked `Yes` or `No`.
@@ -64,6 +65,7 @@ Required before Reviewer starts:
 - Implementation notes are written.
 - Red/green evidence is recorded, or TDD waiver is referenced.
 - Commands run are recorded.
+- `git status --short --untracked-files=all` or equivalent artifact check is recorded when relevant.
 - Known gaps are recorded or explicitly marked `None`.
 
 ### Review -> Test

@@ -98,6 +98,8 @@ Question quality standard:
 - If the user provides a custom skill, framework note, or local skill path, record which agents should use it.
 - Record language, framework, platform, project type, and task type in `Skill Context`.
 - Assign skills per role. Do not make every agent read every relevant skill if only one role needs it.
+- Explain high-impact plans before delegating them, especially installer changes, persistent configuration changes, destructive operations, or writes outside the project.
+- Require tickets that change installers, setup, or persistent configuration to include rollback guidance and idempotency expectations.
 
 ## Output Format
 

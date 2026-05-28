@@ -46,3 +46,10 @@ These practices are reusable across frameworks and should inform every agent rol
 - Record inferred setup steps as workflow gaps.
 - Make prerequisites, environment variables, and verification commands explicit in tickets.
 - Avoid making future agents rediscover the same command, file, or convention.
+- Use the narrowest command or tool that answers the question or verifies the change.
+- Explain high-impact actions before taking them, especially installer changes, persistent configuration changes, destructive operations, or writes outside the project.
+- Preserve user-owned configuration and project state unless the user explicitly asks to replace it.
+- Make installer and setup changes idempotent: reruns should not duplicate entries, clobber local state, or surprise the user.
+- Document undo or rollback paths for persistent changes.
+- Before handoff, inspect `git status --short --untracked-files=all`, confirm required new files are tracked, and check for accidental artifacts.
+- For installer, packaging, or workflow-pack changes, run a fresh smoke test against a temporary target before claiming success.
