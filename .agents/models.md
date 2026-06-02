@@ -14,7 +14,7 @@ This file is project-local. Keep it aligned with the provider and model names av
 | --- | --- | --- | --- |
 | Architect | `gpt-5.5` | `high` | Use the strongest available reasoning model for ambiguous architecture, migrations, or high-risk planning. |
 | Designer | `gpt-5.4` | `high` | Use `gpt-5.5` with `high` effort for important product decisions, broad workflow design, brand-sensitive UI, or major design-system changes. |
-| Executor | `gpt-5.3-codex-spark` | `high` | Use `gpt-5.3-codex` for ordinary multi-file work, `gpt-5.4` for complex cross-module work, and `gpt-5.5` for the most complex implementation work. |
+| Executor | `gpt-5.3-codex-spark` | `high` | Escalate only when a listed trigger applies: Spark is unavailable, the ticket crosses architecture boundaries, the work is high-risk data/security/concurrency/migration logic, debugging remains blocked after reproduction, or Spark reports `NEEDS_CONTEXT` / `BLOCKED` and more reasoning is required. Do not escalate only because a ticket touches multiple files or ordinary integration code. |
 | Reviewer | `gpt-5.5` | `high` | Use the strongest available reasoning model for security, data-loss, concurrency, migration, or public API risk. |
 | Tester | `gpt-5.4` | `medium` | Use `high` effort for flaky tests, complex async behavior, UI automation, or difficult failure triage. |
 

@@ -5,6 +5,9 @@ These practices are reusable across frameworks and should inform every agent rol
 ## Planning And Delegation
 
 - Use exact-context delegation. Subagents receive the ticket, relevant files, constraints, and expected output instead of inheriting vague chat history.
+- Prefer fresh subagent context when the runtime supports it.
+- Use live supervisor contact for blocking subagent questions when available; otherwise require `NEEDS_CONTEXT` or `BLOCKED` reports.
+- Keep delegation inside the allowed role list for the workflow and project.
 - Keep tickets small, independently verifiable, and owned by one agent at a time.
 - Review after implementation, with spec compliance before code quality.
 - If an implementer reports `NEEDS_CONTEXT`, `DONE_WITH_CONCERNS`, or `BLOCKED`, change the context, model, ticket size, or plan before retrying.

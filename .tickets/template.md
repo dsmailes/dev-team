@@ -76,6 +76,16 @@ What should not be changed?
   - Notes:
 - Custom skill notes:
 
+## Execution Model
+
+- Executor model: `gpt-5.3-codex-spark`
+- Executor effort: `high`
+- Escalation needed: `No`
+- Escalation model:
+- Escalation reason:
+- Spark unavailable fallback:
+- Model actually used:
+
 ## Designer Review
 
 - Required: `No`
@@ -122,6 +132,7 @@ What should not be changed?
 - [ ] Risks are listed.
 - [ ] Rollback and persistence impact is documented, or explicitly marked `None`.
 - [ ] `Skill Context` is filled, including role-specific skills or `None`.
+- [ ] `Execution Model` is filled, defaulting Executor to `gpt-5.3-codex-spark` unless escalation is justified.
 - [ ] Verification plan exists.
 - [ ] `Designer Review` is marked `Yes` or `No`.
 - [ ] TDD plan exists for behavior changes, or a waiver explains why it does not apply.
@@ -146,6 +157,8 @@ What should not be changed?
 ### Ready -> In Progress
 
 - [ ] Executor owner is assigned.
+- [ ] Executor model and effort are stated.
+- [ ] Executor escalation reason is stated, or escalation is marked `No`.
 - [ ] Relevant files are listed.
 - [ ] Relevant memory entries are listed.
 - [ ] Acceptance criteria are restated or referenced.
@@ -157,6 +170,7 @@ What should not be changed?
 
 - [ ] Files changed are listed.
 - [ ] Implementation notes are written.
+- [ ] Model actually used is recorded.
 - [ ] Red/green evidence is recorded, or TDD waiver is referenced.
 - [ ] Commands run are recorded.
 - [ ] Known gaps are recorded or explicitly marked `None`.

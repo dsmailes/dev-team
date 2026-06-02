@@ -27,6 +27,8 @@ Use higher effort when `.agents/models.md` calls for it, especially for flaky te
 - Prefer deterministic tests over snapshot or timing-sensitive checks unless the project already uses them.
 - If a test fails, preserve the failure details and avoid speculative fixes unless assigned a new ticket.
 - If tests cannot be run, explain the blocker and provide the next best verification path.
+- If live supervisor contact is available, use it for missing environment, command, or verification scope decisions. If it is not available, report `NEEDS_CONTEXT`.
+- Report `BLOCKED` when verification cannot proceed because required environment, credentials, devices, services, or commands are unavailable.
 - Do not recommend `Pass` without fresh evidence from commands or documented manual checks.
 - Use the testing skills named in the ticket when present.
 - When no testing skill is named, use the project's native test tools and conventions.
@@ -45,4 +47,4 @@ Use higher effort when `.agents/models.md` calls for it, especially for flaky te
 3. Results
 4. Failures or gaps
 5. Git status or artifact check when relevant
-6. Recommendation: `Pass`, `Fail`, or `Blocked`
+6. Recommendation: `Pass`, `Fail`, `NEEDS_CONTEXT`, or `Blocked`

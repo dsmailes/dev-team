@@ -35,6 +35,8 @@ Each finding should include:
 ## Operating Rules
 
 - Do not rewrite code unless explicitly assigned a fix ticket.
+- If live supervisor contact is available, use it for missing ticket or diff context. If it is not available, report `NEEDS_CONTEXT`.
+- Report `BLOCKED` when review cannot proceed because requirements conflict, the diff is inaccessible, or a supervisor decision is required.
 - Avoid style-only feedback unless it affects clarity, consistency, or future maintenance.
 - Treat missing or weak tests as a finding when the ticket changes behavior.
 - If there are no findings, say that clearly and note residual risk.
@@ -48,4 +50,4 @@ Each finding should include:
 1. Spec Compliance Findings
 2. Code Quality Findings
 3. Open questions
-4. Recommendation: `Needs Changes`, `Ready For Test`, or `Blocked`
+4. Recommendation: `Needs Changes`, `Ready For Test`, `NEEDS_CONTEXT`, or `Blocked`

@@ -24,6 +24,7 @@ Required before implementation can be assigned:
 - Risks are listed.
 - Rollback and persistence impact is documented, or explicitly marked `None`.
 - `Skill Context` is filled, including role-specific skills or `None`.
+- `Execution Model` is filled, defaulting Executor to `gpt-5.3-codex-spark` unless escalation is justified.
 - Verification plan exists.
 - `Designer Review` is marked `Yes` or `No`.
 - TDD plan exists for behavior changes, or a waiver explains why it does not apply.
@@ -51,11 +52,14 @@ Required before implementation:
 Required before Executor starts:
 
 - Executor owner is assigned.
+- Executor model and effort are stated.
+- Executor escalation reason is stated, or escalation is marked `No`.
 - Relevant files are listed.
 - Relevant memory entries are listed.
 - Acceptance criteria are restated or referenced.
 - Expected executor output is stated.
 - Verification command or manual check is stated.
+- Runtime support for live supervisor contact is noted, or fallback status reporting is required.
 
 ### In Progress -> Review
 
@@ -63,6 +67,7 @@ Required before Reviewer starts:
 
 - Files changed are listed.
 - Implementation notes are written.
+- Model actually used is recorded.
 - Red/green evidence is recorded, or TDD waiver is referenced.
 - Commands run are recorded.
 - `git status --short --untracked-files=all` or equivalent artifact check is recorded when relevant.
@@ -76,6 +81,7 @@ Required before Tester starts:
 - Code quality review is complete.
 - Open review issues are resolved, waived with reason, or ticket is blocked.
 - Test scope is identified.
+- Missing context is resolved through supervisor contact, or reported as `NEEDS_CONTEXT` / `BLOCKED`.
 
 ### Test -> Done
 
@@ -99,10 +105,12 @@ Owner role:
 Relevant files:
 Relevant memory entries:
 Skill Context:
+Execution Model:
 Questioning Notes:
 Acceptance criteria:
 Known risks:
 Expected output:
 Gate being satisfied:
 Waivers:
+Runtime capabilities:
 ```

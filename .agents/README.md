@@ -41,6 +41,18 @@ Each handoff should include:
 - Known risks
 - Expected output from the receiving role
 
+## Runtime Capabilities
+
+This pack is portable and does not require a specific subagent runtime. If the active runtime provides these capabilities, the orchestrator may use them:
+
+- `subagent-dispatch`: spawn role-specific agents from the current workflow.
+- `fresh-subagent-context`: start each subagent with only the ticket and explicit context it needs.
+- `supervisor-contact`: let a subagent ask the orchestrator a blocking question while work is in progress.
+- `background-subagents`: run long subagent tasks while the orchestrator remains available for decisions.
+- `allowed-agent-list`: restrict delegation to the roles defined by this workflow and project instructions.
+
+If live supervisor contact is available, subagents should use it for blocking questions. If it is not available, they must stop and report `NEEDS_CONTEXT` or `BLOCKED` with the smallest missing decision.
+
 ## Model Configuration
 
 Use `.agents/models.md` as the source of truth for model names, effort levels, and provider-specific mappings.

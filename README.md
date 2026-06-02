@@ -33,6 +33,8 @@ The default profile is Codex:
 
 For other providers, the installer can infer provider-class placeholders such as `anthropic-fast-coding` or `google-best-reasoning`. Replace those with exact model IDs supported by your local runner.
 
+Executor tickets include an `Execution Model` section. Codex installs default Executor to `gpt-5.3-codex-spark` with `high` effort. Escalation must be recorded in the ticket; ordinary multi-file or integration work is not enough by itself.
+
 ## Install Into A Project
 
 ```sh
@@ -193,3 +195,5 @@ State changes are guarded by `Handoff Gates` in each ticket. The orchestrator sh
 The Architect should inspect project context first, then record `Questioning Notes` before execution: decision tree, blocking questions, assumptions, deferred questions, approaches considered, and the chosen approach. Tickets with unresolved blocking questions stay in `Backlog` or `Blocked`.
 
 Use `.memory/` for durable knowledge only: verified commands, architectural decisions, project orientation, and pitfalls. Keep active task notes in `.tickets/`.
+
+Runtime support is optional. When available, the workflow can use fresh-context subagents, live supervisor contact, background execution, and an allowed-agent list. When unavailable, agents use explicit ticket handoffs and report `NEEDS_CONTEXT` or `BLOCKED` instead of guessing.

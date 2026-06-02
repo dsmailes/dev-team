@@ -288,7 +288,7 @@ set_model_defaults() {
       DESIGNER_ESCALATION="gpt-5.5 with high effort for important product decisions, broad workflow design, brand-sensitive UI, or major design-system changes."
       EXECUTOR_MODEL=gpt-5.3-codex-spark
       EXECUTOR_EFFORT=high
-      EXECUTOR_ESCALATION="gpt-5.3-codex for ordinary multi-file work, gpt-5.4 for complex cross-module work, and gpt-5.5 for the most complex implementation work."
+      EXECUTOR_ESCALATION="Escalate only when a listed trigger applies: Spark is unavailable, the ticket crosses architecture boundaries, the work is high-risk data/security/concurrency/migration logic, debugging remains blocked after reproduction, or Spark reports NEEDS_CONTEXT / BLOCKED and more reasoning is required. Do not escalate only because a ticket touches multiple files or ordinary integration code."
       REVIEWER_MODEL=gpt-5.5
       REVIEWER_EFFORT=high
       TESTER_MODEL=gpt-5.4
@@ -304,7 +304,7 @@ set_model_defaults() {
       DESIGNER_ESCALATION="${provider_lc}-best-reasoning with high effort for important product decisions, broad workflow design, brand-sensitive UI, or major design-system changes."
       EXECUTOR_MODEL="${provider_lc}-fast-coding"
       EXECUTOR_EFFORT=high
-      EXECUTOR_ESCALATION="${provider_lc}-coding for ordinary multi-file work, ${provider_lc}-balanced-reasoning for complex cross-module work, and ${provider_lc}-best-reasoning for the most complex implementation work."
+      EXECUTOR_ESCALATION="Escalate only when a listed trigger applies: the fast coding model is unavailable, the ticket crosses architecture boundaries, the work is high-risk data/security/concurrency/migration logic, debugging remains blocked after reproduction, or the default model reports NEEDS_CONTEXT / BLOCKED and more reasoning is required. Do not escalate only because a ticket touches multiple files or ordinary integration code."
       REVIEWER_MODEL="${provider_lc}-best-reasoning"
       REVIEWER_EFFORT=high
       TESTER_MODEL="${provider_lc}-balanced-reasoning"
@@ -405,7 +405,7 @@ This file is project-local. Keep it aligned with the provider and model names av
 | --- | --- | --- | --- |
 | Architect | \`$ARCHITECT_MODEL\` | \`$ARCHITECT_EFFORT\` | Use the strongest available reasoning model for ambiguous architecture, migrations, or high-risk planning. |
 | Designer | \`$DESIGNER_MODEL\` | \`$DESIGNER_EFFORT\` | Use $DESIGNER_ESCALATION |
-| Executor | \`$EXECUTOR_MODEL\` | \`$EXECUTOR_EFFORT\` | Use $EXECUTOR_ESCALATION |
+| Executor | \`$EXECUTOR_MODEL\` | \`$EXECUTOR_EFFORT\` | $EXECUTOR_ESCALATION |
 | Reviewer | \`$REVIEWER_MODEL\` | \`$REVIEWER_EFFORT\` | Use the strongest available reasoning model for security, data-loss, concurrency, migration, or public API risk. |
 | Tester | \`$TESTER_MODEL\` | \`$TESTER_EFFORT\` | Use high effort for flaky tests, complex async behavior, UI automation, or difficult failure triage. |
 

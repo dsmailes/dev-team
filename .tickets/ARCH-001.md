@@ -87,6 +87,16 @@ The agent workflow exists, but no project-specific implementation task has been 
 - Custom skill notes:
   - Use `.skills/registry.md` for future framework and language routing.
 
+## Execution Model
+
+- Executor model: `gpt-5.3-codex-spark`
+- Executor effort: `high`
+- Escalation needed: `No`
+- Escalation model: None.
+- Escalation reason: None; this starter ticket is documentation/workflow setup.
+- Spark unavailable fallback: Use the nearest available fast coding model and record the fallback reason.
+- Model actually used: Not applicable for starter ticket.
+
 ## Designer Review
 
 - Required: `No`
@@ -137,6 +147,7 @@ The agent workflow exists, but no project-specific implementation task has been 
 - [x] Risks are listed.
 - [x] Rollback and persistence impact is documented, or explicitly marked `None`.
 - [x] `Skill Context` is filled, including role-specific skills or `None`.
+- [x] `Execution Model` is filled, defaulting Executor to `gpt-5.3-codex-spark` unless escalation is justified.
 - [x] Verification plan exists.
 - [x] `Designer Review` is marked `Yes` or `No`.
 - [x] TDD plan exists for behavior changes, or a waiver explains why it does not apply.
@@ -161,6 +172,8 @@ The agent workflow exists, but no project-specific implementation task has been 
 ### Ready -> In Progress
 
 - [x] Executor owner is assigned.
+- [x] Executor model and effort are stated.
+- [x] Executor escalation reason is stated, or escalation is marked `No`.
 - [x] Relevant files are listed.
 - [x] Relevant memory entries are listed.
 - [x] Acceptance criteria are restated or referenced.
@@ -172,6 +185,7 @@ The agent workflow exists, but no project-specific implementation task has been 
 
 - [x] Files changed are listed.
 - [x] Implementation notes are written.
+- [x] Model actually used is recorded.
 - [x] Red/green evidence is recorded, or TDD waiver is referenced.
 - [x] Commands run are recorded.
 - [x] Known gaps are recorded or explicitly marked `None`.

@@ -26,8 +26,10 @@ Your task:
 - Use `.memory/` for durable project facts and `.tickets/` for active task notes.
 - Create or update local tickets under `.tickets/`.
 - Move tickets to `Ready` only when the `Backlog -> Ready` handoff gate is complete or explicitly waived with a reason.
+- Record available runtime capabilities when they affect handoff: `subagent-dispatch`, `fresh-subagent-context`, `supervisor-contact`, `background-subagents`, or `allowed-agent-list`.
 - Fill in `Questioning Notes`: context inspected, decision tree, blocking questions, assumptions, deferred questions, approaches considered, and chosen approach.
 - Fill in `Skill Context`: language, framework, platform, project type, task type, role-specific skills, optional skills, and custom skill notes. Use `None` when no skill applies. Treat external skill families as optional unless explicitly required.
+- Fill in `Execution Model`: default Executor to `gpt-5.3-codex-spark` with `high` effort. Record an escalation model and reason only when Spark is unavailable, the ticket crosses architecture boundaries, the work is high-risk data/security/concurrency/migration logic, debugging remains blocked after reproduction, or Spark reports `NEEDS_CONTEXT` / `BLOCKED` and more reasoning is required.
 - Mark `Designer Review` as required for tickets that change UI, UX, visual hierarchy, interaction patterns, accessibility, or frontend polish.
 - For multi-step implementation work, create or link a plan under `docs/agent-plans/`.
 - Return context inspected, decision tree summary, the next upstream blocking question if one exists, assumptions, proposed tickets, risks, and recommended execution order.
@@ -67,9 +69,9 @@ Do not implement code changes unless explicitly assigned an implementation ticke
 
 ## Executor
 
-Spawn this role with the Executor model and effort from `.agents/models.md`.
+Spawn this role with `gpt-5.3-codex-spark` and `high` effort by default.
 
-Use the escalation guidance in `.agents/models.md` when the ticket is too complex for the default Executor model.
+Escalate only when the ticket's `Execution Model` records a specific trigger. Do not escalate only because a ticket touches multiple files or ordinary integration code.
 
 ```text
 You are the Executor Agent for this repository.
@@ -77,13 +79,17 @@ You are the Executor Agent for this repository.
 Read `.agents/executor.md`, `.agents/models.md`, and the assigned ticket:
 [TICKET_PATH]
 
+Confirm the ticket's `Execution Model`. If it does not specify an escalation, use `gpt-5.3-codex-spark` with `high` effort. If Spark is unavailable, use the nearest available fast coding model and record the fallback reason.
+
 You are not alone in the codebase. Do not revert changes made by others. Own only the files or modules assigned by the ticket.
 Read relevant `.memory/` files before editing. Use `.memory/commands.md` before running commands.
+If live supervisor contact is available, use it for blocking questions. If it is not available, stop and report `NEEDS_CONTEXT` or `BLOCKED`.
 
 Your task:
 - Use the skills assigned to Executor in the ticket's `Skill Context` before editing.
 - Implement the ticket's acceptance criteria.
 - Keep changes scoped to the ticket.
+- Stop and escalate rather than guessing on product, API, scope, conflicting-requirement, plan-invalidating, or environment-blocked decisions.
 - For behavior changes, follow red/green TDD: write the failing test, run it and confirm the expected failure, implement the minimal fix, then run it and confirm the pass.
 - Use the narrowest safe command or tool for implementation and verification.
 - Explain before high-impact actions such as installer changes, persistent configuration writes, destructive operations, or writes outside the project.
@@ -93,7 +99,7 @@ Your task:
 - Complete the `In Progress -> Review` handoff gate fields you own.
 - Self-review the diff before handoff.
 - Before handoff, run `git status --short --untracked-files=all`, confirm required new files are tracked, and remove accidental artifacts.
-- Report files changed, behavior changed, commands run, red/green evidence, git status/artifact check, and known gaps.
+- Report status as `DONE`, `DONE_WITH_CONCERNS`, `NEEDS_CONTEXT`, or `BLOCKED`, plus model used, Spark fallback or escalation reason, files changed, behavior changed, commands run, red/green evidence, git status/artifact check, and known gaps.
 
 Assigned ticket:
 [TICKET_ID]
@@ -111,6 +117,7 @@ Read `.agents/reviewer.md`, `.agents/models.md`, and the assigned ticket:
 
 Review the current diff against the ticket acceptance criteria. Do not rely on previous chat history; use the ticket and supplied diff context.
 Read relevant `.memory/` files, especially decisions and pitfalls.
+If live supervisor contact is available, use it for missing ticket or diff context. If it is not available, report `NEEDS_CONTEXT`.
 
 Your task:
 - Use the skills assigned to Reviewer in the ticket's `Skill Context`.
@@ -118,6 +125,7 @@ Your task:
 - Run code quality review only after spec compliance is satisfied.
 - Prioritize bugs, regressions, missing tests, and maintainability risks.
 - Do not rewrite code unless explicitly asked.
+- Stop and report `BLOCKED` if requirements conflict, the diff is inaccessible, or a supervisor decision is required.
 - Update the ticket's Review Notes.
 - Complete the `Review -> Test` handoff gate fields you own.
 - Recommend `Needs Changes`, `Ready For Test`, or `Blocked`.
@@ -137,6 +145,7 @@ Read `.agents/tester.md`, `.agents/models.md`, and the assigned ticket:
 
 Verify the implementation independently.
 Read `.memory/commands.md` before choosing commands and `.memory/pitfalls.md` before debugging failures.
+If live supervisor contact is available, use it for missing environment, command, or verification scope decisions. If it is not available, report `NEEDS_CONTEXT`.
 
 Your task:
 - Identify and run the smallest useful verification set.
@@ -144,6 +153,7 @@ Your task:
 - Use the testing skills listed in the ticket when present.
 - When no testing skill is listed, use the project's native test tools and conventions.
 - Require fresh command output or documented manual checks before recommending pass.
+- Stop and report `BLOCKED` when required environment, credentials, devices, services, or commands are unavailable.
 - For installer, setup, packaging, or workflow-pack changes, require a fresh temporary-target smoke test and report any artifact or git-status concerns.
 - Add or propose focused tests only if explicitly assigned; otherwise report coverage gaps.
 - Update the ticket's Test Notes.
