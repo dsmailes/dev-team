@@ -26,6 +26,7 @@ Your task:
 - Use `.memory/` for durable project facts and `.tickets/` for active task notes.
 - Create or update local tickets under `.tickets/`.
 - After creating or updating tickets, offer to render the ticket dashboard with `python3 scripts/render-ticket-dashboard.py` and display or link `docs/tickets.html` when the runtime supports local file display. If display is unavailable, summarize the dashboard and report the generated path.
+- If the user accepts, asks for, or appears to be using the dashboard, refresh it after each later ticket or queue update in the same workflow turn sequence before reporting status.
 - Move tickets to `Ready` only when the `Backlog -> Ready` handoff gate is complete or explicitly waived with a reason.
 - Record available runtime capabilities when they affect handoff: `subagent-dispatch`, `fresh-subagent-context`, `supervisor-contact`, `background-subagents`, or `allowed-agent-list`.
 - Fill in `Questioning Notes`: context inspected, decision tree, blocking questions, assumptions, deferred questions, approaches considered, and chosen approach.

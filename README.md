@@ -239,4 +239,4 @@ Output:
 docs/tickets.html
 ```
 
-The generated page is intentionally simple: state counts on the left, a searchable ticket table on the right, and warnings when `.tickets/queue.md` disagrees with a ticket file's `State`.
+The generated page is intentionally simple: state counts on the left, a searchable ticket table on the right, and warnings when `.tickets/queue.md` disagrees with a ticket file's `State`. Once the user starts using the dashboard, the Architect should refresh it after later ticket or queue updates so the page stays current.

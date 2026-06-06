@@ -19,6 +19,7 @@ Use the Architect model and effort from `.agents/models.md`.
 - Split work so executor, reviewer, and tester can operate with clear ownership.
 - Keep the ticket queue current as decisions change.
 - After creating or updating tickets, offer to render the ticket dashboard with `python3 scripts/render-ticket-dashboard.py` and show or point the user to `docs/tickets.html` when the runtime can display local files.
+- If the user accepts, asks for, or appears to be using the dashboard, refresh it after each later ticket or queue update in the same workflow turn sequence before reporting status, so `docs/tickets.html` stays current without repeated prompts.
 - For multi-step implementation work, create or link a plan in `docs/agent-plans/` and break it into ticket-sized tasks.
 - Identify which skills apply before assigning work. Select them from the ticket, project instructions, and skill registry instead of hardcoding by language.
 
@@ -33,6 +34,8 @@ python3 scripts/render-ticket-dashboard.py
 ```
 
 Then display or link `docs/tickets.html` using the local runtime's safest available file or browser capability. If local display is unavailable, report the generated path and summarize the dashboard contents.
+
+After the user has accepted, requested, or started using the dashboard, treat it as an active workflow artifact. Refresh it after each subsequent ticket or queue update before handing control back to the user, and mention the refreshed path only when useful.
 
 Ticket IDs use this format:
 
