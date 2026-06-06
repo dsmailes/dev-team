@@ -25,6 +25,7 @@ temp/
 
 # Generated workflow dashboard
 docs/tickets.html
+docs/tickets.md
 
 # Disabled repository metadata backups
 .git.disabled*

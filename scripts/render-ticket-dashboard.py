@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Render a static HTML dashboard for local workflow tickets."""
+"""Render static HTML and Markdown dashboards for local workflow tickets."""
 
 from __future__ import annotations
 
@@ -158,7 +158,21 @@ def pct(done: int, total: int) -> int:
     return round((done / total) * 100)
 
 
-def render_dashboard(project: Path, output: Path) -> str:
+def markdown_escape(value: object) -> str:
+    text = str(value)
+    text = text.replace("\\", "\\\\")
+    text = text.replace("|", "\\|")
+    text = text.replace("\n", " ")
+    return text.strip()
+
+
+def checkbox(done: int, total: int) -> str:
+    if total == 0:
+        return "n/a"
+    return f"{done}/{total} ({pct(done, total)}%)"
+
+
+def render_dashboard(project: Path, output: Path, markdown_output: Path | None = None) -> list[Path]:
     queue = parse_queue(project / ".tickets" / "queue.md")
     tickets = [parse_ticket(path, project, queue.get(path.stem)) for path in discover_tickets(project)]
     for ticket in tickets:
@@ -545,7 +559,90 @@ def render_dashboard(project: Path, output: Path) -> str:
 
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(document, encoding="utf-8")
-    return document
+    written = [output]
+
+    if markdown_output is not None:
+        markdown = render_markdown_dashboard(
+            project=project,
+            output=markdown_output,
+            tickets=tickets,
+            counts=counts,
+            warnings=warnings,
+            generated_at=generated_at,
+            total_tickets=total_tickets,
+            active_count=active_count,
+            blocked_count=blocked_count,
+        )
+        markdown_output.parent.mkdir(parents=True, exist_ok=True)
+        markdown_output.write_text(markdown, encoding="utf-8")
+        written.append(markdown_output)
+
+    return written
+
+
+def render_markdown_dashboard(
+    project: Path,
+    output: Path,
+    tickets: list[dict[str, object]],
+    counts: dict[str, int],
+    warnings: list[str],
+    generated_at: str,
+    total_tickets: int,
+    active_count: int,
+    blocked_count: int,
+) -> str:
+    for ticket in tickets:
+        ticket_path = project / str(ticket["path"])
+        ticket["markdown_href"] = os.path.relpath(ticket_path, output.parent).replace(os.sep, "/")
+
+    state_lines = "\n".join(f"- **{state}:** {counts[state]}" for state in STATES)
+    warning_section = ""
+    if warnings:
+        warning_items = "\n".join(f"- {markdown_escape(warning)}" for warning in warnings)
+        warning_section = f"\n## Attention Needed\n\n{warning_items}\n"
+
+    if tickets:
+        rows = "\n".join(render_markdown_ticket_row(ticket) for ticket in tickets)
+    else:
+        rows = "| Ticket | State | Handoff Gates | Acceptance | Risks | Verification |\n| --- | --- | --- | --- | --- | --- |\n| No ticket files found in `.tickets`. | | | | | |"
+
+    return f"""# Ticket Dashboard
+
+Generated {generated_at}.
+
+## Summary
+
+- **Total tickets:** {total_tickets}
+- **Active:** {active_count}
+- **Blocked:** {blocked_count}
+
+## State Counts
+
+{state_lines}
+{warning_section}
+## Tickets
+
+| Ticket | State | Handoff Gates | Acceptance | Risks | Verification |
+| --- | --- | --- | --- | --- | --- |
+{rows}
+"""
+
+
+def render_markdown_ticket_row(ticket: dict[str, object]) -> str:
+    ticket_id = markdown_escape(ticket["id"])
+    title = markdown_escape(ticket["title"])
+    state = markdown_escape(ticket["state"])
+    href = str(ticket["markdown_href"])
+    problem = markdown_escape(ticket["problem"])
+    checks = checkbox(int(ticket["checks_done"]), int(ticket["checks_total"]))
+    risks = [markdown_escape(risk) for risk in ticket["risks"]]
+    risk_summary = "<br>".join(risks[:3]) if risks else "None listed."
+    verification = markdown_escape(ticket["verification"] or "No verification plan summary found.")
+    acceptance_count = markdown_escape(ticket["acceptance_count"])
+    ticket_cell = f"[{ticket_id}]({href})<br>**{title}**"
+    if problem:
+        ticket_cell += f"<br>{problem}"
+    return f"| {ticket_cell} | {state} | {checks} | {acceptance_count} criteria | {risk_summary} | {verification} |"
 
 
 def render_ticket_row(ticket: dict[str, object]) -> str:
@@ -595,18 +692,30 @@ def render_warnings(warnings: list[str]) -> str:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Render docs/tickets.html from .tickets/*.md.")
+    parser = argparse.ArgumentParser(description="Render docs/tickets.html and docs/tickets.md from .tickets/*.md.")
     parser.add_argument("--project", default=".", help="Project root containing .tickets. Defaults to current directory.")
     parser.add_argument("--output", default="docs/tickets.html", help="Output HTML path, relative to project unless absolute.")
+    parser.add_argument(
+        "--markdown-output",
+        default="docs/tickets.md",
+        help="Output Markdown path, relative to project unless absolute. Defaults to docs/tickets.md.",
+    )
+    parser.add_argument("--no-markdown", action="store_true", help="Only render the HTML dashboard.")
     args = parser.parse_args()
 
     project = Path(args.project).resolve()
     output = Path(args.output)
     if not output.is_absolute():
         output = project / output
+    markdown_output = None
+    if not args.no_markdown:
+        markdown_output = Path(args.markdown_output)
+        if not markdown_output.is_absolute():
+            markdown_output = project / markdown_output
 
-    render_dashboard(project, output)
-    print(f"Wrote {output}")
+    written = render_dashboard(project, output, markdown_output)
+    for path in written:
+        print(f"Wrote {path}")
     return 0
 
 

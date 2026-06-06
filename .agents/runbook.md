@@ -107,8 +107,8 @@ Avoid parallel splits when:
 ## Queue Hygiene
 
 - Keep `.tickets/queue.md` aligned with each ticket file's `State`.
-- After ticket creation or queue changes, offer to run `python3 scripts/render-ticket-dashboard.py` and display or link `docs/tickets.html` when local display is available.
-- Once the user accepts, requests, or appears to be using the dashboard, refresh it after every later ticket or queue update in that workflow before reporting status.
+- After ticket creation or queue changes, offer to run `python3 scripts/render-ticket-dashboard.py` and display or link `docs/tickets.html` when local display is available. In Codex remote or ChatGPT surfaces, display or summarize `docs/tickets.md`.
+- Once the user accepts, requests, or appears to be using the dashboard, refresh both generated files after every later ticket or queue update in that workflow before reporting status.
 - Keep old notes; append new dated or role-labeled entries.
 - Move blocked work to `Blocked` with the exact blocker.
 - Prefer creating follow-up tickets over expanding a ticket after execution starts.

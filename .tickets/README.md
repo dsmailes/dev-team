@@ -7,7 +7,7 @@ This directory is a lightweight local ticketing system for agent-coordinated wor
 - `queue.md`: status board for all active tickets.
 - `template.md`: template for new tickets.
 - `ARCH-001.md`: example ticket showing the expected level of detail.
-- `../scripts/render-ticket-dashboard.py`: generates `docs/tickets.html` from the local ticket files.
+- `../scripts/render-ticket-dashboard.py`: generates `docs/tickets.html` and `docs/tickets.md` from the local ticket files.
 
 ## State Definitions
 
@@ -50,4 +50,4 @@ Render a static webpage for the current ticket state:
 python3 scripts/render-ticket-dashboard.py
 ```
 
-The generated `docs/tickets.html` highlights state counts, queue mismatches, handoff gate progress, risks, and verification notes.
+The generated `docs/tickets.html` and `docs/tickets.md` highlight state counts, queue mismatches, handoff gate progress, risks, and verification notes. Use the Markdown file for Codex remote or ChatGPT surfaces that cannot display local HTML.

@@ -208,7 +208,7 @@ Runtime support is optional. When available, the workflow can use fresh-context 
 
 ## Render The Ticket Dashboard
 
-Generate a local webpage that summarizes the current ticket queue:
+Generate local HTML and Markdown summaries of the current ticket queue:
 
 ```sh
 python3 scripts/render-ticket-dashboard.py
@@ -218,9 +218,10 @@ The command writes:
 
 ```text
 docs/tickets.html
+docs/tickets.md
 ```
 
-Open that file in a browser to scan ticket counts, current states, queue mismatches, handoff gate progress, risks, and verification notes. Re-run the command whenever ticket files or `.tickets/queue.md` change.
+Open the HTML file in a browser to scan ticket counts, current states, queue mismatches, handoff gate progress, risks, and verification notes. Use the Markdown file when working in Codex remote or another ChatGPT surface that can display Markdown inline. Re-run the command whenever ticket files or `.tickets/queue.md` change.
 
 ![Example ticket dashboard](docs/ticket-dashboard-example.svg)
 
@@ -237,6 +238,7 @@ python3 scripts/render-ticket-dashboard.py
 
 Output:
 docs/tickets.html
+docs/tickets.md
 ```
 
-The generated page is intentionally simple: state counts on the left, a searchable ticket table on the right, and warnings when `.tickets/queue.md` disagrees with a ticket file's `State`. Once the user starts using the dashboard, the Architect should refresh it after later ticket or queue updates so the page stays current.
+The generated views are intentionally simple: the HTML page gives a searchable browser dashboard, and the Markdown file gives a compact ChatGPT-friendly summary. Both highlight state counts, ticket status, handoff progress, and warnings when `.tickets/queue.md` disagrees with a ticket file's `State`. Once the user starts using the dashboard, the Architect should refresh it after later ticket or queue updates so both files stay current.
