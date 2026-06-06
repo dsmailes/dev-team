@@ -16,6 +16,10 @@ This project is a portable agent workflow pack. It is not an application.
 
 ## Operating Rules
 
+- For non-trivial implementation work, use the ticket workflow by default: inspect context, route planning through the Architect, create or update `.tickets/`, and execute only tickets that are `Ready`.
+- Do not ask the user for permission to create tickets when the workflow applies. Ask only for blocking product, scope, risk, or environment decisions that cannot be resolved from repository context.
+- Skip ticket creation only for trivial requests: simple questions, one-command lookups, tiny typo fixes, or when the user explicitly asks not to use tickets.
+- Allocate ticket IDs by scanning existing `.tickets/*.md` files and choosing the next unused numeric suffix for the appropriate prefix.
 - Keep this pack framework-neutral.
 - Do not make any external skill family mandatory unless the user or project instructions explicitly require it.
 - Use `Skill Context` as the single source of truth for role-specific skill assignment.
@@ -32,6 +36,7 @@ For installer changes, verify with a temporary target:
 tmpdir="$(mktemp -d)"
 ./install.sh --project "$tmpdir" --no-import-skills --no-model-prompt
 find "$tmpdir" -maxdepth 2 -type f | sort
+python3 "$tmpdir/scripts/render-ticket-dashboard.py" --project "$tmpdir" --validate
 ```
 
 Do not claim installer success without running a fresh verification command.

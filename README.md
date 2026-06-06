@@ -188,7 +188,11 @@ After global install, use the global template from any project:
 
 ## Use In A Project
 
-1. Ask the Architect to create tickets from the request.
+For non-trivial implementation work, use the ticket workflow by default. The Architect should create or update tickets after inspecting project context and resolving blocking questions; it does not need to ask permission to create tickets when the workflow applies.
+
+Skip tickets only for simple explanations, one-command lookups, tiny typo fixes, or when the user explicitly asks not to use tickets.
+
+1. Ask the Architect to inspect context and create or update tickets from the request.
 2. Route UI tickets through Designer when `Designer Review` is required.
 3. Assign one `Ready` ticket to Executor.
 4. Run Reviewer after implementation.
@@ -201,6 +205,8 @@ For UI tickets, `Skill Context` can also request product-neutral design tooling 
 State changes are guarded by `Handoff Gates` in each ticket. The orchestrator should not move a ticket to the next state until the relevant gate is complete or explicitly waived with a reason.
 
 The Architect should inspect project context first, then record `Questioning Notes` before execution: decision tree, blocking questions, assumptions, deferred questions, approaches considered, and the chosen approach. Tickets with unresolved blocking questions stay in `Backlog` or `Blocked`.
+
+Ticket IDs are allocated by scanning `.tickets/*.md` and choosing the next unused numeric suffix for the selected prefix. Keep the filename, H1, `## ID`, ticket `State`, and `.tickets/queue.md` entry aligned. The packaged `ARCH-001` ticket is a bootstrap placeholder; once real project tickets exist, mark it `Done`, move it to `Blocked`, or replace it with project-specific planning work.
 
 Use `.memory/` for durable knowledge only: verified commands, architectural decisions, project orientation, and pitfalls. Keep active task notes in `.tickets/`.
 
@@ -222,6 +228,12 @@ docs/tickets.md
 ```
 
 Open the HTML file in a browser to scan ticket counts, current states, queue mismatches, handoff gate progress, risks, and verification notes. Use the Markdown file when working in Codex remote or another ChatGPT surface that can display Markdown inline. Re-run the command whenever ticket files or `.tickets/queue.md` change.
+
+Validate ticket and queue consistency:
+
+```sh
+python3 scripts/render-ticket-dashboard.py --validate
+```
 
 ![Example ticket dashboard](docs/ticket-dashboard-example.svg)
 

@@ -33,6 +33,8 @@ Only write durable verified knowledge to `.memory/`. Keep active task notes in `
 8. If a ticket includes UI/UX work, complete `Ready -> Design`, route it through the designer, then complete `Design -> Ready`.
 9. Select one `Ready` ticket for execution.
 
+Use ticketing by default for non-trivial implementation work. Skip tickets only for simple explanations, one-command lookups, tiny typo fixes, or when the user explicitly opts out. The Architect should not ask permission to create tickets when the workflow applies; it should ask only unresolved blocking questions.
+
 For multi-step implementation work, the architect should also create or link an implementation plan under `docs/agent-plans/`. Tickets can represent the executable slices of that plan.
 
 The architect must fill in `Skill Context` before execution starts, including role-specific skills or `None` where no skill applies. External skill families are optional unless the ticket, user, imported registry, or project instructions require them.
@@ -107,6 +109,10 @@ Avoid parallel splits when:
 ## Queue Hygiene
 
 - Keep `.tickets/queue.md` aligned with each ticket file's `State`.
+- Allocate ticket IDs by scanning existing `.tickets/*.md` files and choosing the next unused numeric suffix for the selected prefix.
+- Keep each ticket filename, H1, `## ID`, ticket `State`, and `.tickets/queue.md` entry aligned.
+- Treat packaged `ARCH-001` as a bootstrap placeholder. Once real project tickets exist, mark it `Done`, move it to `Blocked`, or replace it with project-specific planning work.
+- Run `python3 scripts/render-ticket-dashboard.py --validate` after queue edits when available, and fix mismatches before handoff.
 - After ticket creation or queue changes, offer to run `python3 scripts/render-ticket-dashboard.py` and display or link `docs/tickets.html` when local display is available. In Codex remote or ChatGPT surfaces, display or summarize `docs/tickets.md`.
 - Once the user accepts, requests, or appears to be using the dashboard, refresh both generated files after every later ticket or queue update in that workflow before reporting status.
 - Keep old notes; append new dated or role-labeled entries.

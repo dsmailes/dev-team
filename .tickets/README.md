@@ -21,6 +21,11 @@ This directory is a lightweight local ticketing system for agent-coordinated wor
 
 ## Ticket Rules
 
+- Use tickets by default for non-trivial implementation work.
+- Skip tickets only for simple explanations, one-command lookups, tiny typo fixes, or when the user explicitly asks not to use tickets.
+- Create tickets for feature work, bug fixes, installer/setup changes, persistent configuration, UI or UX changes, test changes, multi-step debugging, data/security/concurrency/migration work, or anything that needs review and verification.
+- Allocate ticket IDs by scanning `.tickets/*.md` and choosing the next unused numeric suffix for the selected prefix.
+- Keep each ticket filename, H1, `## ID`, ticket `State`, and `.tickets/queue.md` entry aligned.
 - One ticket should describe one coherent outcome.
 - Each ticket needs acceptance criteria before execution.
 - Each implementation ticket should include a verification plan.
@@ -33,6 +38,8 @@ This directory is a lightweight local ticketing system for agent-coordinated wor
 - Completion requires fresh verification evidence, not assumed success.
 - Follow-up work should become new tickets rather than expanding active scope.
 - Durable verified knowledge should be promoted to `.memory/`; active task notes should stay in tickets.
+
+The packaged `ARCH-001` ticket is a bootstrap placeholder for capturing the first real project request. Once real project tickets exist, mark it `Done`, move it to `Blocked`, or replace it with project-specific planning work so it does not remain ambiguous backlog.
 
 ## Example Lifecycle
 
@@ -51,3 +58,9 @@ python3 scripts/render-ticket-dashboard.py
 ```
 
 The generated `docs/tickets.html` and `docs/tickets.md` highlight state counts, queue mismatches, handoff gate progress, risks, and verification notes. Use the Markdown file for Codex remote or ChatGPT surfaces that cannot display local HTML.
+
+Validate ticket and queue consistency:
+
+```sh
+python3 scripts/render-ticket-dashboard.py --validate
+```

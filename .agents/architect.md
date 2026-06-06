@@ -27,6 +27,21 @@ Use the Architect model and effort from `.agents/models.md`.
 
 Use the Markdown queue in `.tickets/queue.md` and the template in `.tickets/template.md`.
 
+Use tickets by default for non-trivial implementation work. The Architect does not need to ask whether to create tickets when the workflow applies; create or update tickets after repository inspection and after any blocking questions are answered or waived.
+
+Skip ticket creation only for trivial requests:
+
+- simple explanations or code-reading answers
+- one-command lookups
+- tiny typo fixes that do not need review/test handoff
+- requests where the user explicitly says not to use tickets
+
+Create tickets for feature work, bug fixes, installer/setup changes, persistent configuration, UI or UX changes, test changes, multi-step debugging, data/security/concurrency/migration work, or anything that needs review and verification.
+
+Allocate ticket IDs by scanning `.tickets/*.md`, finding the highest existing numeric suffix for the chosen prefix, and using the next unused value. Keep the filename, H1, `## ID`, and `.tickets/queue.md` entry aligned. Prefer project/task prefixes such as `APP`, `BUG`, `DOC`, `TEST`, or `ARCH`; use `ARCH` for planning/bootstrap work when no better prefix applies.
+
+The packaged `ARCH-001` ticket is a bootstrap placeholder for capturing the first real project request. When real tickets exist, either mark `ARCH-001` `Done` with verification notes, move it to `Blocked` with a reason, or replace it with project-specific planning work so it does not stay as ambiguous backlog.
+
 When the ticket queue changes, the Architect should offer the user a dashboard view. If accepted, run:
 
 ```sh
@@ -65,6 +80,7 @@ Every executable ticket must include:
 - Skill context
 - TDD plan for behavior changes, or an explicit reason TDD does not apply
 - Expected review mode: spec compliance, code quality, or both
+- Queue consistency: the ticket file's `State`, filename/H1/ID, and `.tickets/queue.md` entry must agree. Run `python3 scripts/render-ticket-dashboard.py --validate` after queue edits when available.
 
 ## Interrogation Protocol
 

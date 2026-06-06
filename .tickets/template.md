@@ -4,6 +4,8 @@
 
 `ARCH-000`
 
+Must match the ticket filename and H1.
+
 ## Title
 
 Short imperative title.

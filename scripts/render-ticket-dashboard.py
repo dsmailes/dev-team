@@ -99,6 +99,7 @@ def parse_ticket(path: Path, project: Path, queue_state: str | None) -> dict[str
     text = read_text(path)
     title = first_nonempty_line(section(text, "Title"))
     state = first_nonempty_line(section(text, "State"))
+    declared_id = first_nonempty_line(section(text, "ID"))
     ticket_id = ""
 
     h1 = re.search(r"^#\s+(.+?)\s*$", text, re.MULTILINE)
@@ -115,10 +116,18 @@ def parse_ticket(path: Path, project: Path, queue_state: str | None) -> dict[str
     relative_path = path.relative_to(project)
 
     warnings: list[str] = []
+    if ticket_id != path.stem:
+        warnings.append(f"Filename is {path.stem}; ticket ID is {ticket_id}.")
+    if declared_id and declared_id != ticket_id:
+        warnings.append(f"ID section says {declared_id}; ticket ID is {ticket_id}.")
+    if not declared_id:
+        warnings.append("Missing ID section.")
     if queue_state and state and queue_state != state:
         warnings.append(f"Queue says {queue_state}; ticket says {state}.")
     if not queue_state:
         warnings.append("Not listed in .tickets/queue.md.")
+    if not state:
+        warnings.append("Missing state.")
     if state and state not in STATES:
         warnings.append(f"Unknown ticket state: {state}.")
     if not title:
@@ -172,7 +181,7 @@ def checkbox(done: int, total: int) -> str:
     return f"{done}/{total} ({pct(done, total)}%)"
 
 
-def render_dashboard(project: Path, output: Path, markdown_output: Path | None = None) -> list[Path]:
+def collect_dashboard_data(project: Path, output: Path) -> dict[str, object]:
     queue = parse_queue(project / ".tickets" / "queue.md")
     tickets = [parse_ticket(path, project, queue.get(path.stem)) for path in discover_tickets(project)]
     for ticket in tickets:
@@ -196,6 +205,27 @@ def render_dashboard(project: Path, output: Path, markdown_output: Path | None =
     total_tickets = len(tickets)
     active_count = sum(counts[state] for state in STATES if state != "Done")
     blocked_count = counts["Blocked"]
+
+    return {
+        "tickets": tickets,
+        "counts": counts,
+        "warnings": warnings,
+        "generated_at": generated_at,
+        "total_tickets": total_tickets,
+        "active_count": active_count,
+        "blocked_count": blocked_count,
+    }
+
+
+def render_dashboard(project: Path, output: Path, markdown_output: Path | None = None) -> list[Path]:
+    data = collect_dashboard_data(project, output)
+    tickets = data["tickets"]
+    counts = data["counts"]
+    warnings = data["warnings"]
+    generated_at = data["generated_at"]
+    total_tickets = data["total_tickets"]
+    active_count = data["active_count"]
+    blocked_count = data["blocked_count"]
 
     rows = "\n".join(render_ticket_row(ticket) for ticket in tickets)
     state_filters = "\n".join(
@@ -701,6 +731,11 @@ def main() -> int:
         help="Output Markdown path, relative to project unless absolute. Defaults to docs/tickets.md.",
     )
     parser.add_argument("--no-markdown", action="store_true", help="Only render the HTML dashboard.")
+    parser.add_argument(
+        "--validate",
+        action="store_true",
+        help="Check ticket/queue consistency and exit non-zero when dashboard warnings exist.",
+    )
     args = parser.parse_args()
 
     project = Path(args.project).resolve()
@@ -712,6 +747,17 @@ def main() -> int:
         markdown_output = Path(args.markdown_output)
         if not markdown_output.is_absolute():
             markdown_output = project / markdown_output
+
+    if args.validate:
+        data = collect_dashboard_data(project, output)
+        warnings = data["warnings"]
+        if warnings:
+            print("Ticket dashboard validation failed:")
+            for warning in warnings:
+                print(f"- {warning}")
+            return 1
+        print("Ticket dashboard validation passed.")
+        return 0
 
     written = render_dashboard(project, output, markdown_output)
     for path in written:

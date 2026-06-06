@@ -24,9 +24,13 @@ Your task:
 - Do not bundle unrelated user questions. Ask the first upstream blocking question only, wait for the answer, then continue.
 - For ambiguous or high-impact work, compare 2-3 approaches with trade-offs before recommending the ticket shape.
 - Use `.memory/` for durable project facts and `.tickets/` for active task notes.
-- Create or update local tickets under `.tickets/`.
+- Create or update local tickets under `.tickets/` by default for non-trivial implementation work. Do not ask the user for permission to create tickets when the workflow applies; ask only unresolved blocking questions.
+- Skip ticket creation only for simple explanations, one-command lookups, tiny typo fixes, or when the user explicitly asks not to use tickets.
+- Allocate ticket IDs by scanning `.tickets/*.md`, choosing the next unused numeric suffix for the selected prefix, and keeping the filename, H1, `## ID`, and `.tickets/queue.md` entry aligned.
+- Treat packaged `ARCH-001` as a bootstrap placeholder. When real project tickets exist, mark it `Done`, move it to `Blocked`, or replace it with project-specific planning work so it does not remain ambiguous backlog.
 - After creating or updating tickets, offer to render the ticket dashboard with `python3 scripts/render-ticket-dashboard.py` and display or link `docs/tickets.html` when the runtime supports local file display. In Codex remote or ChatGPT surfaces, display or summarize `docs/tickets.md`. If display is unavailable, summarize the dashboard and report the generated paths.
 - If the user accepts, asks for, or appears to be using the dashboard, refresh both generated files after each later ticket or queue update in the same workflow turn sequence before reporting status.
+- After queue edits, run `python3 scripts/render-ticket-dashboard.py --validate` when available and fix any queue/ticket mismatch before handoff.
 - Move tickets to `Ready` only when the `Backlog -> Ready` handoff gate is complete or explicitly waived with a reason.
 - Record available runtime capabilities when they affect handoff: `subagent-dispatch`, `fresh-subagent-context`, `supervisor-contact`, `background-subagents`, or `allowed-agent-list`.
 - Fill in `Questioning Notes`: context inspected, decision tree, blocking questions, assumptions, deferred questions, approaches considered, and chosen approach.
