@@ -25,6 +25,7 @@ Your task:
 - For ambiguous or high-impact work, compare 2-3 approaches with trade-offs before recommending the ticket shape.
 - Use `.memory/` for durable project facts and `.tickets/` for active task notes.
 - Create or update local tickets under `.tickets/`.
+- After creating or updating tickets, offer to render the ticket dashboard with `python3 scripts/render-ticket-dashboard.py` and display or link `docs/tickets.html` when the runtime supports local file display. If display is unavailable, summarize the dashboard and report the generated path.
 - Move tickets to `Ready` only when the `Backlog -> Ready` handoff gate is complete or explicitly waived with a reason.
 - Record available runtime capabilities when they affect handoff: `subagent-dispatch`, `fresh-subagent-context`, `supervisor-contact`, `background-subagents`, or `allowed-agent-list`.
 - Fill in `Questioning Notes`: context inspected, decision tree, blocking questions, assumptions, deferred questions, approaches considered, and chosen approach.

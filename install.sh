@@ -12,7 +12,7 @@ Usage:
   ./install.sh --global [--force]
 
 Options:
-  --project PATH   Install .agents, .skills, .tickets, and .memory into PATH.
+  --project PATH   Install workflow files, scripts, and README image assets into PATH.
   --update         Update reusable workflow files while preserving project tickets, memory, README.md, and AGENTS.md.
   --import-skills PATH
                    Import a local skill registry into .skills/imported.md.
@@ -199,6 +199,7 @@ copy_file() {
     rm -f "$target"
   fi
 
+  mkdir -p "$(dirname -- "$target")"
   cp "$source" "$target"
 }
 
@@ -437,11 +438,24 @@ sync_agents_for_update() {
   replace_file .agents/tester.md .agents/tester.md
 }
 
+sync_scripts_for_update() {
+  mkdir -p "$TARGET_DIR/scripts"
+  replace_file scripts/render-ticket-dashboard.py scripts/render-ticket-dashboard.py
+}
+
+sync_docs_assets_for_update() {
+  mkdir -p "$TARGET_DIR/docs"
+  replace_file docs/workflow-diagram.png docs/workflow-diagram.png
+  replace_file docs/ticket-dashboard-example.svg docs/ticket-dashboard-example.svg
+}
+
 maybe_prompt_for_skill_import
 maybe_prompt_for_models
 
 if [ "$UPDATE" -eq 1 ]; then
   sync_agents_for_update
+  sync_scripts_for_update
+  sync_docs_assets_for_update
   if [ "$MODEL_CONFIG_REQUESTED" -eq 1 ] || [ ! -f "$TARGET_DIR/.agents/models.md" ]; then
     write_models_config
   fi
@@ -460,6 +474,9 @@ else
   copy_dir .skills
   copy_dir .tickets
   copy_dir .memory
+  copy_dir scripts
+  copy_file docs/workflow-diagram.png docs/workflow-diagram.png
+  copy_file docs/ticket-dashboard-example.svg docs/ticket-dashboard-example.svg
   copy_file README.md DEV-TEAM-WORKFLOW.md
   copy_file AGENTS.md
   if [ "$MODEL_CONFIG_REQUESTED" -eq 1 ]; then

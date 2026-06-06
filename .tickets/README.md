@@ -7,6 +7,7 @@ This directory is a lightweight local ticketing system for agent-coordinated wor
 - `queue.md`: status board for all active tickets.
 - `template.md`: template for new tickets.
 - `ARCH-001.md`: example ticket showing the expected level of detail.
+- `../scripts/render-ticket-dashboard.py`: generates `docs/tickets.html` from the local ticket files.
 
 ## State Definitions
 
@@ -40,3 +41,13 @@ Backlog -> Ready -> In Progress -> Review -> Test -> Done
 ```
 
 Blocked tickets return to `Ready` once the blocker is resolved.
+
+## Dashboard
+
+Render a static webpage for the current ticket state:
+
+```sh
+python3 scripts/render-ticket-dashboard.py
+```
+
+The generated `docs/tickets.html` highlights state counts, queue mismatches, handoff gate progress, risks, and verification notes.

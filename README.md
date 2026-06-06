@@ -10,6 +10,8 @@ Portable role prompts, ticket templates, and skill-routing guidance for running 
 - `.skills/`: skill registry and cross-skill principles.
 - `.tickets/`: local ticket queue, ticket template, and starter ticket.
 - `.memory/`: durable project knowledge that future agents should not rediscover.
+- `scripts/render-ticket-dashboard.py`: static HTML dashboard generator for `.tickets/`.
+- `docs/workflow-diagram.png` and `docs/ticket-dashboard-example.svg`: README image assets.
 
 ## Agent Roles
 
@@ -104,6 +106,9 @@ The project root will then contain:
 .skills/
 .tickets/
 .memory/
+scripts/
+docs/workflow-diagram.png
+docs/ticket-dashboard-example.svg
 AGENTS.md
 DEV-TEAM-WORKFLOW.md
 ```
@@ -127,6 +132,9 @@ Update mode refreshes:
 ```text
 .agents/
 .skills/
+scripts/render-ticket-dashboard.py
+docs/workflow-diagram.png
+docs/ticket-dashboard-example.svg
 .tickets/README.md
 .tickets/template.md
 DEV-TEAM-WORKFLOW.md
@@ -197,3 +205,38 @@ The Architect should inspect project context first, then record `Questioning Not
 Use `.memory/` for durable knowledge only: verified commands, architectural decisions, project orientation, and pitfalls. Keep active task notes in `.tickets/`.
 
 Runtime support is optional. When available, the workflow can use fresh-context subagents, live supervisor contact, background execution, and an allowed-agent list. When unavailable, agents use explicit ticket handoffs and report `NEEDS_CONTEXT` or `BLOCKED` instead of guessing.
+
+## Render The Ticket Dashboard
+
+Generate a local webpage that summarizes the current ticket queue:
+
+```sh
+python3 scripts/render-ticket-dashboard.py
+```
+
+The command writes:
+
+```text
+docs/tickets.html
+```
+
+Open that file in a browser to scan ticket counts, current states, queue mismatches, handoff gate progress, risks, and verification notes. Re-run the command whenever ticket files or `.tickets/queue.md` change.
+
+![Example ticket dashboard](docs/ticket-dashboard-example.svg)
+
+## Ticket Dashboard In Action
+
+When the Architect creates or updates tickets, it should offer to render the dashboard. A typical handoff looks like this:
+
+```text
+Architect:
+I created APP-012 and BUG-018, updated .tickets/queue.md, and can render the ticket dashboard if you want a quick visual scan.
+
+Command:
+python3 scripts/render-ticket-dashboard.py
+
+Output:
+docs/tickets.html
+```
+
+The generated page is intentionally simple: state counts on the left, a searchable ticket table on the right, and warnings when `.tickets/queue.md` disagrees with a ticket file's `State`.

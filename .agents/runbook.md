@@ -107,6 +107,7 @@ Avoid parallel splits when:
 ## Queue Hygiene
 
 - Keep `.tickets/queue.md` aligned with each ticket file's `State`.
+- After ticket creation or queue changes, offer to run `python3 scripts/render-ticket-dashboard.py` and display or link `docs/tickets.html` when local display is available.
 - Keep old notes; append new dated or role-labeled entries.
 - Move blocked work to `Blocked` with the exact blocker.
 - Prefer creating follow-up tickets over expanding a ticket after execution starts.

@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720" role="img" aria-labelledby="title desc">
+  <title id="title">Example ticket dashboard</title>
+  <desc id="desc">A static dashboard showing ticket state counts, filters, a search box, and a ticket table with handoff progress.</desc>
+  <rect width="1200" height="720" fill="#f4f7f8"/>
+  <rect x="0" y="0" width="270" height="720" fill="#17232b"/>
+  <text x="32" y="54" fill="#f7fafb" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="25" font-weight="700">Ticket Dashboard</text>
+  <text x="32" y="84" fill="#b9c6cc" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="14">Generated from .tickets/</text>
+
+  <line x1="32" y1="124" x2="238" y2="124" stroke="#33434d"/>
+  <text x="32" y="158" fill="#b9c6cc" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="15">Total tickets</text>
+  <text x="214" y="160" fill="#ffffff" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="32" font-weight="700" text-anchor="end">4</text>
+  <line x1="32" y1="190" x2="238" y2="190" stroke="#33434d"/>
+  <text x="32" y="224" fill="#b9c6cc" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="15">Active</text>
+  <text x="214" y="226" fill="#ffffff" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="32" font-weight="700" text-anchor="end">3</text>
+  <line x1="32" y1="256" x2="238" y2="256" stroke="#33434d"/>
+  <text x="32" y="290" fill="#b9c6cc" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="15">Blocked</text>
+  <text x="214" y="292" fill="#ffffff" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="32" font-weight="700" text-anchor="end">1</text>
+
+  <rect x="24" y="334" width="222" height="42" rx="6" fill="#273741"/>
+  <text x="42" y="361" fill="#ffffff" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="15">All</text>
+  <text x="222" y="361" fill="#ffffff" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="15" font-weight="700" text-anchor="end">4</text>
+  <text x="42" y="413" fill="#d7e0e4" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="15">Backlog</text>
+  <text x="222" y="413" fill="#d7e0e4" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="15" font-weight="700" text-anchor="end">1</text>
+  <text x="42" y="456" fill="#d7e0e4" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="15">In Progress</text>
+  <text x="222" y="456" fill="#d7e0e4" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="15" font-weight="700" text-anchor="end">1</text>
+  <text x="42" y="499" fill="#d7e0e4" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="15">Review</text>
+  <text x="222" y="499" fill="#d7e0e4" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="15" font-weight="700" text-anchor="end">1</text>
+  <text x="42" y="542" fill="#d7e0e4" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="15">Done</text>
+  <text x="222" y="542" fill="#d7e0e4" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="15" font-weight="700" text-anchor="end">1</text>
+  <text x="42" y="585" fill="#d7e0e4" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="15">Blocked</text>
+  <text x="222" y="585" fill="#d7e0e4" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="15" font-weight="700" text-anchor="end">1</text>
+
+  <text x="320" y="74" fill="#1e252b" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="48" font-weight="750">Current ticket state</text>
+  <text x="322" y="112" fill="#61707b" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="17">Queue alignment, handoff progress, risks, and verification notes in one static page.</text>
+  <rect x="865" y="54" width="260" height="48" rx="7" fill="#ffffff" stroke="#d8e0e5"/>
+  <text x="887" y="84" fill="#82909a" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="16">Search tickets</text>
+
+  <rect x="320" y="156" width="810" height="70" fill="#fff3e7" stroke="#a94d16" stroke-width="0"/>
+  <rect x="320" y="156" width="5" height="70" fill="#a94d16"/>
+  <text x="342" y="184" fill="#1e252b" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="16" font-weight="700">Attention needed</text>
+  <text x="342" y="208" fill="#613118" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="15">ARCH-004: Queue says Review; ticket says In Progress.</text>
+
+  <rect x="320" y="258" width="810" height="390" rx="8" fill="#ffffff" stroke="#d8e0e5"/>
+  <rect x="320" y="258" width="810" height="48" rx="8" fill="#eef3f5"/>
+  <text x="344" y="288" fill="#61707b" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="12" font-weight="700">TICKET</text>
+  <text x="604" y="288" fill="#61707b" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="12" font-weight="700">STATE</text>
+  <text x="744" y="288" fill="#61707b" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="12" font-weight="700">HANDOFF GATES</text>
+  <text x="930" y="288" fill="#61707b" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="12" font-weight="700">VERIFICATION</text>
+
+  <line x1="320" y1="306" x2="1130" y2="306" stroke="#d8e0e5"/>
+  <text x="344" y="342" fill="#1e252b" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="15" font-weight="750">APP-012</text>
+  <text x="344" y="367" fill="#1e252b" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="16" font-weight="700">Add import progress UI</text>
+  <text x="344" y="390" fill="#61707b" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="14">Show progress, retry, and failure details for CSV imports.</text>
+  <rect x="604" y="332" width="92" height="27" rx="13.5" fill="#d9eeeb"/>
+  <text x="650" y="351" fill="#0d4f4b" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="13" font-weight="700" text-anchor="middle">Review</text>
+  <rect x="744" y="337" width="132" height="8" rx="4" fill="#dce5e9"/>
+  <rect x="744" y="337" width="96" height="8" rx="4" fill="#23746f"/>
+  <text x="744" y="364" fill="#61707b" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="13">18 of 25 checks</text>
+  <text x="930" y="348" fill="#61707b" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="13">Run targeted UI and import tests.</text>
+
+  <line x1="320" y1="418" x2="1130" y2="418" stroke="#d8e0e5"/>
+  <text x="344" y="454" fill="#1e252b" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="15" font-weight="750">BUG-018</text>
+  <text x="344" y="479" fill="#1e252b" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="16" font-weight="700">Fix stale queue state</text>
+  <text x="344" y="502" fill="#61707b" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="14">Keep queue and ticket files aligned during handoff.</text>
+  <rect x="604" y="444" width="110" height="27" rx="13.5" fill="#f6dce3"/>
+  <text x="659" y="463" fill="#a83248" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="13" font-weight="700" text-anchor="middle">Blocked</text>
+  <rect x="744" y="449" width="132" height="8" rx="4" fill="#dce5e9"/>
+  <rect x="744" y="449" width="44" height="8" rx="4" fill="#23746f"/>
+  <text x="744" y="476" fill="#61707b" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="13">7 of 21 checks</text>
+  <text x="930" y="460" fill="#61707b" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="13">Needs product decision.</text>
+
+  <line x1="320" y1="530" x2="1130" y2="530" stroke="#d8e0e5"/>
+  <text x="344" y="566" fill="#1e252b" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="15" font-weight="750">DOC-006</text>
+  <text x="344" y="591" fill="#1e252b" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="16" font-weight="700">Document setup commands</text>
+  <text x="344" y="614" fill="#61707b" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="14">Capture verified install and test commands in memory.</text>
+  <rect x="604" y="556" width="82" height="27" rx="13.5" fill="#dceedd"/>
+  <text x="645" y="575" fill="#3f7f46" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="13" font-weight="700" text-anchor="middle">Done</text>
+  <rect x="744" y="561" width="132" height="8" rx="4" fill="#dce5e9"/>
+  <rect x="744" y="561" width="132" height="8" rx="4" fill="#23746f"/>
+  <text x="744" y="588" fill="#61707b" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="13">25 of 25 checks</text>
+  <text x="930" y="572" fill="#61707b" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="13">Fresh installer smoke test passed.</text>
+</svg>

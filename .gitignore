@@ -23,5 +23,8 @@ id_ed25519
 tmp/
 temp/
 
+# Generated workflow dashboard
+docs/tickets.html
+
 # Disabled repository metadata backups
 .git.disabled*
