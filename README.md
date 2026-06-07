@@ -39,13 +39,23 @@ Executor tickets include an `Execution Model` section. Codex installs default Ex
 
 ## Install Into A Project
 
+Run this from the root of the repo where you want the workflow installed:
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/dsmailes/dev-team/main/install.sh | sh -s -- --here
+```
+
+That downloads the current pack, then installs the workflow files into the current directory.
+
+If you already have a local checkout of this pack, you can also install into an explicit path:
+
 ```sh
 ./install.sh --project /path/to/project
 ```
 
 This copies the workflow directories, scripts, and README image assets into the target project.
 
-To install into the current terminal directory, run the installer from that directory with `--here`:
+Or install from the local checkout into the current terminal directory with `--here`:
 
 ```sh
 /path/to/dev-team/install.sh --here
@@ -71,7 +81,7 @@ Or `cd` into the project and install into the current directory:
 
 ```sh
 cd /path/to/new-project
-/path/to/dev-team/install.sh --here
+curl -fsSL https://raw.githubusercontent.com/dsmailes/dev-team/main/install.sh | sh -s -- --here
 ```
 
 During an interactive project install, the installer asks whether to import a local skill registry. Imported skill names are written to:
@@ -143,7 +153,7 @@ For projects that already use this workflow, update only the reusable workflow f
 From the project directory:
 
 ```sh
-/path/to/dev-team/install.sh --here --update
+curl -fsSL https://raw.githubusercontent.com/dsmailes/dev-team/main/install.sh | sh -s -- --here --update
 ```
 
 Update mode refreshes:

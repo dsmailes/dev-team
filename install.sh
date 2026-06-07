@@ -4,6 +4,7 @@ set -eu
 usage() {
   cat <<'USAGE'
 Usage:
+  curl -fsSL https://raw.githubusercontent.com/dsmailes/dev-team/main/install.sh | sh -s -- --here
   ./install.sh --project /path/to/project [--force]
   ./install.sh --project /path/to/project --update
   ./install.sh --project /path/to/project --import-skills /path/to/skills.md
@@ -34,6 +35,52 @@ USAGE
 }
 
 SOURCE_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+
+bootstrap_from_archive() {
+  archive_url=${DEV_TEAM_WORKFLOW_PACK_TARBALL_URL:-https://github.com/dsmailes/dev-team/archive/refs/heads/main.tar.gz}
+  tmpdir=$(mktemp -d)
+  archive=$tmpdir/dev-team.tar.gz
+
+  if command -v curl >/dev/null 2>&1; then
+    curl -fsSL "$archive_url" -o "$archive"
+  elif command -v wget >/dev/null 2>&1; then
+    wget -qO "$archive" "$archive_url"
+  else
+    echo "error: one-line install requires curl or wget" >&2
+    exit 1
+  fi
+
+  if ! command -v tar >/dev/null 2>&1; then
+    echo "error: one-line install requires tar" >&2
+    exit 1
+  fi
+
+  tar -xzf "$archive" -C "$tmpdir"
+  for candidate in "$tmpdir"/dev-team "$tmpdir"/dev-team-*; do
+    if [ -f "$candidate/install.sh" ]; then
+      DEV_TEAM_WORKFLOW_BOOTSTRAPPED=1 exec sh "$candidate/install.sh" "$@"
+    fi
+  done
+
+  echo "error: downloaded archive did not contain dev-team install.sh" >&2
+  exit 1
+}
+
+case "$(basename -- "$0")" in
+  install.sh) ;;
+  *)
+    if [ -z "${DEV_TEAM_WORKFLOW_BOOTSTRAPPED:-}" ]; then
+      bootstrap_from_archive "$@"
+    fi
+    ;;
+esac
+
+if [ ! -d "$SOURCE_DIR/.agents" ] || [ ! -d "$SOURCE_DIR/.tickets" ] || [ ! -f "$SOURCE_DIR/scripts/render-ticket-dashboard.py" ]; then
+  if [ -z "${DEV_TEAM_WORKFLOW_BOOTSTRAPPED:-}" ]; then
+    bootstrap_from_archive "$@"
+  fi
+fi
+
 TARGET_DIR=""
 TARGET_KIND=""
 FORCE=0
