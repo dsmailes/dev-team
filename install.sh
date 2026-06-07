@@ -9,10 +9,12 @@ Usage:
   ./install.sh --project /path/to/project --import-skills /path/to/skills.md
   ./install.sh --project /path/to/project --models-provider codex
   ./install.sh --project /path/to/project --models-file /path/to/models.md
+  /path/to/dev-team/install.sh --here
   ./install.sh --global [--force]
 
 Options:
   --project PATH   Install workflow files, scripts, and README image assets into PATH.
+  --here           Install workflow files, scripts, and README image assets into the current directory.
   --update         Update reusable workflow files while preserving project tickets, memory, README.md, and AGENTS.md.
   --import-skills PATH
                    Import a local skill registry into .skills/imported.md.
@@ -51,16 +53,25 @@ while [ "$#" -gt 0 ]; do
         exit 2
       fi
       if [ -n "$TARGET_DIR" ]; then
-        echo "error: choose only one target: --project PATH or --global" >&2
+        echo "error: choose only one target: --project PATH, --here, or --global" >&2
         exit 2
       fi
       TARGET_DIR=$2
       TARGET_KIND=project
       shift 2
       ;;
+    --here)
+      if [ -n "$TARGET_DIR" ]; then
+        echo "error: choose only one target: --project PATH, --here, or --global" >&2
+        exit 2
+      fi
+      TARGET_DIR=.
+      TARGET_KIND=project
+      shift
+      ;;
     --global)
       if [ -n "$TARGET_DIR" ]; then
-        echo "error: choose only one target: --project PATH or --global" >&2
+        echo "error: choose only one target: --project PATH, --here, or --global" >&2
         exit 2
       fi
       TARGET_DIR=${HOME}/.codex/agent-workflows/dev-team
@@ -122,7 +133,7 @@ while [ "$#" -gt 0 ]; do
 done
 
 if [ -z "$TARGET_DIR" ]; then
-  echo "error: choose --project PATH or --global" >&2
+  echo "error: choose --project PATH, --here, or --global" >&2
   usage >&2
   exit 2
 fi
@@ -133,7 +144,7 @@ if [ "$UPDATE" -eq 1 ] && [ "$FORCE" -eq 1 ]; then
 fi
 
 if [ "$UPDATE" -eq 1 ] && [ "$TARGET_KIND" != project ]; then
-  echo "error: --update is only supported with --project PATH" >&2
+  echo "error: --update is only supported with --project PATH or --here" >&2
   exit 2
 fi
 

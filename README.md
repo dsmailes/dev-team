@@ -43,7 +43,13 @@ Executor tickets include an `Execution Model` section. Codex installs default Ex
 ./install.sh --project /path/to/project
 ```
 
-This copies `.agents`, `.skills`, `.tickets`, and `.memory` into the target project.
+This copies the workflow directories, scripts, and README image assets into the target project.
+
+To install into the current terminal directory, run the installer from that directory with `--here`:
+
+```sh
+/path/to/dev-team/install.sh --here
+```
 
 It also copies this pack's README as `DEV-TEAM-WORKFLOW.md`, so the target project's own `README.md` is not replaced.
 
@@ -59,6 +65,13 @@ For a new project, install the workflow pack into the project root:
 
 ```sh
 /path/to/dev-team/install.sh --project /path/to/new-project
+```
+
+Or `cd` into the project and install into the current directory:
+
+```sh
+cd /path/to/new-project
+/path/to/dev-team/install.sh --here
 ```
 
 During an interactive project install, the installer asks whether to import a local skill registry. Imported skill names are written to:
@@ -127,6 +140,12 @@ For projects that already use this workflow, update only the reusable workflow f
 /path/to/dev-team/install.sh --project /path/to/project --update
 ```
 
+From the project directory:
+
+```sh
+/path/to/dev-team/install.sh --here --update
+```
+
 Update mode refreshes:
 
 ```text
@@ -184,6 +203,12 @@ After global install, use the global template from any project:
 
 ```sh
 ~/.codex/agent-workflows/dev-team/install.sh --project /path/to/project
+```
+
+Or from inside the project:
+
+```sh
+~/.codex/agent-workflows/dev-team/install.sh --here
 ```
 
 ## Use In A Project

@@ -37,6 +37,11 @@ tmpdir="$(mktemp -d)"
 ./install.sh --project "$tmpdir" --no-import-skills --no-model-prompt
 find "$tmpdir" -maxdepth 2 -type f | sort
 python3 "$tmpdir/scripts/render-ticket-dashboard.py" --project "$tmpdir" --validate
+
+tmpdir="$(mktemp -d)"
+packdir="$(pwd)"
+(cd "$tmpdir" && "$packdir/install.sh" --here --no-import-skills --no-model-prompt)
+python3 "$tmpdir/scripts/render-ticket-dashboard.py" --project "$tmpdir" --validate
 ```
 
 Do not claim installer success without running a fresh verification command.
