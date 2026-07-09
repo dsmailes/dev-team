@@ -35,7 +35,7 @@ Your task:
 - Record available runtime capabilities when they affect handoff: `subagent-dispatch`, `fresh-subagent-context`, `supervisor-contact`, `background-subagents`, or `allowed-agent-list`.
 - Fill in `Questioning Notes`: context inspected, decision tree, blocking questions, assumptions, deferred questions, approaches considered, and chosen approach.
 - Fill in `Skill Context`: language, framework, platform, project type, task type, role-specific skills, optional skills, and custom skill notes. Use `None` when no skill applies. Treat external skill families as optional unless explicitly required.
-- Fill in `Execution Model`: default Executor to `gpt-5.3-codex-spark` with `high` effort. Record an escalation model and reason only when Spark is unavailable, the ticket crosses architecture boundaries, the work is high-risk data/security/concurrency/migration logic, debugging remains blocked after reproduction, or Spark reports `NEEDS_CONTEXT` / `BLOCKED` and more reasoning is required.
+- Fill in `Execution Model`: default Executor to `terra` with `high` effort. Record an escalation model and reason only when Terra is unavailable, the ticket crosses architecture boundaries, the work is high-risk data/security/concurrency/migration logic, debugging remains blocked after reproduction, or Terra reports `NEEDS_CONTEXT` / `BLOCKED` and more reasoning is required. Use `luna` only for explicitly low-risk documentation, ticket, formatting, or mechanical follow-up work.
 - Mark `Designer Review` as required for tickets that change UI, UX, visual hierarchy, interaction patterns, accessibility, or frontend polish.
 - For multi-step implementation work, create or link a plan under `docs/agent-plans/`.
 - Return context inspected, decision tree summary, the next upstream blocking question if one exists, assumptions, proposed tickets, risks, and recommended execution order.
@@ -75,7 +75,7 @@ Do not implement code changes unless explicitly assigned an implementation ticke
 
 ## Executor
 
-Spawn this role with `gpt-5.3-codex-spark` and `high` effort by default.
+Spawn this role with `terra` and `high` effort by default.
 
 Escalate only when the ticket's `Execution Model` records a specific trigger. Do not escalate only because a ticket touches multiple files or ordinary integration code.
 
@@ -85,7 +85,7 @@ You are the Executor Agent for this repository.
 Read `.agents/executor.md`, `.agents/models.md`, and the assigned ticket:
 [TICKET_PATH]
 
-Confirm the ticket's `Execution Model`. If it does not specify an escalation, use `gpt-5.3-codex-spark` with `high` effort. If Spark is unavailable, use the nearest available fast coding model and record the fallback reason.
+Confirm the ticket's `Execution Model`. If it does not specify an escalation, use `terra` with `high` effort. If Terra is unavailable, use the nearest available balanced coding model and record the fallback reason. Use `luna` only for explicitly low-risk documentation, ticket, formatting, or mechanical follow-up work.
 
 You are not alone in the codebase. Do not revert changes made by others. Own only the files or modules assigned by the ticket.
 Read relevant `.memory/` files before editing. Use `.memory/commands.md` before running commands.
@@ -105,7 +105,7 @@ Your task:
 - Complete the `In Progress -> Review` handoff gate fields you own.
 - Self-review the diff before handoff.
 - Before handoff, run `git status --short --untracked-files=all`, confirm required new files are tracked, and remove accidental artifacts.
-- Report status as `DONE`, `DONE_WITH_CONCERNS`, `NEEDS_CONTEXT`, or `BLOCKED`, plus model used, Spark fallback or escalation reason, files changed, behavior changed, commands run, red/green evidence, git status/artifact check, and known gaps.
+- Report status as `DONE`, `DONE_WITH_CONCERNS`, `NEEDS_CONTEXT`, or `BLOCKED`, plus model used, fallback or escalation reason, files changed, behavior changed, commands run, red/green evidence, git status/artifact check, and known gaps.
 
 Assigned ticket:
 [TICKET_ID]

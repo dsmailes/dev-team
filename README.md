@@ -25,17 +25,18 @@ Portable role prompts, ticket templates, and skill-routing guidance for running 
 
 Model choices live in `.agents/models.md`.
 
-The default profile is Codex:
+The default profile is Codex GPT-5.6:
 
-- Architect: strongest reasoning model.
-- Designer: strong balanced model; escalate for major UI/product decisions.
-- Executor: Spark by default; escalate for broader or riskier implementation.
-- Reviewer: strongest reasoning model.
-- Tester: balanced model with medium effort by default.
+- Architect: Sol with high effort.
+- Designer: Sol with high effort for UI/product decisions and frontend polish.
+- Executor: Terra with high effort by default.
+- Reviewer: Sol with high effort.
+- Tester: Terra with medium effort by default.
+- Luna: reserved for explicitly low-risk documentation, ticket, formatting, or mechanical follow-up work.
 
-For other providers, the installer can infer provider-class placeholders such as `anthropic-fast-coding` or `google-best-reasoning`. Replace those with exact model IDs supported by your local runner.
+For other providers, the installer can infer provider-class placeholders such as `anthropic-balanced-coding` or `google-best-reasoning`. Replace those with exact model IDs supported by your local runner.
 
-Executor tickets include an `Execution Model` section. Codex installs default Executor to `gpt-5.3-codex-spark` with `high` effort. Escalation must be recorded in the ticket; ordinary multi-file or integration work is not enough by itself.
+Executor tickets include an `Execution Model` section. Codex installs default Executor to `terra` with `high` effort. Escalation to `sol` must be recorded in the ticket; ordinary multi-file or integration work is not enough by itself.
 
 ## Install Into A Project
 

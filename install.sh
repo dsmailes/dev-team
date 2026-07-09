@@ -339,18 +339,18 @@ set_model_defaults() {
   case "$provider_lc" in
     ""|codex|openai)
       MODELS_PROVIDER=codex
-      MODEL_PROFILE=codex-defaults
-      ARCHITECT_MODEL=gpt-5.5
+      MODEL_PROFILE=gpt-5.6-sol-terra-luna
+      ARCHITECT_MODEL=sol
       ARCHITECT_EFFORT=high
-      DESIGNER_MODEL=gpt-5.4
+      DESIGNER_MODEL=sol
       DESIGNER_EFFORT=high
-      DESIGNER_ESCALATION="gpt-5.5 with high effort for important product decisions, broad workflow design, brand-sensitive UI, or major design-system changes."
-      EXECUTOR_MODEL=gpt-5.3-codex-spark
+      DESIGNER_ESCALATION="sol with high effort for important product decisions, broad workflow design, brand-sensitive UI, major design-system changes, and frontend polish."
+      EXECUTOR_MODEL=terra
       EXECUTOR_EFFORT=high
-      EXECUTOR_ESCALATION="Escalate only when a listed trigger applies: Spark is unavailable, the ticket crosses architecture boundaries, the work is high-risk data/security/concurrency/migration logic, debugging remains blocked after reproduction, or Spark reports NEEDS_CONTEXT / BLOCKED and more reasoning is required. Do not escalate only because a ticket touches multiple files or ordinary integration code."
-      REVIEWER_MODEL=gpt-5.5
+      EXECUTOR_ESCALATION="Escalate to sol only when a listed trigger applies: Terra is unavailable, the ticket crosses architecture boundaries, the work is high-risk data/security/concurrency/migration logic, debugging remains blocked after reproduction, or Terra reports NEEDS_CONTEXT / BLOCKED and more reasoning is required. Use luna only for explicitly low-risk documentation, ticket, formatting, or mechanical follow-up work. Do not escalate only because a ticket touches multiple files or ordinary integration code."
+      REVIEWER_MODEL=sol
       REVIEWER_EFFORT=high
-      TESTER_MODEL=gpt-5.4
+      TESTER_MODEL=terra
       TESTER_EFFORT=medium
       ;;
     *)
@@ -358,12 +358,12 @@ set_model_defaults() {
       MODEL_PROFILE=inferred-provider-classes
       ARCHITECT_MODEL="${provider_lc}-best-reasoning"
       ARCHITECT_EFFORT=high
-      DESIGNER_MODEL="${provider_lc}-balanced-reasoning"
+      DESIGNER_MODEL="${provider_lc}-best-design-reasoning"
       DESIGNER_EFFORT=high
-      DESIGNER_ESCALATION="${provider_lc}-best-reasoning with high effort for important product decisions, broad workflow design, brand-sensitive UI, or major design-system changes."
-      EXECUTOR_MODEL="${provider_lc}-fast-coding"
+      DESIGNER_ESCALATION="${provider_lc}-best-reasoning with high effort for important product decisions, broad workflow design, brand-sensitive UI, major design-system changes, and frontend polish."
+      EXECUTOR_MODEL="${provider_lc}-balanced-coding"
       EXECUTOR_EFFORT=high
-      EXECUTOR_ESCALATION="Escalate only when a listed trigger applies: the fast coding model is unavailable, the ticket crosses architecture boundaries, the work is high-risk data/security/concurrency/migration logic, debugging remains blocked after reproduction, or the default model reports NEEDS_CONTEXT / BLOCKED and more reasoning is required. Do not escalate only because a ticket touches multiple files or ordinary integration code."
+      EXECUTOR_ESCALATION="Escalate only when a listed trigger applies: the balanced coding model is unavailable, the ticket crosses architecture boundaries, the work is high-risk data/security/concurrency/migration logic, debugging remains blocked after reproduction, or the default model reports NEEDS_CONTEXT / BLOCKED and more reasoning is required. Use the provider's most cost-efficient model only for explicitly low-risk documentation, ticket, formatting, or mechanical follow-up work. Do not escalate only because a ticket touches multiple files or ordinary integration code."
       REVIEWER_MODEL="${provider_lc}-best-reasoning"
       REVIEWER_EFFORT=high
       TESTER_MODEL="${provider_lc}-balanced-reasoning"
@@ -466,19 +466,20 @@ This file is project-local. Keep it aligned with the provider and model names av
 | Designer | \`$DESIGNER_MODEL\` | \`$DESIGNER_EFFORT\` | Use $DESIGNER_ESCALATION |
 | Executor | \`$EXECUTOR_MODEL\` | \`$EXECUTOR_EFFORT\` | $EXECUTOR_ESCALATION |
 | Reviewer | \`$REVIEWER_MODEL\` | \`$REVIEWER_EFFORT\` | Use the strongest available reasoning model for security, data-loss, concurrency, migration, or public API risk. |
-| Tester | \`$TESTER_MODEL\` | \`$TESTER_EFFORT\` | Use high effort for flaky tests, complex async behavior, UI automation, or difficult failure triage. |
+| Tester | \`$TESTER_MODEL\` | \`$TESTER_EFFORT\` | Use high effort or escalate to the strongest available reasoning model for flaky tests, complex async behavior, UI automation, or difficult failure triage. |
 
 ## Provider Mapping Guidance
 
 For non-Codex providers, map roles by capability rather than by exact names:
 
 - Architect: best reasoning model.
-- Designer: balanced reasoning model; escalate to best reasoning for major product or UI decisions.
-- Executor: fast coding model by default; escalate to stronger coding or reasoning models as risk increases.
+- Designer: best design/reasoning model for major product or UI decisions.
+- Executor: balanced coding model by default; escalate to the best reasoning model as risk increases.
 - Reviewer: best reasoning model.
 - Tester: balanced reasoning model; raise effort for flaky, async, UI, or failure-triage work.
+- Low-risk work: use the provider's most cost-efficient model only for explicitly low-risk documentation, ticket, formatting, or mechanical follow-up work.
 
-If exact provider model IDs are not known during installation, use provider-class placeholders such as \`anthropic-fast-coding\` or \`google-best-reasoning\`, then replace them with the exact IDs supported by your local agent runner.
+If exact provider model IDs are not known during installation, use provider-class placeholders such as \`anthropic-balanced-coding\` or \`google-best-reasoning\`, then replace them with the exact IDs supported by your local agent runner.
 EOF
   echo "Wrote model configuration to $TARGET_DIR/.agents/models.md"
 }

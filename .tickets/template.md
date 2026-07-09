@@ -80,12 +80,12 @@ What should not be changed?
 
 ## Execution Model
 
-- Executor model: `gpt-5.3-codex-spark`
+- Executor model: `terra`
 - Executor effort: `high`
 - Escalation needed: `No`
 - Escalation model:
 - Escalation reason:
-- Spark unavailable fallback:
+- Terra unavailable fallback:
 - Model actually used:
 
 ## Designer Review
@@ -134,7 +134,7 @@ What should not be changed?
 - [ ] Risks are listed.
 - [ ] Rollback and persistence impact is documented, or explicitly marked `None`.
 - [ ] `Skill Context` is filled, including role-specific skills or `None`.
-- [ ] `Execution Model` is filled, defaulting Executor to `gpt-5.3-codex-spark` unless escalation is justified.
+- [ ] `Execution Model` is filled, defaulting Executor to `terra` unless escalation is justified.
 - [ ] Verification plan exists.
 - [ ] `Designer Review` is marked `Yes` or `No`.
 - [ ] TDD plan exists for behavior changes, or a waiver explains why it does not apply.

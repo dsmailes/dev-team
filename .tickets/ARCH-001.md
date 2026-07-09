@@ -93,12 +93,12 @@ The agent workflow exists, but no project-specific implementation task has been 
 
 ## Execution Model
 
-- Executor model: `gpt-5.3-codex-spark`
+- Executor model: `terra`
 - Executor effort: `high`
 - Escalation needed: `No`
 - Escalation model: None.
 - Escalation reason: None; this starter ticket is documentation/workflow setup.
-- Spark unavailable fallback: Use the nearest available fast coding model and record the fallback reason.
+- Terra unavailable fallback: Use the nearest available balanced coding model and record the fallback reason.
 - Model actually used: Not applicable for starter ticket.
 
 ## Designer Review
@@ -151,7 +151,7 @@ The agent workflow exists, but no project-specific implementation task has been 
 - [x] Risks are listed.
 - [x] Rollback and persistence impact is documented, or explicitly marked `None`.
 - [x] `Skill Context` is filled, including role-specific skills or `None`.
-- [x] `Execution Model` is filled, defaulting Executor to `gpt-5.3-codex-spark` unless escalation is justified.
+- [x] `Execution Model` is filled, defaulting Executor to `terra` unless escalation is justified.
 - [x] Verification plan exists.
 - [x] `Designer Review` is marked `Yes` or `No`.
 - [x] TDD plan exists for behavior changes, or a waiver explains why it does not apply.

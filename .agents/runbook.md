@@ -39,7 +39,7 @@ For multi-step implementation work, the architect should also create or link an 
 
 The architect must fill in `Skill Context` before execution starts, including role-specific skills or `None` where no skill applies. External skill families are optional unless the ticket, user, imported registry, or project instructions require them.
 
-The architect must fill in `Execution Model` before execution starts. Executor defaults to `gpt-5.3-codex-spark` with `high` effort. Escalation requires a specific recorded reason.
+The architect must fill in `Execution Model` before execution starts. Executor defaults to `terra` with `high` effort. Escalation requires a specific recorded reason.
 
 The architect must also fill in `Questioning Notes` before execution starts, including the decision tree. A ticket with unresolved `Blocking` questions cannot move to `Ready` unless the gate includes an explicit waiver and reason.
 
@@ -57,18 +57,19 @@ Use the designer only when a ticket changes screens, flows, visual hierarchy, in
 
 ## Execute A Ticket
 
-1. Spawn the executor with `gpt-5.3-codex-spark` and `high` effort by default.
-2. Escalate Executor only when a recorded trigger applies: Spark is unavailable, the ticket crosses architecture boundaries, the work is high-risk data/security/concurrency/migration logic, debugging remains blocked after reproduction, or Spark reports `NEEDS_CONTEXT` / `BLOCKED` and more reasoning is required.
+1. Spawn the executor with `terra` and `high` effort by default.
+2. Escalate Executor to `sol` only when a recorded trigger applies: Terra is unavailable, the ticket crosses architecture boundaries, the work is high-risk data/security/concurrency/migration logic, debugging remains blocked after reproduction, or Terra reports `NEEDS_CONTEXT` / `BLOCKED` and more reasoning is required.
 3. Do not escalate only because a ticket touches multiple files or ordinary integration code.
-4. If Spark is unavailable, use the nearest available fast coding model and record the fallback in `Execution Model`.
-5. Assign exactly one ticket unless the tickets share the same files and scope.
-6. Tell the executor which files or modules it owns.
-7. Provide exact context in the prompt: ticket text, relevant files, relevant memory entries, `Skill Context`, `Execution Model`, acceptance criteria, and expected verification.
-8. If the runtime supports fresh subagent context, use it. Do not rely on inherited conversation history.
-9. If the runtime supports live supervisor contact, allow Executor to ask the orchestrator blocking questions. Otherwise require `NEEDS_CONTEXT` or `BLOCKED` in the completion report.
-10. For behavior changes, require red/green TDD evidence unless TDD is explicitly waived in the ticket.
-11. Complete the `Ready -> In Progress` handoff gate before Executor starts.
-12. When implementation returns, inspect the changed files and complete `In Progress -> Review` before review.
+4. Use `luna` only for explicitly low-risk documentation, ticket, formatting, or mechanical follow-up work.
+5. If Terra is unavailable, use the nearest available balanced coding model and record the fallback in `Execution Model`.
+6. Assign exactly one ticket unless the tickets share the same files and scope.
+7. Tell the executor which files or modules it owns.
+8. Provide exact context in the prompt: ticket text, relevant files, relevant memory entries, `Skill Context`, `Execution Model`, acceptance criteria, and expected verification.
+9. If the runtime supports fresh subagent context, use it. Do not rely on inherited conversation history.
+10. If the runtime supports live supervisor contact, allow Executor to ask the orchestrator blocking questions. Otherwise require `NEEDS_CONTEXT` or `BLOCKED` in the completion report.
+11. For behavior changes, require red/green TDD evidence unless TDD is explicitly waived in the ticket.
+12. Complete the `Ready -> In Progress` handoff gate before Executor starts.
+13. When implementation returns, inspect the changed files and complete `In Progress -> Review` before review.
 
 ## Review A Ticket
 

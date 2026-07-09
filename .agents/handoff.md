@@ -24,7 +24,7 @@ Required before implementation can be assigned:
 - Risks are listed.
 - Rollback and persistence impact is documented, or explicitly marked `None`.
 - `Skill Context` is filled, including role-specific skills or `None`.
-- `Execution Model` is filled, defaulting Executor to `gpt-5.3-codex-spark` unless escalation is justified.
+- `Execution Model` is filled, defaulting Executor to `terra` unless escalation is justified.
 - Verification plan exists.
 - `Designer Review` is marked `Yes` or `No`.
 - TDD plan exists for behavior changes, or a waiver explains why it does not apply.
