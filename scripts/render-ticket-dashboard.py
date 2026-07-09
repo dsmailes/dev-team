@@ -11,7 +11,7 @@ import re
 from pathlib import Path
 
 
-STATES = ["Backlog", "Ready", "In Progress", "Review", "Test", "Done", "Blocked"]
+STATES = ["Backlog", "Ready", "Design", "In Progress", "Review", "Test", "Done", "Blocked"]
 
 
 def read_text(path: Path) -> str:

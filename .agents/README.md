@@ -21,7 +21,7 @@ This directory defines reusable role prompts for coordinating subagents on large
 
 1. The orchestrator gives the user request to the architect.
 2. The architect writes or updates tickets in `.tickets/`.
-3. The designer shapes UI/UX tickets when `Designer Review` is required.
+3. The designer shapes UI/UX tickets in the `Design` state when `Designer Review` is required, then returns them to `Ready`.
 4. The orchestrator selects a `Ready` ticket.
 5. The executor implements the ticket.
 6. The reviewer checks the diff and recommends `Ready For Test` or `Needs Changes`.

@@ -5,18 +5,23 @@ usage() {
   cat <<'USAGE'
 Usage:
   curl -fsSL https://raw.githubusercontent.com/dsmailes/dev-team/main/install.sh | sh -s -- --here
-  ./install.sh --project /path/to/project [--force]
+  ./install.sh --project /path/to/project
   ./install.sh --project /path/to/project --update
+  ./install.sh --project /path/to/project --reset-project-state --force
   ./install.sh --project /path/to/project --import-skills /path/to/skills.md
   ./install.sh --project /path/to/project --models-provider codex
   ./install.sh --project /path/to/project --models-file /path/to/models.md
   /path/to/dev-team/install.sh --here
-  ./install.sh --global [--force]
+  ./install.sh --global
 
 Options:
   --project PATH   Install workflow files, scripts, and README image assets into PATH.
   --here           Install workflow files, scripts, and README image assets into the current directory.
   --update         Update reusable workflow files while preserving project tickets, memory, README.md, and AGENTS.md.
+  --reset-project-state
+                   Delete all installed workflow state and reinstall it. Requires --force, prints every
+                   affected path, requires confirmation, and creates a timestamped backup first.
+  --dry-run        Print the planned preserve, replace, and delete operations without changing files.
   --import-skills PATH
                    Import a local skill registry into .skills/imported.md.
   --no-import-skills
@@ -29,7 +34,7 @@ Options:
   --no-model-prompt
                    Do not prompt for model choices during interactive project installs.
   --global         Install this pack to ~/.codex/agent-workflows/dev-team.
-  --force          Replace existing installed workflow directories and workflow docs.
+  --force          Required with --reset-project-state. It never resets project state by itself.
   --help           Show this help.
 USAGE
 }
@@ -85,6 +90,8 @@ TARGET_DIR=""
 TARGET_KIND=""
 FORCE=0
 UPDATE=0
+RESET_PROJECT_STATE=0
+DRY_RUN=0
 IMPORT_SKILLS_PATH=""
 NO_IMPORT_SKILLS=0
 MODELS_PROVIDER=""
@@ -127,6 +134,14 @@ while [ "$#" -gt 0 ]; do
       ;;
     --update)
       UPDATE=1
+      shift
+      ;;
+    --reset-project-state)
+      RESET_PROJECT_STATE=1
+      shift
+      ;;
+    --dry-run)
+      DRY_RUN=1
       shift
       ;;
     --import-skills)
@@ -190,8 +205,23 @@ if [ "$UPDATE" -eq 1 ] && [ "$FORCE" -eq 1 ]; then
   exit 2
 fi
 
+if [ "$UPDATE" -eq 1 ] && [ "$RESET_PROJECT_STATE" -eq 1 ]; then
+  echo "error: choose either --update or --reset-project-state, not both" >&2
+  exit 2
+fi
+
+if [ "$RESET_PROJECT_STATE" -eq 1 ] && [ "$FORCE" -ne 1 ]; then
+  echo "error: --reset-project-state requires --force" >&2
+  exit 2
+fi
+
 if [ "$UPDATE" -eq 1 ] && [ "$TARGET_KIND" != project ]; then
   echo "error: --update is only supported with --project PATH or --here" >&2
+  exit 2
+fi
+
+if [ "$RESET_PROJECT_STATE" -eq 1 ] && [ "$TARGET_KIND" != project ]; then
+  echo "error: --reset-project-state is only supported with --project PATH or --here" >&2
   exit 2
 fi
 
@@ -205,7 +235,21 @@ if [ -n "$MODELS_PROVIDER" ] && [ -n "$MODELS_FILE" ]; then
   exit 2
 fi
 
-TARGET_DIR=$(mkdir -p "$TARGET_DIR" && CDPATH= cd -- "$TARGET_DIR" && pwd)
+if [ "$DRY_RUN" -eq 1 ]; then
+  if [ -d "$TARGET_DIR" ]; then
+    TARGET_DIR=$(CDPATH= cd -- "$TARGET_DIR" && pwd)
+  else
+    target_parent=$(dirname -- "$TARGET_DIR")
+    target_name=$(basename -- "$TARGET_DIR")
+    if [ ! -d "$target_parent" ]; then
+      echo "error: target parent does not exist for --dry-run: $target_parent" >&2
+      exit 1
+    fi
+    TARGET_DIR=$(CDPATH= cd -- "$target_parent" && pwd)/$target_name
+  fi
+else
+  TARGET_DIR=$(mkdir -p "$TARGET_DIR" && CDPATH= cd -- "$TARGET_DIR" && pwd)
+fi
 
 if [ "$TARGET_DIR" = / ]; then
   echo "error: refusing to install into filesystem root" >&2
@@ -215,6 +259,103 @@ fi
 if [ "$TARGET_DIR" = "$SOURCE_DIR" ]; then
   echo "error: refusing to install or update this pack into itself" >&2
   exit 2
+fi
+
+is_existing_install() {
+  [ -f "$TARGET_DIR/.agents/README.md" ] && \
+    [ -f "$TARGET_DIR/.tickets/template.md" ] && \
+    [ -f "$TARGET_DIR/scripts/render-ticket-dashboard.py" ]
+}
+
+show_existing_install_guidance() {
+  echo "Existing dev-team installation detected." >&2
+  echo "Run with --update to refresh workflow files while preserving tickets and memory." >&2
+}
+
+print_reset_paths() {
+  for path in \
+    "$TARGET_DIR/.agents" \
+    "$TARGET_DIR/.skills" \
+    "$TARGET_DIR/.tickets" \
+    "$TARGET_DIR/.memory" \
+    "$TARGET_DIR/scripts" \
+    "$TARGET_DIR/docs/workflow-diagram.png" \
+    "$TARGET_DIR/docs/ticket-dashboard-example.svg" \
+    "$TARGET_DIR/DEV-TEAM-WORKFLOW.md" \
+    "$TARGET_DIR/AGENTS.md"; do
+    if [ -e "$path" ]; then
+      find "$path" -print
+    fi
+  done | sort
+}
+
+print_dry_run_plan() {
+  if [ "$RESET_PROJECT_STATE" -eq 1 ]; then
+    echo "Dry run: reset project state in $TARGET_DIR"
+    echo "Delete and replace:"
+    print_reset_paths
+    echo "Back up before reset: .tickets/, .memory/, AGENTS.md, and .agents/models.md"
+  elif [ "$UPDATE" -eq 1 ]; then
+    echo "Dry run: update reusable workflow files in $TARGET_DIR"
+    echo "Replace: .agents role docs, .skills registry docs, dashboard script, image assets, ticket README/template, and DEV-TEAM-WORKFLOW.md"
+    echo "Preserve: README.md, AGENTS.md, .agents/models.md, .tickets/queue.md, project tickets, .memory/, and .skills/imported.md"
+  else
+    echo "Dry run: install workflow files into $TARGET_DIR"
+    echo "Create only missing workflow files; existing files will not be replaced."
+  fi
+}
+
+backup_project_state() {
+  timestamp=$(date +%Y%m%d-%H%M%S)
+  backup_dir="$TARGET_DIR/.dev-team-backup-$timestamp"
+  mkdir -p "$backup_dir/.agents"
+
+  for path in .tickets .memory AGENTS.md .agents/models.md; do
+    if [ -e "$TARGET_DIR/$path" ]; then
+      parent=$(dirname -- "$path")
+      mkdir -p "$backup_dir/$parent"
+      cp -R "$TARGET_DIR/$path" "$backup_dir/$path"
+    fi
+  done
+
+  echo "Backed up project state to $backup_dir"
+}
+
+confirm_project_reset() {
+  echo "The following paths will be deleted and replaced:" >&2
+  print_reset_paths >&2
+  if [ ! -t 0 ]; then
+    echo "error: --reset-project-state requires an interactive confirmation; rerun from a terminal." >&2
+    exit 1
+  fi
+  printf "Type RESET to continue: " >&2
+  read answer
+  if [ "$answer" != RESET ]; then
+    echo "Reset cancelled." >&2
+    exit 1
+  fi
+}
+
+reset_project_state() {
+  backup_project_state
+  rm -rf "$TARGET_DIR/.agents" "$TARGET_DIR/.skills" "$TARGET_DIR/.tickets" "$TARGET_DIR/.memory" "$TARGET_DIR/scripts"
+  rm -f "$TARGET_DIR/docs/workflow-diagram.png" "$TARGET_DIR/docs/ticket-dashboard-example.svg"
+  rm -f "$TARGET_DIR/DEV-TEAM-WORKFLOW.md" "$TARGET_DIR/AGENTS.md"
+}
+
+if [ "$DRY_RUN" -eq 1 ]; then
+  print_dry_run_plan
+  exit 0
+fi
+
+if is_existing_install && [ "$UPDATE" -ne 1 ] && [ "$RESET_PROJECT_STATE" -ne 1 ]; then
+  show_existing_install_guidance
+  exit 1
+fi
+
+if [ "$RESET_PROJECT_STATE" -eq 1 ]; then
+  confirm_project_reset
+  reset_project_state
 fi
 
 copy_dir() {
@@ -228,11 +369,9 @@ copy_dir() {
   fi
 
   if [ -e "$target" ]; then
-    if [ "$FORCE" -ne 1 ]; then
-      echo "error: $target already exists. Re-run with --force to replace it." >&2
-      exit 1
-    fi
-    rm -rf "$target"
+    echo "error: $target already exists. Existing files are never replaced by a standard install." >&2
+    echo "Use --update for an existing dev-team installation." >&2
+    exit 1
   fi
 
   cp -R "$source" "$target"
@@ -250,11 +389,9 @@ copy_file() {
   fi
 
   if [ -e "$target" ]; then
-    if [ "$FORCE" -ne 1 ]; then
-      echo "error: $target already exists. Re-run with --force to replace it." >&2
-      exit 1
-    fi
-    rm -f "$target"
+    echo "error: $target already exists. Existing files are never replaced by a standard install." >&2
+    echo "Use --update for an existing dev-team installation." >&2
+    exit 1
   fi
 
   mkdir -p "$(dirname -- "$target")"

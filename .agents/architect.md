@@ -62,6 +62,7 @@ Ticket states:
 
 - `Backlog`: known work, not ready or not yet selected.
 - `Ready`: clear enough for execution.
+- `Design`: UI/UX work is being shaped by the Designer before returning to `Ready`.
 - `In Progress`: currently owned by an agent.
 - `Review`: implemented and awaiting review.
 - `Test`: ready for verification.

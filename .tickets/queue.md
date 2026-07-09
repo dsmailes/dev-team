@@ -8,6 +8,10 @@
 
 No tickets.
 
+## Design
+
+No tickets.
+
 ## In Progress
 
 No tickets.
@@ -22,7 +26,7 @@ No tickets.
 
 ## Done
 
-No tickets.
+- `SAFE-001`: Harden installer updates and reset behavior. See `SAFE-001.md`.
 
 ## Blocked
 

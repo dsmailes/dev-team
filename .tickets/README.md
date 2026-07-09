@@ -13,6 +13,7 @@ This directory is a lightweight local ticketing system for agent-coordinated wor
 
 - `Backlog`: captured but not ready.
 - `Ready`: clear enough for implementation.
+- `Design`: UI/UX ticket is being shaped by the Designer before implementation.
 - `In Progress`: currently assigned.
 - `Review`: implementation is complete and awaiting review.
 - `Test`: reviewed and ready for verification.
@@ -44,7 +45,7 @@ The packaged `ARCH-001` ticket is a bootstrap placeholder for capturing the firs
 ## Example Lifecycle
 
 ```text
-Backlog -> Ready -> In Progress -> Review -> Test -> Done
+Backlog -> Ready -> Design -> Ready -> In Progress -> Review -> Test -> Done
 ```
 
 Blocked tickets return to `Ready` once the blocker is resolved.

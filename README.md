@@ -64,10 +64,10 @@ Or install from the local checkout into the current terminal directory with `--h
 
 It also copies this pack's README as `DEV-TEAM-WORKFLOW.md`, so the target project's own `README.md` is not replaced.
 
-By default, the installer refuses to overwrite existing workflow directories, `DEV-TEAM-WORKFLOW.md`, or `AGENTS.md`. To replace them:
+By default, the installer refuses to overwrite existing workflow directories, `DEV-TEAM-WORKFLOW.md`, or `AGENTS.md`. When it detects an existing dev-team installation, it directs you to the safe update command instead:
 
 ```sh
-./install.sh --project /path/to/project --force
+./install.sh --project /path/to/project --update
 ```
 
 ## Use With A New Project
@@ -141,7 +141,7 @@ Open Codex from that project root so it reads the installed `AGENTS.md`.
 
 Manual copying works too, but the installer is preferred because it preserves the expected folder layout and refuses accidental overwrites.
 
-If the target project already has its own `AGENTS.md`, review before using `--force`; it will replace that file. The installer does not replace the target project's `README.md`.
+`--force` never replaces project state by itself. A full reset is intentionally separate and requires both `--reset-project-state --force`; it previews every affected path, asks for confirmation, and creates a timestamped backup. The installer does not replace the target project's `README.md`.
 
 ## Update An Existing Project
 
@@ -188,13 +188,25 @@ To refresh local skill names during an update:
 /path/to/dev-team/install.sh --project /path/to/project --update --import-skills /path/to/local-skills.md
 ```
 
-To refresh model choices during an update:
+To deliberately replace the model configuration during an update:
 
 ```sh
 /path/to/dev-team/install.sh --project /path/to/project --update --models-provider codex
 ```
 
-Use `--force` only for a full reinstall where replacing project-local workflow state is intentional.
+This command intentionally replaces `.agents/models.md`. A plain `--update` preserves custom model configuration.
+
+Preview any installation, update, or reset without changing files:
+
+```sh
+/path/to/dev-team/install.sh --project /path/to/project --update --dry-run
+```
+
+To completely reset installed workflow state, use the explicit destructive command. It prints every affected path, requires an interactive `RESET` confirmation, and saves a timestamped backup inside the project first:
+
+```sh
+/path/to/dev-team/install.sh --project /path/to/project --reset-project-state --force
+```
 
 ## Install As A Global Template
 
@@ -229,7 +241,7 @@ For non-trivial implementation work, use the ticket workflow by default. The Arc
 Skip tickets only for simple explanations, one-command lookups, tiny typo fixes, or when the user explicitly asks not to use tickets.
 
 1. Ask the Architect to inspect context and create or update tickets from the request.
-2. Route UI tickets through Designer when `Designer Review` is required.
+2. Route UI tickets through Designer in the `Design` state when `Designer Review` is required, then return them to `Ready`.
 3. Assign one `Ready` ticket to Executor.
 4. Run Reviewer after implementation.
 5. Run Tester before marking the ticket `Done`.
