@@ -30,9 +30,8 @@ The default profile is Codex GPT-5.6:
 - Architect: Sol with high effort.
 - Designer: Sol with high effort for UI/product decisions and frontend polish.
 - Executor: Terra with high effort by default.
-- Reviewer: Sol with high effort.
-- Tester: Terra with medium effort by default.
-- Luna: reserved for explicitly low-risk documentation, ticket, formatting, or mechanical follow-up work.
+- Reviewer: GPT-5.5 with high effort, providing an independent review perspective.
+- Tester: Luna with high effort by default.
 
 For other providers, the installer can infer provider-class placeholders such as `anthropic-balanced-coding` or `google-best-reasoning`. Replace those with exact model IDs supported by your local runner.
 

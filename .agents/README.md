@@ -57,7 +57,7 @@ If live supervisor contact is available, subagents should use it for blocking qu
 
 Use `.agents/models.md` as the source of truth for model names, effort levels, and provider-specific mappings.
 
-The packaged default is a Codex GPT-5.6 profile that uses Sol for architecture, product/design shaping, and review; Terra for implementation and testing; and Luna only for explicitly low-risk documentation, ticket, formatting, or mechanical follow-up work. Project installs may replace this with exact local model IDs or inferred provider-class placeholders.
+The packaged default is a Codex profile that uses Sol for architecture and product/design shaping, Terra for implementation, GPT-5.5 for independent review, and Luna with high effort for testing. Project installs may replace this with exact local model IDs or inferred provider-class placeholders.
 
 ## Coordination Rules
 

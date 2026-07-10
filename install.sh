@@ -476,7 +476,7 @@ set_model_defaults() {
   case "$provider_lc" in
     ""|codex|openai)
       MODELS_PROVIDER=codex
-      MODEL_PROFILE=gpt-5.6-sol-terra-luna
+      MODEL_PROFILE=gpt-5.6-sol-terra-luna-gpt-5.5-review
       ARCHITECT_MODEL=sol
       ARCHITECT_EFFORT=high
       DESIGNER_MODEL=sol
@@ -485,10 +485,10 @@ set_model_defaults() {
       EXECUTOR_MODEL=terra
       EXECUTOR_EFFORT=high
       EXECUTOR_ESCALATION="Escalate to sol only when a listed trigger applies: Terra is unavailable, the ticket crosses architecture boundaries, the work is high-risk data/security/concurrency/migration logic, debugging remains blocked after reproduction, or Terra reports NEEDS_CONTEXT / BLOCKED and more reasoning is required. Use luna only for explicitly low-risk documentation, ticket, formatting, or mechanical follow-up work. Do not escalate only because a ticket touches multiple files or ordinary integration code."
-      REVIEWER_MODEL=sol
+      REVIEWER_MODEL=gpt-5.5
       REVIEWER_EFFORT=high
-      TESTER_MODEL=terra
-      TESTER_EFFORT=medium
+      TESTER_MODEL=luna
+      TESTER_EFFORT=high
       ;;
     *)
       MODELS_PROVIDER=$provider_lc
@@ -602,8 +602,8 @@ This file is project-local. Keep it aligned with the provider and model names av
 | Architect | \`$ARCHITECT_MODEL\` | \`$ARCHITECT_EFFORT\` | Use the strongest available reasoning model for ambiguous architecture, migrations, or high-risk planning. |
 | Designer | \`$DESIGNER_MODEL\` | \`$DESIGNER_EFFORT\` | Use $DESIGNER_ESCALATION |
 | Executor | \`$EXECUTOR_MODEL\` | \`$EXECUTOR_EFFORT\` | $EXECUTOR_ESCALATION |
-| Reviewer | \`$REVIEWER_MODEL\` | \`$REVIEWER_EFFORT\` | Use the strongest available reasoning model for security, data-loss, concurrency, migration, or public API risk. |
-| Tester | \`$TESTER_MODEL\` | \`$TESTER_EFFORT\` | Use high effort or escalate to the strongest available reasoning model for flaky tests, complex async behavior, UI automation, or difficult failure triage. |
+| Reviewer | \`$REVIEWER_MODEL\` | \`$REVIEWER_EFFORT\` | Use GPT-5.5 for an independent perspective on security, data-loss, concurrency, migration, public API risk, and spec compliance review. |
+| Tester | \`$TESTER_MODEL\` | \`$TESTER_EFFORT\` | Use Luna with high effort for verification; escalate to the strongest available reasoning model for flaky tests, complex async behavior, UI automation, or difficult failure triage. |
 
 ## Provider Mapping Guidance
 
