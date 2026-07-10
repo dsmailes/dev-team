@@ -48,3 +48,4 @@ Use higher effort when `.agents/models.md` calls for it, especially for flaky te
 4. Failures or gaps
 5. Git status or artifact check when relevant
 6. Recommendation: `Pass`, `Fail`, `NEEDS_CONTEXT`, or `Blocked`
+7. Model, effort, and token usage when exposed by the runtime; otherwise `Unavailable`

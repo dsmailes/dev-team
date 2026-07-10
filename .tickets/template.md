@@ -88,6 +88,18 @@ What should not be changed?
 - Terra unavailable fallback:
 - Model actually used:
 
+## Agent Run Summary
+
+Record every role that actually ran for this ticket. Do not estimate token usage: write `Unavailable` when the runtime does not expose it.
+
+| Role | Agent or task | Model | Effort | Token usage |
+| --- | --- | --- | --- | --- |
+| Architect | Not run | Not run | Not run | Not run |
+| Designer | Not run | Not run | Not run | Not run |
+| Executor | Not run | Not run | Not run | Not run |
+| Reviewer | Not run | Not run | Not run | Not run |
+| Tester | Not run | Not run | Not run | Not run |
+
 ## Designer Review
 
 - Required: `No`
@@ -193,6 +205,7 @@ What should not be changed?
 - [ ] Durable memory updates are promoted to `.memory/` or explicitly marked `None`.
 - [ ] Follow-up tickets are created or explicitly marked `None`.
 - [ ] Final ticket state matches `.tickets/queue.md`.
+- [ ] `Agent Run Summary` lists every role that ran, its model and effort, and token usage or `Unavailable`.
 - Waiver:
 
 ## Review Plan

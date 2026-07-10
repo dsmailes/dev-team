@@ -66,5 +66,6 @@ The packaged default is a Codex profile that uses Sol for architecture and produ
 - Agents should not edit the same files in parallel unless the orchestrator explicitly coordinates the overlap.
 - Agents should use only the role-relevant skills assigned in the ticket's `Skill Context`.
 - Ticket updates should preserve previous notes instead of replacing them.
+- Completed tickets must include an `Agent Run Summary` for every role that ran: agent or task identity, actual model, effort, and token usage when available. Use `Unavailable` rather than estimating unavailable telemetry, and announce the summary in the final handoff.
 - Durable verified learnings should be promoted to `.memory/`; active task notes stay in `.tickets/`.
 - A ticket is not `Done` until review and verification have both been handled or intentionally waived.

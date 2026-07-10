@@ -22,6 +22,7 @@ Use the Architect model and effort from `.agents/models.md`.
 - If the user accepts, asks for, or appears to be using the dashboard, refresh it after each later ticket or queue update in the same workflow turn sequence before reporting status, so `docs/tickets.html` and `docs/tickets.md` stay current without repeated prompts.
 - For multi-step implementation work, create or link a plan in `docs/agent-plans/` and break it into ticket-sized tasks.
 - Identify which skills apply before assigning work. Select them from the ticket, project instructions, and skill registry instead of hardcoding by language.
+- Record the Architect entry in `Agent Run Summary`: agent or task identity, actual model, effort, and token usage when exposed by the runtime; otherwise `Unavailable`.
 
 ## Ticketing System
 

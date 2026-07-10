@@ -92,6 +92,7 @@ Required before completion:
 - Durable memory updates are promoted to `.memory/` or explicitly marked `None`.
 - Follow-up tickets are created or explicitly marked `None`.
 - Final ticket state matches `.tickets/queue.md`.
+- `Agent Run Summary` lists every role that ran, its model and effort, and token usage or `Unavailable`.
 
 ## Handoff Summary
 
@@ -113,4 +114,5 @@ Expected output:
 Gate being satisfied:
 Waivers:
 Runtime capabilities:
+Agent Run Summary:
 ```

@@ -51,3 +51,4 @@ Each finding should include:
 2. Code Quality Findings
 3. Open questions
 4. Recommendation: `Needs Changes`, `Ready For Test`, `NEEDS_CONTEXT`, or `Blocked`
+5. Model, effort, and token usage when exposed by the runtime; otherwise `Unavailable`

@@ -257,6 +257,8 @@ Ticket IDs are allocated by scanning `.tickets/*.md` and choosing the next unuse
 
 Use `.memory/` for durable knowledge only: verified commands, architectural decisions, project orientation, and pitfalls. Keep active task notes in `.tickets/`.
 
+When a ticket reaches `Done`, the harness announces its `Agent Run Summary`: every role that ran, the agent or task identity, actual model and effort, and token usage when the runtime exposes it. If token telemetry is unavailable, the summary says `Unavailable`; it never estimates usage.
+
 Runtime support is optional. When available, the workflow can use fresh-context subagents, live supervisor contact, background execution, and an allowed-agent list. When unavailable, agents use explicit ticket handoffs and report `NEEDS_CONTEXT` or `BLOCKED` instead of guessing.
 
 ## Render The Ticket Dashboard
@@ -301,6 +303,15 @@ docs/tickets.md
 ```
 
 The generated views are intentionally simple: the HTML page gives a searchable browser dashboard, and the Markdown file gives a compact ChatGPT-friendly summary. Both highlight state counts, ticket status, handoff progress, and warnings when `.tickets/queue.md` disagrees with a ticket file's `State`. Once the user starts using the dashboard, the Architect should refresh it after later ticket or queue updates so both files stay current.
+
+A completed ticket's handoff also announces a compact run summary, for example:
+
+```text
+Agent Run Summary
+- Executor: task `executor-01`; model `terra`; effort `high`; tokens `Unavailable`.
+- Reviewer: task `reviewer-01`; model `gpt-5.5`; effort `high`; tokens `12,450`.
+- Tester: task `tester-01`; model `luna`; effort `high`; tokens `Unavailable`.
+```
 
 ## License
 

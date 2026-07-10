@@ -87,8 +87,9 @@ Use the designer only when a ticket changes screens, flows, visual hierarchy, in
 2. Give the tester the ticket path and expected verification scope.
 3. If the runtime supports live supervisor contact, allow Tester to ask for missing environment, command, or verification scope decisions. Otherwise require `NEEDS_CONTEXT` or `BLOCKED`.
 4. Require fresh command output or documented manual-check evidence before accepting a pass.
-5. If verification passes, complete `Test -> Done` before moving the ticket to `Done`.
-6. If verification fails, move it back to `In Progress` or create a follow-up ticket.
+5. Record every role that ran in the ticket's `Agent Run Summary`, with the actual model, effort, and token usage when available. Use `Unavailable` rather than estimating telemetry the runtime does not expose.
+6. If verification passes, complete `Test -> Done` before moving the ticket to `Done`, then announce the completed `Agent Run Summary` to the user.
+7. If verification fails, move it back to `In Progress` or create a follow-up ticket.
 
 ## Parallel Work
 
@@ -130,4 +131,5 @@ A ticket is complete when:
 - Spec compliance review is complete or intentionally waived.
 - Code quality review is complete or intentionally waived.
 - Verification is complete with fresh evidence, or the reason it cannot run is documented.
+- The final report announces the ticket's `Agent Run Summary`, including every role that ran, actual model and effort, and token usage or `Unavailable`.
 - Follow-up work is captured as separate tickets.

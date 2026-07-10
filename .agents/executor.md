@@ -50,6 +50,7 @@ Return:
 
 - Ticket ID
 - Model used
+- Token usage when exposed by the runtime; otherwise `Unavailable`
 - Fallback or escalation reason, if any
 - Files changed
 - Behavior changed

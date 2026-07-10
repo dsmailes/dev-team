@@ -12,6 +12,9 @@ hash_file() {
 
 "$ROOT/install.sh" --project "$PROJECT" --no-import-skills --no-model-prompt
 
+grep -Fq '## Agent Run Summary' "$PROJECT/.tickets/template.md"
+grep -Fq 'Token usage' "$PROJECT/.tickets/template.md"
+
 cat > "$PROJECT/.tickets/SAFE-900.md" <<'EOF'
 # SAFE-900
 

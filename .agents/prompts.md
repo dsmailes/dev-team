@@ -38,6 +38,7 @@ Your task:
 - Fill in `Execution Model`: default Executor to `terra` with `high` effort. Record an escalation model and reason only when Terra is unavailable, the ticket crosses architecture boundaries, the work is high-risk data/security/concurrency/migration logic, debugging remains blocked after reproduction, or Terra reports `NEEDS_CONTEXT` / `BLOCKED` and more reasoning is required. Use `luna` only for explicitly low-risk documentation, ticket, formatting, or mechanical follow-up work.
 - Mark `Designer Review` as required for tickets that change UI, UX, visual hierarchy, interaction patterns, accessibility, or frontend polish.
 - For multi-step implementation work, create or link a plan under `docs/agent-plans/`.
+- Record the Architect row in `Agent Run Summary`: agent or task identity, actual model, effort, and token usage when exposed by the runtime; otherwise write `Unavailable`.
 - Return context inspected, decision tree summary, the next upstream blocking question if one exists, assumptions, proposed tickets, risks, and recommended execution order.
 
 Do not implement code changes.
@@ -67,6 +68,7 @@ Your task:
 - Identify assets, icons, copy, loading states, empty states, and error states.
 - Record any design tooling used and the tokens, components, states, assets, or constraints discovered.
 - Update the ticket's `Designer Review` and `Design Brief` sections.
+- Record the Designer row in `Agent Run Summary`: agent or task identity, actual model, effort, and token usage when exposed by the runtime; otherwise write `Unavailable`.
 - Complete the design-related handoff gate fields you own.
 - Report open product/design questions that would block implementation.
 
@@ -102,6 +104,7 @@ Your task:
 - Preserve user-owned configuration and project state unless the ticket explicitly authorizes replacement.
 - For installer, setup, or persistent configuration changes, keep reruns idempotent and document the rollback path.
 - Update the ticket's Implementation Notes.
+- Record the Executor row in `Agent Run Summary`: agent or task identity, actual model, effort, and token usage when exposed by the runtime; otherwise write `Unavailable`.
 - Complete the `In Progress -> Review` handoff gate fields you own.
 - Self-review the diff before handoff.
 - Before handoff, run `git status --short --untracked-files=all`, confirm required new files are tracked, and remove accidental artifacts.
@@ -133,6 +136,7 @@ Your task:
 - Do not rewrite code unless explicitly asked.
 - Stop and report `BLOCKED` if requirements conflict, the diff is inaccessible, or a supervisor decision is required.
 - Update the ticket's Review Notes.
+- Record the Reviewer row in `Agent Run Summary`: agent or task identity, actual model, effort, and token usage when exposed by the runtime; otherwise write `Unavailable`.
 - Complete the `Review -> Test` handoff gate fields you own.
 - Recommend `Needs Changes`, `Ready For Test`, or `Blocked`.
 
@@ -163,10 +167,11 @@ Your task:
 - For installer, setup, packaging, or workflow-pack changes, require a fresh temporary-target smoke test and report any artifact or git-status concerns.
 - Add or propose focused tests only if explicitly assigned; otherwise report coverage gaps.
 - Update the ticket's Test Notes.
+- Record the Tester row in `Agent Run Summary`: agent or task identity, actual model, effort, and token usage when exposed by the runtime; otherwise write `Unavailable`.
 - Complete the `Test -> Done` handoff gate fields you own.
 - Recommend `Pass`, `Fail`, or `Blocked`.
 
-Report exact commands, results, failures, and remaining coverage gaps.
+Report exact commands, results, failures, remaining coverage gaps, and the completed `Agent Run Summary`. The orchestrator must announce that summary when the ticket reaches `Done`.
 ```
 
 ## Orchestrator Handoff Summary
@@ -185,4 +190,5 @@ Known risks: [RISKS]
 Expected output: [OUTPUT]
 Gate being satisfied: [GATE]
 Waivers: [WAIVERS]
+Agent Run Summary: [ROLES THAT RAN, AGENT OR TASK, MODEL, EFFORT, TOKEN USAGE OR UNAVAILABLE]
 ```
