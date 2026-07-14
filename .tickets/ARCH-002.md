@@ -10,7 +10,7 @@ Isolate concurrent ticket execution and verification.
 
 ## State
 
-`Review`
+`Test`
 
 ## Problem
 
@@ -156,11 +156,11 @@ Record every role that actually ran for this ticket. Do not estimate token usage
 
 | Role | Agent or task | Model | Effort | Token usage |
 | --- | --- | --- | --- | --- |
-| Architect | Current Architect task | Unavailable | Unavailable | Unavailable |
+| Architect | Planning task | Sol | high | Unavailable |
 | Designer | Not run | Not run | Not run | Not run |
 | Executor | Current Executor task | GPT-5 | high | Unavailable |
-| Reviewer | Not run | Not run | Not run | Not run |
-| Tester | Not run | Not run | Not run | Not run |
+| Reviewer | Independent clean-commit review | GPT-5.5 | high | Unavailable |
+| Tester | Focused clean-commit verification | Luna | high | Unavailable |
 
 ## Designer Review
 
@@ -263,12 +263,12 @@ Record every role that actually ran for this ticket. Do not estimate token usage
 
 ### Review -> Test
 
-- [ ] Spec compliance review is complete against the recorded ticket commit.
-- [ ] Code quality review is complete against the same ticket commit.
-- [ ] Reviewer clean-worktree and commit-identity checks are recorded.
-- [ ] Open review issues are resolved, waived with reason, or ticket is blocked.
-- [ ] Focused test scope and ticket-scoped artifact root are identified.
-- Waiver:
+- [x] Spec compliance review is complete against the recorded ticket commit.
+- [x] Code quality review is complete against the same ticket commit.
+- [x] Reviewer clean-worktree and commit-identity checks are recorded.
+- [x] Open review issues are resolved, waived with reason, or ticket is blocked.
+- [x] Focused test scope and ticket-scoped artifact root are identified.
+- Waiver: None.
 
 ### Test -> Done
 
@@ -317,10 +317,11 @@ Record every role that actually ran for this ticket. Do not estimate token usage
 
 ## Review Notes
 
-- Spec compliance notes: Not reviewed.
-- Code quality notes: Not reviewed.
+- Spec compliance notes: `READY_FOR_TEST` with no findings. Independent Reviewer GPT-5.5/high verified clean detached worktree `/tmp/dev-team-arch-002-verify` at exact ticket commit `83f9c5fd4c516d0e1cf243422fbf76aa9b46bf0c`. The isolation/serialization modes, immutable ticket verification, ticket-scoped artifacts, one post-merge integration matrix, cleanup/rollback rules, installer propagation, and preservation assertions all match the ticket contract.
+- Code quality notes: No findings. Terminology is consistent and framework-neutral, Xcode remains an optional platform example, cleanup guidance is non-destructive, and no contradictory moving-tree or redundant per-ticket full-matrix guidance remains. Reviewer reran `sh tests/test-install.sh`, source dashboard validation, both fresh install flows, consistency searches, `git diff --check`, commit identity, and clean-status checks successfully.
 
 ## Test Notes
 
-- Not tested.
-- Fresh verification evidence: None.
+- Focused Tester result: `PASS` from Luna/high against clean detached worktree `/tmp/dev-team-arch-002-verify` at exact ticket commit `83f9c5fd4c516d0e1cf243422fbf76aa9b46bf0c`.
+- Fresh focused verification evidence: `sh tests/test-install.sh` passed; all five update-preservation hash checks passed; source dashboard validation passed; fresh `--project` and `--here` installs each produced 29 expected files and passed installed dashboard validation; 98 cross-file consistency matches contained no contradiction; `git diff --check` and clean-status checks passed; no ticket artifacts were left behind.
+- Remaining Test gate: merge the scoped branch into `main`, record the resulting integration commit/batch, run the single post-merge integration matrix, and then complete cleanup and final ticket metadata.

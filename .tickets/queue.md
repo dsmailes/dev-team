@@ -18,11 +18,11 @@ No tickets.
 
 ## Review
 
-- `ARCH-002`: Isolate concurrent ticket execution and verification. See `ARCH-002.md`.
+No tickets.
 
 ## Test
 
-No tickets.
+- `ARCH-002`: Isolate concurrent ticket execution and verification. See `ARCH-002.md`.
 
 ## Done
 
