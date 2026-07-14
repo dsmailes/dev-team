@@ -10,7 +10,7 @@ Define first project task from user request.
 
 ## State
 
-`Backlog`
+`Done`
 
 ## Problem
 
@@ -100,6 +100,16 @@ The agent workflow exists, but no project-specific implementation task has been 
 - Escalation reason: None; this starter ticket is documentation/workflow setup.
 - Terra unavailable fallback: Use the nearest available balanced coding model and record the fallback reason.
 - Model actually used: Not applicable for starter ticket.
+
+## Agent Run Summary
+
+| Role | Agent or task | Model | Effort | Token usage |
+| --- | --- | --- | --- | --- |
+| Architect | Current Architect task | Unavailable | Unavailable | Unavailable |
+| Designer | Not run | Not run | Not run | Not run |
+| Executor | Not run | Not run | Not run | Not run |
+| Reviewer | Not run | Not run | Not run | Not run |
+| Tester | Not run | Not run | Not run | Not run |
 
 ## Designer Review
 
@@ -205,12 +215,13 @@ The agent workflow exists, but no project-specific implementation task has been 
 
 ### Test -> Done
 
-- [ ] Fresh verification evidence is recorded.
-- [ ] Failures or coverage gaps are recorded or explicitly marked `None`.
-- [ ] Durable memory updates are promoted to `.memory/` or explicitly marked `None`.
-- [ ] Follow-up tickets are created or explicitly marked `None`.
-- [ ] Final ticket state matches `.tickets/queue.md`.
-- Waiver:
+- [x] Fresh verification evidence is recorded.
+- [x] Failures or coverage gaps are recorded or explicitly marked `None`.
+- [x] Durable memory updates are promoted to `.memory/` or explicitly marked `None`.
+- [x] Follow-up tickets are created or explicitly marked `None`.
+- [x] Final ticket state matches `.tickets/queue.md`.
+- [x] `Agent Run Summary` lists every role that ran, its model and effort, and token usage or `Unavailable`.
+- Waiver: Implementation, review, and test roles did not run because this bootstrap ticket's outcome was to capture the first real project request as `ARCH-002`.
 
 ## Review Plan
 
@@ -237,8 +248,11 @@ The agent workflow exists, but no project-specific implementation task has been 
 
 ## Test Notes
 
-- Not tested.
-- Fresh verification evidence: None.
+- `python3 scripts/render-ticket-dashboard.py --validate` passed on 2026-07-14 after `ARCH-002` and the queue were created.
+- Failures or coverage gaps: None for the bootstrap outcome.
+- Durable memory updates: None; active architecture remains in `ARCH-002`.
+- Follow-up ticket: `ARCH-002`.
+- Fresh verification evidence: Ticket IDs, states, and queue entries are aligned with no dashboard warnings.
 
 ## Memory Updates
 

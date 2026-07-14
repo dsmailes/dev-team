@@ -1,0 +1,312 @@
+# ARCH-002
+
+## ID
+
+`ARCH-002`
+
+## Title
+
+Isolate concurrent ticket execution and verification.
+
+## State
+
+`Ready`
+
+## Problem
+
+Concurrent agents can currently mutate or build from one shared worktree. Review and test commands may then observe a moving tree, overwrite shared build products, and trigger repeated isolated reruns whose evidence no longer identifies the source that was verified.
+
+## Scope
+
+- Define a portable orchestration rule for tickets that mutate files or produce build artifacts.
+- Use a separate ticket branch and worktree for each concurrent mutating or building ticket when the runtime and repository support isolated worktrees.
+- Serialize mutating and building tickets when isolated worktrees are unavailable; read-only investigations may remain parallel when they cannot alter shared state.
+- Require Executor to produce a scoped ticket commit and record its immutable commit ID before review.
+- Require Reviewer and Tester to verify the same exact commit from a clean ticket verification worktree rather than a moving shared tree.
+- Require ticket-scoped build and artifact roots, including ticket-scoped Xcode `DerivedData` when applicable.
+- Preserve focused per-ticket verification, then merge scoped ticket commits and run one full integration matrix on the resulting integration commit for the batch.
+- Add metadata, handoff gates, role prompts, cleanup/rollback guidance, runtime fallback behavior, and installer regression coverage for the contract.
+
+## Out Of Scope
+
+- Implementing worktree creation in a specific agent runtime or requiring one vendor's subagent API.
+- Building a branch manager, merge queue, CI service, or new dashboard UI.
+- Changing model assignments.
+- Requiring Git worktrees for read-only tickets or repositories/runtimes that cannot support them.
+- Running a full repository matrix independently for every concurrent ticket.
+
+## Acceptance Criteria
+
+- Core workflow docs define `isolated` and `serialized` execution modes and require the orchestrator to record the selected mode before concurrent mutation or build work begins.
+- In `isolated` mode, each concurrent mutating/building ticket has a unique branch, worktree, ticket commit, and ticket-scoped build/artifact roots; no two active tickets share mutable source or build output paths.
+- In `serialized` fallback mode, only one mutating/building ticket owns the shared worktree at a time, and review/test wait until mutation stops and a stable commit is recorded.
+- Executor handoff records the base commit, ticket branch/worktree, scoped ticket commit, files changed, focused verification, and artifact locations.
+- Reviewer and Tester prompts and gates require an exact verification commit, a clean ticket verification worktree, and a recorded cleanliness check; they reject a moving shared tree or commit mismatch.
+- Build guidance uses project-native ticket-scoped artifact paths and names Xcode `-derivedDataPath` only as a platform-specific example, keeping the pack framework-neutral.
+- Concurrent ticket commits are merged by the orchestrator into one integration commit/batch, with conflict resolution recorded as a new commit and affected focused checks rerun.
+- One full integration matrix runs after merge for the batch. Each included ticket retains focused pre-merge evidence and records the integration commit, matrix command/result, and batch membership before `Done`.
+- Cleanup guidance removes ticket worktrees and branches only after merge, verification, and artifact capture; blocked/failed work is preserved for diagnosis; cleanup is non-destructive by default.
+- Rollback guidance covers removing an unmerged ticket workspace and reverting an integrated scoped commit without discarding unrelated ticket work.
+- Fresh install and update-preservation regression coverage proves the reusable docs/template are installed while project queues, tickets, memory, imported skills, and custom models remain preserved.
+- README and installed root guidance summarize the same contract without making an external skill family or runtime mandatory.
+
+## Questioning Notes
+
+- Context inspected: `AGENTS.md`; all files in `.agents/`, `.skills/`, `.tickets/`, and `.memory/`; `README.md`; `install.sh`; `scripts/render-ticket-dashboard.py`; `tests/test-install.sh`; repository file inventory; complete commit history; current status, branches, remotes, and worktree list; and representative workflow/installer commits `0e0e8d3`, `5d517e6`, `b7374e0`, and `4407480`.
+- Decision tree: First classify each ticket as read-only or mutating/building. For mutating/building work, detect isolated ticket worktree support. If supported, assign unique ticket workspaces; otherwise serialize. After a scoped ticket commit exists, verify that immutable commit in a clean ticket worktree. Merge reviewed commits into one integration commit, run the full matrix once, attach that evidence to every included ticket, then clean up.
+- Blocking questions: None. The user selected separate ticket branches/worktrees with serialization fallback, immutable commit verification, ticket-scoped artifacts, and one post-merge matrix.
+- Assumptions: The orchestrator owns workspace assignment, integration, and cleanup; Git-backed projects can expose immutable commit IDs; project-native commands can redirect build products or document unavoidable outputs; generated local dashboards remain ignored artifacts.
+- Deferred questions: A future runtime adapter may automate worktree provisioning and cleanup, and a future dashboard enhancement may surface workspace metadata if users need it. Neither is required to establish the source workflow contract.
+- Approaches considered: Continue disjoint file ownership in one tree; require isolated worktrees unconditionally; define capability-based isolation with serialization fallback and a single integration batch.
+- Chosen approach: Capability-based isolation plus serialized fallback. This is portable across runtimes, prevents moving-tree review, and avoids multiplying expensive full matrices.
+- Rejected alternatives: File ownership alone does not isolate build products or source snapshots. Unconditional worktrees would make the pack unusable in runtimes without worktree support. Per-ticket full matrices preserve isolation but repeat expensive coverage without testing the merged result.
+
+## Likely Files
+
+- `AGENTS.md`
+- `README.md`
+- `.agents/README.md`
+- `.agents/architect.md`
+- `.agents/executor.md`
+- `.agents/reviewer.md`
+- `.agents/tester.md`
+- `.agents/runbook.md`
+- `.agents/prompts.md`
+- `.agents/handoff.md`
+- `.skills/principles.md`
+- `.tickets/README.md`
+- `.tickets/template.md`
+- `tests/test-install.sh`
+- `install.sh` only if implementation discovers that existing copy/update behavior cannot propagate the reusable files without changing its contract.
+- `scripts/render-ticket-dashboard.py` only if validation must enforce newly required metadata; no dashboard UI change is currently required.
+
+## Risks
+
+- A reviewer may accidentally verify the integration branch or shared checkout instead of the recorded ticket commit.
+- Build tools may still write caches outside the configured ticket artifact root.
+- Merge conflict resolution can invalidate reviewed code if the new integration commit is not linked back to affected tickets.
+- Overly Git-specific wording could weaken portability to constrained runtimes.
+- Cleanup commands can destroy unmerged work if ownership and merge state are not checked first.
+- A single integration matrix can obscure which ticket caused a failure unless batch membership and focused evidence remain explicit.
+- Installer update tests could accidentally assert replacement of project-owned state that `--update` must preserve.
+
+## Rollback And Persistence
+
+- Persistent changes: Reusable workflow instructions, role prompts, ticket metadata/gates, root documentation, and installer regression expectations.
+- User-owned configuration touched: None. Plain installer update must continue preserving project tickets, queue, memory, imported skills, and custom model configuration.
+- Idempotency expectation: Reapplying the workflow update or running installer `--update` repeatedly must not duplicate metadata, overwrite live ticket state, or create worktrees/branches as an installer side effect.
+- Rollback or undo path: Revert the scoped workflow commit. For runtime workspaces, first preserve any unmerged commit, remove only the named ticket worktree after a clean/merged check, prune stale worktree metadata, and delete only the ticket branch confirmed merged or intentionally abandoned. Revert an integrated ticket with a new scoped revert commit rather than resetting shared history.
+
+## Workspace And Integration Contract
+
+- Runtime capability: Record whether isolated ticket branches/worktrees are available through the active runtime or safe project-local Git tooling.
+- Execution mode: `isolated` when supported; otherwise `serialized`.
+- Ticket workspace metadata: Base commit, ticket branch, executor worktree path, verification worktree path, ticket commit, artifact root, and cleanup status.
+- Stable verification target: Reviewer and Tester use the recorded ticket commit. A commit mismatch or dirty verification tree is `BLOCKED` until corrected.
+- Focused evidence: Record ticket-specific tests/checks against the ticket commit before integration.
+- Integration evidence: Record batch ID, included ticket commits, resulting integration commit, merge/conflict notes, full matrix commands/results, and artifact root.
+- Completion rule: A concurrent ticket is not `Done` until its focused evidence and the shared post-merge integration evidence are both attached or explicitly waived with a risk-based reason.
+- Runtime fallback: Without isolated worktree support, the orchestrator queues mutating/building tickets serially in the shared worktree and permits Reviewer/Tester only after a stable commit and clean status exist.
+
+## Skill Context
+
+- Language: Markdown, POSIX shell, Python.
+- Framework: None.
+- Platform: Portable Git-based agent workflow pack; platform-specific build tools remain optional examples.
+- Project type: Agent orchestration, installer, and workflow documentation.
+- Task type: Concurrency isolation, immutable verification, integration orchestration, and regression testing.
+- Required skills:
+  - Architect: `agent-workflow-audit`
+  - Designer: `None`
+  - Executor: `None`
+  - Reviewer: `None`
+  - Tester: `None`
+- Optional skills: Project-local Git/worktree, build, testing, or platform skills when imported and applicable; otherwise `None`.
+- Design tooling:
+  - Required: `No`
+  - Capabilities: `None`
+  - Source: `None`
+  - Notes: No UI change is planned.
+- Custom skill notes: Keep exact external skill names optional. The workflow contract must be understandable and executable from the installed Markdown alone.
+
+## Execution Model
+
+- Executor model: `terra`
+- Executor effort: `high`
+- Escalation needed: `No`
+- Escalation model: None.
+- Escalation reason: The architecture and acceptance contract are resolved; implementation is coordinated documentation and focused regression coverage.
+- Terra unavailable fallback: Use the nearest available balanced coding model and record the fallback reason.
+- Model actually used: Not run.
+
+## Agent Run Summary
+
+Record every role that actually ran for this ticket. Do not estimate token usage: write `Unavailable` when the runtime does not expose it.
+
+| Role | Agent or task | Model | Effort | Token usage |
+| --- | --- | --- | --- | --- |
+| Architect | Current Architect task | Unavailable | Unavailable | Unavailable |
+| Designer | Not run | Not run | Not run | Not run |
+| Executor | Not run | Not run | Not run | Not run |
+| Reviewer | Not run | Not run | Not run | Not run |
+| Tester | Not run | Not run | Not run | Not run |
+
+## Designer Review
+
+- Required: `No`
+- Reason: This changes workflow and verification contracts, not user-facing UI.
+- Preferred model: See `.agents/models.md`.
+- Preferred effort: See `.agents/models.md`.
+- Design tooling needed: None.
+- Output needed: None.
+
+## Design Brief
+
+- UI goal: Not applicable.
+- Target user and workflow: Not applicable.
+- Layout and components: Not applicable.
+- States and edge cases: Not applicable.
+- Accessibility: Not applicable.
+- Responsive or platform-specific behavior: Not applicable.
+- Assets and icons: Not applicable.
+- Design tooling used: None.
+- Executor notes: Not applicable.
+
+## TDD Plan
+
+- Failing test: Extend `tests/test-install.sh` first to assert that a fresh install contains the isolation modes, immutable verification metadata/gates, ticket-scoped artifact guidance, serialized fallback, and post-merge integration contract.
+- Expected failure: The new assertions fail because current installed workflow files and ticket template contain none of the required worktree/commit/integration metadata.
+- Minimal implementation: Update only the reusable source docs, prompts, principles, ticket template/README, root guidance, and any narrowly necessary installer/dashboard behavior.
+- Passing verification: Run the focused installer regression, source dashboard validation, two fresh temporary-target install/validate flows, and consistency searches for contradictory shared-tree/full-matrix guidance.
+- TDD waiver, if any: None for installer propagation behavior. Pure prose edits are verified through focused assertions and cross-file consistency review.
+
+## Verification Plan
+
+- `sh tests/test-install.sh`
+- `python3 scripts/render-ticket-dashboard.py --validate`
+- Fresh explicit target: `tmpdir="$(mktemp -d)"; ./install.sh --project "$tmpdir" --no-import-skills --no-model-prompt; find "$tmpdir" -maxdepth 2 -type f | sort; python3 "$tmpdir/scripts/render-ticket-dashboard.py" --project "$tmpdir" --validate`
+- Fresh `--here` target: `tmpdir="$(mktemp -d)"; packdir="$(pwd)"; (cd "$tmpdir" && "$packdir/install.sh" --here --no-import-skills --no-model-prompt); python3 "$tmpdir/scripts/render-ticket-dashboard.py" --project "$tmpdir" --validate`
+- Update preservation: Extend the existing regression to prove project tickets, queue, memory, imported skills, and custom models survive while reusable guidance/template files refresh.
+- Consistency search: `rg -n -i 'worktree|ticket commit|verification commit|artifact root|deriveddata|serialized|integration matrix|integration commit' AGENTS.md README.md .agents .skills .tickets tests`
+- Artifact check: `git status --short --untracked-files=all`
+
+## Handoff Gates
+
+### Backlog -> Ready
+
+- [x] Problem is clear.
+- [x] Scope and out-of-scope are written.
+- [x] Acceptance criteria are written.
+- [x] `Questioning Notes` is filled.
+- [x] Blocking questions are answered, waived with a reason, or moved to `Blocked`.
+- [x] Likely files or modules are listed.
+- [x] Risks are listed.
+- [x] Rollback and persistence impact is documented, or explicitly marked `None`.
+- [x] `Skill Context` is filled, including role-specific skills or `None`.
+- [x] `Execution Model` is filled, defaulting Executor to `terra` unless escalation is justified.
+- [x] Verification plan exists.
+- [x] `Designer Review` is marked `Yes` or `No`.
+- [x] TDD plan exists for behavior changes, or a waiver explains why it does not apply.
+- Waiver: None.
+
+### Ready -> Design
+
+- [x] Designer owner is assigned.
+- [x] Relevant UI files, design-system notes, and memory entries are listed.
+- [x] Output needed from Designer is stated.
+- [x] Open design/product questions are listed or explicitly marked `None`.
+- Waiver: Designer is not required because the ticket has no UI or UX scope.
+
+### Design -> Ready
+
+- [x] Design brief is complete.
+- [x] UI acceptance criteria are concrete enough for Executor.
+- [x] Accessibility, responsive/platform behavior, states, and edge cases are documented.
+- [x] Assets/icons/copy needs are documented or explicitly marked `None`.
+- Waiver: Designer is not required because the ticket has no UI or UX scope.
+
+### Ready -> In Progress
+
+- [ ] Executor owner is assigned.
+- [ ] Executor model and effort are stated.
+- [ ] Executor escalation reason is stated, or escalation is marked `No`.
+- [ ] Relevant files are listed.
+- [ ] Relevant memory entries are listed.
+- [ ] Acceptance criteria are restated or referenced.
+- [ ] Expected executor output is stated.
+- [ ] Verification command or manual check is stated.
+- [ ] Execution mode, base commit, ticket branch/worktree, and ticket-scoped artifact root are recorded.
+- Waiver:
+
+### In Progress -> Review
+
+- [ ] Files changed are listed.
+- [ ] Implementation notes are written.
+- [ ] Model actually used is recorded.
+- [ ] Red/green evidence is recorded, or TDD waiver is referenced.
+- [ ] Commands run are recorded.
+- [ ] Known gaps are recorded or explicitly marked `None`.
+- [ ] Scoped ticket commit and clean executor status are recorded.
+- [ ] Verification worktree and exact verification commit are recorded.
+- Waiver:
+
+### Review -> Test
+
+- [ ] Spec compliance review is complete against the recorded ticket commit.
+- [ ] Code quality review is complete against the same ticket commit.
+- [ ] Reviewer clean-worktree and commit-identity checks are recorded.
+- [ ] Open review issues are resolved, waived with reason, or ticket is blocked.
+- [ ] Focused test scope and ticket-scoped artifact root are identified.
+- Waiver:
+
+### Test -> Done
+
+- [ ] Fresh focused verification evidence for the exact ticket commit is recorded.
+- [ ] Tester clean-worktree, commit-identity, and artifact-root checks are recorded.
+- [ ] Integration batch membership and resulting integration commit are recorded.
+- [ ] One post-merge integration matrix result is linked for the batch.
+- [ ] Merge conflicts and affected focused reruns are recorded or explicitly marked `None`.
+- [ ] Failures or coverage gaps are recorded or explicitly marked `None`.
+- [ ] Cleanup status for ticket worktrees, branches, and artifacts is recorded.
+- [ ] Durable memory updates are promoted to `.memory/` or explicitly marked `None`.
+- [ ] Follow-up tickets are created or explicitly marked `None`.
+- [ ] Final ticket state matches `.tickets/queue.md`.
+- [ ] `Agent Run Summary` lists every role that ran, its model and effort, and token usage or `Unavailable`.
+- Waiver:
+
+## Review Plan
+
+- Spec compliance: Trace every user-selected rule through root guidance, orchestration docs, role prompts, handoff gates, ticket metadata, installer propagation, and regression assertions. Confirm no role is instructed to review a moving shared tree or run a redundant full matrix per concurrent ticket.
+- Code quality: Check terminology is consistent, capability-based, framework-neutral, non-destructive, and specific enough to execute without chat context. Confirm examples do not make Xcode or a particular runtime mandatory.
+
+## Decisions
+
+- The orchestrator owns execution-mode selection, workspace assignment, integration, and cleanup.
+- A ticket commit is the immutable unit of per-ticket review and focused verification.
+- The integration commit is the immutable unit of the shared full matrix.
+- Serialized execution is the mandatory fallback when isolated ticket worktrees are unavailable.
+- Build and test outputs are ticket-scoped even when source files are disjoint.
+- Merge conflict resolution creates a new integration commit and invalidates only the focused evidence affected by the resolution.
+
+## Memory Updates
+
+- Project: None; this repository's checked-in workflow docs are the durable source of truth.
+- Commands: None; verification commands are already documented in `AGENTS.md` and this ticket.
+- Decisions: None; task-local architecture decisions remain in this ticket until implemented in reusable source docs.
+- Pitfalls: None; the repeated shared-worktree rerun problem is captured in this ticket until the source workflow changes.
+
+## Implementation Notes
+
+- Not started. Architect scope is limited to planning artifacts.
+- Red/green evidence: Not run.
+- Commands run: Repository inspection and dashboard validation only; implementation verification has not run.
+
+## Review Notes
+
+- Spec compliance notes: Not reviewed.
+- Code quality notes: Not reviewed.
+
+## Test Notes
+
+- Not tested.
+- Fresh verification evidence: None.

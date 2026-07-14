@@ -2,11 +2,11 @@
 
 ## Backlog
 
-- `ARCH-001`: Define first project task from user request. See `ARCH-001.md`.
+No tickets.
 
 ## Ready
 
-No tickets.
+- `ARCH-002`: Isolate concurrent ticket execution and verification. See `ARCH-002.md`.
 
 ## Design
 
@@ -26,6 +26,7 @@ No tickets.
 
 ## Done
 
+- `ARCH-001`: Define first project task from user request. See `ARCH-001.md`.
 - `SAFE-001`: Harden installer updates and reset behavior. See `SAFE-001.md`.
 
 ## Blocked
