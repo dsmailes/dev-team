@@ -14,6 +14,8 @@ hash_file() {
 
 grep -Fq '## Agent Run Summary' "$PROJECT/.tickets/template.md"
 grep -Fq 'Token usage' "$PROJECT/.tickets/template.md"
+grep -Fq '## Source Isolation' "$PROJECT/.tickets/template.md"
+grep -Fq 'Implementation commit SHA' "$PROJECT/.tickets/template.md"
 
 cat > "$PROJECT/.tickets/SAFE-900.md" <<'EOF'
 # SAFE-900
