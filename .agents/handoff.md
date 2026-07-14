@@ -25,7 +25,7 @@ Required before implementation can be assigned:
 - Rollback and persistence impact is documented, or explicitly marked `None`.
 - `Skill Context` is filled, including role-specific skills or `None`.
 - `Execution Model` is filled, defaulting Executor to `terra` unless escalation is justified.
-- `Source Isolation` says whether concurrent execution is planned; concurrent tickets have a dedicated branch and worktree.
+- `Source Isolation` selects `isolated` or `serialized`. Isolated tickets have a dedicated branch/worktree; serialized tickets have exclusive shared-worktree ownership.
 - Verification plan exists.
 - `Designer Review` is marked `Yes` or `No`.
 - TDD plan exists for behavior changes, or a waiver explains why it does not apply.
@@ -61,7 +61,7 @@ Required before Executor starts:
 - Expected executor output is stated.
 - Verification command or manual check is stated.
 - Runtime support for live supervisor contact is noted, or fallback status reporting is required.
-- Concurrent tickets have a dedicated branch, worktree, and isolated build/cache path when the platform needs one.
+- Base commit, executor workspace, and ticket-scoped artifact root are recorded. Isolated tickets also have a dedicated branch/worktree.
 
 ### In Progress -> Review
 
@@ -70,7 +70,8 @@ Required before Reviewer starts:
 - Files changed are listed.
 - Implementation notes are written.
 - Model actually used is recorded.
-- Implementation commit SHA is recorded.
+- Ticket commit SHA and clean executor status are recorded.
+- Clean verification worktree and exact verification commit are recorded.
 - Red/green evidence is recorded, or TDD waiver is referenced.
 - Commands run are recorded.
 - `git status --short --untracked-files=all` or equivalent artifact check is recorded when relevant.
@@ -84,7 +85,7 @@ Required before Tester starts:
 - Code quality review is complete.
 - Open review issues are resolved, waived with reason, or ticket is blocked.
 - Test scope is identified.
-- Reviewer verified the implementation commit SHA recorded by Executor.
+- Reviewer verified the ticket commit SHA in a clean verification worktree.
 - Missing context is resolved through supervisor contact, or reported as `NEEDS_CONTEXT` / `BLOCKED`.
 
 ### Test -> Done
@@ -97,7 +98,8 @@ Required before completion:
 - Follow-up tickets are created or explicitly marked `None`.
 - Final ticket state matches `.tickets/queue.md`.
 - Tester verified the same commit SHA reviewed by Reviewer, or recorded why a newer commit required re-review.
-- Concurrent-ticket integration matrix is recorded after merge, or explicitly marked `Not applicable`.
+- Integration batch membership, integration commit, and one post-merge matrix result are recorded when this ticket joins a concurrent batch, or explicitly marked `Not applicable`.
+- Cleanup status for ticket worktrees, branches, and artifacts is recorded; unmerged or blocked work is preserved.
 - `Agent Run Summary` lists every role that ran, its model and effort, and token usage or `Unavailable`.
 
 ## Handoff Summary

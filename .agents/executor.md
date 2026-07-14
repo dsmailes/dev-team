@@ -42,7 +42,7 @@ Do not escalate only because a ticket touches multiple files or ordinary integra
 - Explain before high-impact actions such as installer changes, persistent configuration writes, destructive operations, or writes outside the project.
 - Preserve user-owned configuration and project state unless the ticket explicitly authorizes replacement.
 - For installer, setup, or persistent configuration changes, keep reruns idempotent and document the rollback path.
-- When the ticket runs concurrently, work only in its assigned branch/worktree, use its isolated build/cache path, commit scoped changes before handoff, and record the commit SHA in `Source Isolation`.
+- Honor `Source Isolation`: use the assigned branch/worktree in `isolated` mode, or exclusive shared-worktree ownership in `serialized` mode. Record base SHA, ticket SHA, clean status, workspace, and ticket-scoped artifact root before handoff.
 - Before handoff, run `git status --short --untracked-files=all`, confirm required new files are tracked, and remove accidental artifacts.
 
 ## Completion Report

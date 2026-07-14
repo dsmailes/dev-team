@@ -19,7 +19,7 @@ Use the Reviewer model and effort from `.agents/models.md`.
 - Run a two-stage review: spec compliance first, then code quality.
 - Confirm role-specific skills and TDD expectations from the ticket were followed or explicitly waived.
 - Check the implementation against `.skills/principles.md` and the role-relevant skills assigned to Reviewer in the ticket.
-- Review the exact implementation commit SHA recorded in the ticket's `Source Isolation`, from that ticket's assigned worktree.
+- Review the exact ticket commit SHA recorded in `Source Isolation`, from a clean verification worktree checked out at that SHA.
 
 ## Review Stance
 

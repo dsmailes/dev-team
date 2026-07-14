@@ -15,7 +15,9 @@ hash_file() {
 grep -Fq '## Agent Run Summary' "$PROJECT/.tickets/template.md"
 grep -Fq 'Token usage' "$PROJECT/.tickets/template.md"
 grep -Fq '## Source Isolation' "$PROJECT/.tickets/template.md"
-grep -Fq 'Implementation commit SHA' "$PROJECT/.tickets/template.md"
+grep -Fq 'Execution mode: `serialized`' "$PROJECT/.tickets/template.md"
+grep -Fq 'Verification worktree' "$PROJECT/.tickets/template.md"
+grep -Fq 'Ticket commit SHA' "$PROJECT/.tickets/template.md"
 
 cat > "$PROJECT/.tickets/SAFE-900.md" <<'EOF'
 # SAFE-900
@@ -79,6 +81,9 @@ MODELS_HASH=$(hash_file "$PROJECT/.agents/models.md")
 [ "$QUEUE_HASH" = "$(hash_file "$PROJECT/.tickets/queue.md")" ]
 [ "$MEMORY_HASH" = "$(hash_file "$PROJECT/.memory/project.md")" ]
 [ "$MODELS_HASH" = "$(hash_file "$PROJECT/.agents/models.md")" ]
+grep -Fq 'Execution mode: `serialized`' "$PROJECT/.tickets/template.md"
+grep -Fq 'Verification worktree' "$PROJECT/.tickets/template.md"
+grep -Fq 'Ticket commit SHA' "$PROJECT/.tickets/template.md"
 
 python3 "$PROJECT/scripts/render-ticket-dashboard.py" --project "$PROJECT" --validate
 python3 "$PROJECT/scripts/render-ticket-dashboard.py" --project "$PROJECT"

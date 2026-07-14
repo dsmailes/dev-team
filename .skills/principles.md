@@ -9,7 +9,7 @@ These practices are reusable across frameworks and should inform every agent rol
 - Use live supervisor contact for blocking subagent questions when available; otherwise require `NEEDS_CONTEXT` or `BLOCKED` reports.
 - Keep delegation inside the allowed role list for the workflow and project.
 - Keep tickets small, independently verifiable, and owned by one agent at a time.
-- For concurrent implementation tickets, use a dedicated branch and worktree per ticket. Review and test the recorded implementation commit SHA in that worktree, then run the full integration matrix after merging into an integration branch.
+- For concurrent implementation tickets, use a dedicated branch and worktree per ticket. Without that capability, serialize mutating/building tickets. Review and test the recorded ticket SHA in a clean verification worktree, then run one full integration matrix after merging into an integration branch.
 - Review after implementation, with spec compliance before code quality.
 - If an implementer reports `NEEDS_CONTEXT`, `DONE_WITH_CONCERNS`, or `BLOCKED`, change the context, model, ticket size, or plan before retrying.
 

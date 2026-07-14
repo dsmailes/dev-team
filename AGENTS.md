@@ -26,6 +26,7 @@ This project is a portable agent workflow pack. It is not an application.
 - Use `.memory/` for durable project knowledge only. Keep active task notes in `.tickets/`.
 - Do not move a ticket between states unless the relevant handoff gate is complete or explicitly waived with a reason.
 - Keep installer behavior conservative: no overwrites unless `--force` is explicitly passed.
+- For concurrent mutating or building tickets, use isolated branches/worktrees when available; otherwise serialize ownership of the shared worktree. Review and test immutable ticket commits in clean verification worktrees, then run the integration matrix after merge.
 - Prefer Markdown instructions that are easy to copy into project-local workflows.
 
 ## Verification
