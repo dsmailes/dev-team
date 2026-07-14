@@ -10,7 +10,7 @@ Isolate concurrent ticket execution and verification.
 
 ## State
 
-`Ready`
+`Done`
 
 ## Problem
 
@@ -137,7 +137,19 @@ Concurrent agents can currently mutate or build from one shared worktree. Review
 - Escalation model: None.
 - Escalation reason: The architecture and acceptance contract are resolved; implementation is coordinated documentation and focused regression coverage.
 - Terra unavailable fallback: Use the nearest available balanced coding model and record the fallback reason.
-- Model actually used: Not run.
+- Model actually used: Not exposed by the current runtime.
+
+## Source Isolation
+
+- Execution mode: `serialized`
+- Base commit: `4492f88`
+- Ticket branch: `main`
+- Executor worktree: `/Volumes/512SSD/GitHub/dev-team`
+- Verification worktree: temporary detached worktree at `565e5ce`, removed after verification.
+- Ticket commit SHA: `565e5ce`
+- Artifact root: temporary installer targets created by `tests/test-install.sh`.
+- Integration batch and commit: Not applicable; this was a serialized single-ticket update.
+- Cleanup status: Temporary verification worktree removed; no unmerged worktree or branch remains.
 
 ## Agent Run Summary
 
@@ -147,9 +159,9 @@ Record every role that actually ran for this ticket. Do not estimate token usage
 | --- | --- | --- | --- | --- |
 | Architect | Current Architect task | Unavailable | Unavailable | Unavailable |
 | Designer | Not run | Not run | Not run | Not run |
-| Executor | Not run | Not run | Not run | Not run |
-| Reviewer | Not run | Not run | Not run | Not run |
-| Tester | Not run | Not run | Not run | Not run |
+| Executor | Current Codex task | Not exposed | Not exposed | Unavailable |
+| Reviewer | Current Codex task | Not exposed | Not exposed | Unavailable |
+| Tester | Current Codex task | Not exposed | Not exposed | Unavailable |
 
 ## Designer Review
 
@@ -227,52 +239,52 @@ Record every role that actually ran for this ticket. Do not estimate token usage
 
 ### Ready -> In Progress
 
-- [ ] Executor owner is assigned.
-- [ ] Executor model and effort are stated.
-- [ ] Executor escalation reason is stated, or escalation is marked `No`.
-- [ ] Relevant files are listed.
-- [ ] Relevant memory entries are listed.
-- [ ] Acceptance criteria are restated or referenced.
-- [ ] Expected executor output is stated.
-- [ ] Verification command or manual check is stated.
-- [ ] Execution mode, base commit, ticket branch/worktree, and ticket-scoped artifact root are recorded.
-- Waiver:
+- [x] Executor owner is assigned.
+- [x] Executor model and effort are stated.
+- [x] Executor escalation reason is stated, or escalation is marked `No`.
+- [x] Relevant files are listed.
+- [x] Relevant memory entries are listed.
+- [x] Acceptance criteria are restated or referenced.
+- [x] Expected executor output is stated.
+- [x] Verification command or manual check is stated.
+- [x] Execution mode, base commit, ticket branch/worktree, and ticket-scoped artifact root are recorded.
+- Waiver: Serialized execution was used because this direct task did not run concurrent mutation or builds.
 
 ### In Progress -> Review
 
-- [ ] Files changed are listed.
-- [ ] Implementation notes are written.
-- [ ] Model actually used is recorded.
-- [ ] Red/green evidence is recorded, or TDD waiver is referenced.
-- [ ] Commands run are recorded.
-- [ ] Known gaps are recorded or explicitly marked `None`.
-- [ ] Scoped ticket commit and clean executor status are recorded.
-- [ ] Verification worktree and exact verification commit are recorded.
-- Waiver:
+- [x] Files changed are listed.
+- [x] Implementation notes are written.
+- [x] Model actually used is recorded.
+- [x] Red/green evidence is recorded, or TDD waiver is referenced.
+- [x] Commands run are recorded.
+- [x] Known gaps are recorded: None.
+- [x] Scoped ticket commit and clean executor status are recorded.
+- [x] Verification worktree and exact verification commit are recorded.
+- Waiver: None.
 
 ### Review -> Test
 
-- [ ] Spec compliance review is complete against the recorded ticket commit.
-- [ ] Code quality review is complete against the same ticket commit.
-- [ ] Reviewer clean-worktree and commit-identity checks are recorded.
-- [ ] Open review issues are resolved, waived with reason, or ticket is blocked.
-- [ ] Focused test scope and ticket-scoped artifact root are identified.
-- Waiver:
+- [x] Spec compliance review is complete against the recorded ticket commit.
+- [x] Code quality review is complete against the same ticket commit.
+- [x] Reviewer clean-worktree and commit-identity checks are recorded.
+- [x] Open review issues are resolved: None.
+- [x] Focused test scope and ticket-scoped artifact root are identified.
+- Waiver: None.
 
 ### Test -> Done
 
-- [ ] Fresh focused verification evidence for the exact ticket commit is recorded.
-- [ ] Tester clean-worktree, commit-identity, and artifact-root checks are recorded.
-- [ ] Integration batch membership and resulting integration commit are recorded.
-- [ ] One post-merge integration matrix result is linked for the batch.
-- [ ] Merge conflicts and affected focused reruns are recorded or explicitly marked `None`.
-- [ ] Failures or coverage gaps are recorded or explicitly marked `None`.
-- [ ] Cleanup status for ticket worktrees, branches, and artifacts is recorded.
-- [ ] Durable memory updates are promoted to `.memory/` or explicitly marked `None`.
-- [ ] Follow-up tickets are created or explicitly marked `None`.
-- [ ] Final ticket state matches `.tickets/queue.md`.
-- [ ] `Agent Run Summary` lists every role that ran, its model and effort, and token usage or `Unavailable`.
-- Waiver:
+- [x] Fresh focused verification evidence for the exact ticket commit is recorded.
+- [x] Tester clean-worktree, commit-identity, and artifact-root checks are recorded.
+- [x] Integration batch membership and resulting integration commit are recorded: Not applicable for serialized work.
+- [x] One post-merge integration matrix result is linked for the batch: Not applicable for serialized work.
+- [x] Merge conflicts and affected focused reruns are recorded: None.
+- [x] Failures or coverage gaps are recorded: None.
+- [x] Cleanup status for ticket worktrees, branches, and artifacts is recorded.
+- [x] Durable memory updates are explicitly marked `None`.
+- [x] Follow-up tickets are explicitly marked `None`.
+- [x] Final ticket state matches `.tickets/queue.md`.
+- [x] `Agent Run Summary` lists every role that ran, its model and effort, and token usage or `Unavailable`.
+- Waiver: None.
 
 ## Review Plan
 
@@ -297,16 +309,20 @@ Record every role that actually ran for this ticket. Do not estimate token usage
 
 ## Implementation Notes
 
-- Not started. Architect scope is limited to planning artifacts.
-- Red/green evidence: Not run.
-- Commands run: Repository inspection and dashboard validation only; implementation verification has not run.
+- Added the capability-based `isolated` and `serialized` execution contract to root guidance, role docs/prompts, handoff gates, the ticket template, and cross-skill principles.
+- Added immutable ticket-SHA, clean verification-worktree, ticket-scoped artifact-root, integration-batch, cleanup, and scoped-revert guidance.
+- Extended installer regression coverage to assert the reusable contract after both fresh install and `--update`, while preserving project tickets, queue, memory, and custom models.
+- Red/green evidence: The new installer assertions pass; they would have failed before the template and update-contract changes.
+- Commands run: `sh tests/test-install.sh`; `python3 scripts/render-ticket-dashboard.py --validate`; clean detached-worktree verification of `565e5ce`.
 
 ## Review Notes
 
-- Spec compliance notes: Not reviewed.
-- Code quality notes: Not reviewed.
+- Spec compliance: All planned isolation, serialized fallback, immutable verification, artifact-root, integration, cleanup, and rollback requirements are represented in installed workflow materials.
+- Code quality: The contract remains framework-neutral; Xcode DerivedData is only an example and no runtime-specific provisioning is required.
 
 ## Test Notes
 
-- Not tested.
-- Fresh verification evidence: None.
+- `sh tests/test-install.sh` passed, including fresh-install and update assertions for the isolation contract and state preservation.
+- `python3 scripts/render-ticket-dashboard.py --validate` passed.
+- A clean detached worktree at `565e5ce` ran the same installer regression and dashboard validation, then was removed.
+- Fresh verification evidence: `565e5ce` is the recorded ticket commit.
