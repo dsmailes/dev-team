@@ -6,7 +6,7 @@ No tickets.
 
 ## Ready
 
-- `ARCH-002`: Isolate concurrent ticket execution and verification. See `ARCH-002.md`.
+No tickets.
 
 ## Design
 
@@ -18,7 +18,7 @@ No tickets.
 
 ## Review
 
-No tickets.
+- `ARCH-002`: Isolate concurrent ticket execution and verification. See `ARCH-002.md`.
 
 ## Test
 

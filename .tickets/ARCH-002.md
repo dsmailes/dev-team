@@ -10,7 +10,7 @@ Isolate concurrent ticket execution and verification.
 
 ## State
 
-`Ready`
+`Review`
 
 ## Problem
 
@@ -99,9 +99,20 @@ Concurrent agents can currently mutate or build from one shared worktree. Review
 
 ## Workspace And Integration Contract
 
-- Runtime capability: Record whether isolated ticket branches/worktrees are available through the active runtime or safe project-local Git tooling.
-- Execution mode: `isolated` when supported; otherwise `serialized`.
-- Ticket workspace metadata: Base commit, ticket branch, executor worktree path, verification worktree path, ticket commit, artifact root, and cleanup status.
+- Ticket classification: `mutating/building`.
+- Runtime capability: Safe local Git worktrees are available.
+- Execution mode: `isolated`.
+- Base commit: `06edf5e6a5365fbb2b8643391b7fc69a06c2c306`.
+- Ticket branch: `codex/arch-002-isolation`.
+- Executor worktree: `/tmp/dev-team-arch-002`.
+- Verification worktree: `/tmp/dev-team-arch-002-verify` (detached, clean at the verification commit).
+- Ticket commit: `83f9c5fd4c516d0e1cf243422fbf76aa9b46bf0c`.
+- Verification commit: `83f9c5fd4c516d0e1cf243422fbf76aa9b46bf0c`.
+- Ticket-scoped artifact root: `/tmp/dev-team-arch-002-artifacts/ARCH-002` (no persistent artifacts produced by this documentation/install regression work).
+- Cleanup status: Executor worktree was clean after the scoped commit. Preserve the clean verification worktree through Review/Test; branch/worktree cleanup remains pending merge, integration verification, and evidence capture.
+- Integration batch: Pending orchestrator merge after Review/Test.
+- Included ticket commits: Pending integration batch selection.
+- Integration commit: Pending orchestrator merge.
 - Stable verification target: Reviewer and Tester use the recorded ticket commit. A commit mismatch or dirty verification tree is `BLOCKED` until corrected.
 - Focused evidence: Record ticket-specific tests/checks against the ticket commit before integration.
 - Integration evidence: Record batch ID, included ticket commits, resulting integration commit, merge/conflict notes, full matrix commands/results, and artifact root.
@@ -137,7 +148,7 @@ Concurrent agents can currently mutate or build from one shared worktree. Review
 - Escalation model: None.
 - Escalation reason: The architecture and acceptance contract are resolved; implementation is coordinated documentation and focused regression coverage.
 - Terra unavailable fallback: Use the nearest available balanced coding model and record the fallback reason.
-- Model actually used: Not run.
+- Model actually used: `GPT-5` via Codex; the named `terra` profile was not exposed by this runtime, so the available coding model was used.
 
 ## Agent Run Summary
 
@@ -147,7 +158,7 @@ Record every role that actually ran for this ticket. Do not estimate token usage
 | --- | --- | --- | --- | --- |
 | Architect | Current Architect task | Unavailable | Unavailable | Unavailable |
 | Designer | Not run | Not run | Not run | Not run |
-| Executor | Not run | Not run | Not run | Not run |
+| Executor | Current Executor task | GPT-5 | high | Unavailable |
 | Reviewer | Not run | Not run | Not run | Not run |
 | Tester | Not run | Not run | Not run | Not run |
 
@@ -227,28 +238,28 @@ Record every role that actually ran for this ticket. Do not estimate token usage
 
 ### Ready -> In Progress
 
-- [ ] Executor owner is assigned.
-- [ ] Executor model and effort are stated.
-- [ ] Executor escalation reason is stated, or escalation is marked `No`.
-- [ ] Relevant files are listed.
-- [ ] Relevant memory entries are listed.
-- [ ] Acceptance criteria are restated or referenced.
-- [ ] Expected executor output is stated.
-- [ ] Verification command or manual check is stated.
-- [ ] Execution mode, base commit, ticket branch/worktree, and ticket-scoped artifact root are recorded.
-- Waiver:
+- [x] Executor owner is assigned: Executor Agent, `gpt-5.6-terra`, `high`.
+- [x] Executor model and effort are stated.
+- [x] Executor escalation reason is stated as `No`.
+- [x] Relevant files are listed.
+- [x] Relevant memory entries are listed.
+- [x] Acceptance criteria are restated or referenced.
+- [x] Expected executor output is the complete portable workspace/integration contract and installer regression coverage.
+- [x] Verification commands are stated in the Verification Plan.
+- [x] Execution mode, base commit, ticket branch/worktree, and ticket-scoped artifact root are recorded.
+- Waiver: None. Executor has a dedicated branch/worktree and live orchestrator contact.
 
 ### In Progress -> Review
 
-- [ ] Files changed are listed.
-- [ ] Implementation notes are written.
-- [ ] Model actually used is recorded.
-- [ ] Red/green evidence is recorded, or TDD waiver is referenced.
-- [ ] Commands run are recorded.
-- [ ] Known gaps are recorded or explicitly marked `None`.
-- [ ] Scoped ticket commit and clean executor status are recorded.
-- [ ] Verification worktree and exact verification commit are recorded.
-- Waiver:
+- [x] Files changed are listed.
+- [x] Implementation notes are written.
+- [x] Model actually used is recorded.
+- [x] Red/green evidence is recorded.
+- [x] Commands run are recorded.
+- [x] Known gaps are explicitly marked `None`.
+- [x] Scoped ticket commit and clean executor status are recorded.
+- [x] Verification worktree and exact verification commit are recorded.
+- Waiver: None.
 
 ### Review -> Test
 
@@ -297,9 +308,12 @@ Record every role that actually ran for this ticket. Do not estimate token usage
 
 ## Implementation Notes
 
-- Not started. Architect scope is limited to planning artifacts.
-- Red/green evidence: Not run.
-- Commands run: Repository inspection and dashboard validation only; implementation verification has not run.
+- Implemented the portable contract in root guidance, README, orchestration and role docs, cross-skill principles, ticket rules/template, and the installer regression. No runtime-specific worktree automation or dashboard parser change was needed: the installer already copies the reusable source files and preserves project-owned state on plain updates.
+- Files changed: `AGENTS.md`, `README.md`, `.agents/README.md`, `.agents/architect.md`, `.agents/executor.md`, `.agents/handoff.md`, `.agents/prompts.md`, `.agents/reviewer.md`, `.agents/runbook.md`, `.agents/tester.md`, `.skills/principles.md`, `.tickets/README.md`, `.tickets/template.md`, and `tests/test-install.sh`.
+- Scoped ticket commit: `83f9c5fd4c516d0e1cf243422fbf76aa9b46bf0c` (`Define isolated ticket workspace contract`). `git diff --check` passed before committing; the detached verification worktree was clean at this exact commit.
+- Red/green evidence: After extending `tests/test-install.sh`, `sh -x tests/test-install.sh` failed at the new fresh-install assertion for `Execution mode: \`isolated\` or \`serialized\`` in installed `AGENTS.md`. After the reusable guidance/template changes, `sh tests/test-install.sh` passed both in the executor worktree and in `/tmp/dev-team-arch-002-verify` at the recorded commit, including update preservation for ticket, queue, memory, imported skills, custom models, and refreshed reusable template metadata.
+- Commands run: `sh tests/test-install.sh`; `python3 scripts/render-ticket-dashboard.py --validate`; fresh `./install.sh --project "$tmpdir" --no-import-skills --no-model-prompt` plus installed dashboard validation; fresh `(cd "$tmpdir" && "$packdir/install.sh" --here --no-import-skills --no-model-prompt)` plus installed dashboard validation; `git diff --check`; targeted consistency `rg` scans; clean-worktree `git status --short --untracked-files=all` and `git rev-parse HEAD`.
+- Known gaps: None. The integration batch, integration commit, post-merge matrix, and final cleanup are intentionally orchestrator-owned future gates after Review/Test.
 
 ## Review Notes
 
