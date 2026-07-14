@@ -110,17 +110,6 @@ In `isolated` mode, each concurrent mutating/building ticket owns a unique branc
 - Terra unavailable fallback:
 - Model actually used:
 
-## Source Isolation
-
-- Concurrent execution: `No`
-- Worktree path: Not applicable.
-- Branch: Not applicable.
-- Implementation commit SHA: Not applicable.
-- Review commit SHA: Not applicable.
-- Test commit SHA: Not applicable.
-- Isolated build/cache path: Not applicable.
-- Integration branch and matrix: Not applicable.
-
 ## Agent Run Summary
 
 Record every role that actually ran for this ticket. Do not estimate token usage: write `Unavailable` when the runtime does not expose it.
@@ -180,7 +169,6 @@ Record every role that actually ran for this ticket. Do not estimate token usage
 - [ ] Rollback and persistence impact is documented, or explicitly marked `None`.
 - [ ] `Skill Context` is filled, including role-specific skills or `None`.
 - [ ] `Execution Model` is filled, defaulting Executor to `terra` unless escalation is justified.
-- [ ] `Source Isolation` says whether this ticket runs concurrently; concurrent tickets have a dedicated branch and worktree.
 - [ ] Verification plan exists.
 - [ ] `Designer Review` is marked `Yes` or `No`.
 - [ ] TDD plan exists for behavior changes, or a waiver explains why it does not apply.
@@ -220,7 +208,6 @@ Record every role that actually ran for this ticket. Do not estimate token usage
 - [ ] Files changed are listed.
 - [ ] Implementation notes are written.
 - [ ] Model actually used is recorded.
-- [ ] Implementation commit SHA is recorded.
 - [ ] Red/green evidence is recorded, or TDD waiver is referenced.
 - [ ] Commands run are recorded.
 - [ ] Known gaps are recorded or explicitly marked `None`.
@@ -248,8 +235,6 @@ Record every role that actually ran for this ticket. Do not estimate token usage
 - [ ] Durable memory updates are promoted to `.memory/` or explicitly marked `None`.
 - [ ] Follow-up tickets are created or explicitly marked `None`.
 - [ ] Final ticket state matches `.tickets/queue.md`.
-- [ ] Tester verified the same commit SHA reviewed by Reviewer, or recorded why a newer commit required re-review.
-- [ ] Concurrent-ticket integration matrix is recorded after merge, or explicitly marked `Not applicable`.
 - [ ] `Agent Run Summary` lists every role that ran, its model and effort, and token usage or `Unavailable`.
 - Waiver:
 

@@ -66,7 +66,6 @@ The packaged default is a Codex profile that uses Sol for architecture and produ
 - Only the orchestrator assigns tickets.
 - The orchestrator may not move a ticket to the next state until the relevant handoff gate in `.agents/handoff.md` is complete or explicitly waived in the ticket.
 - Agents should not edit the same files in parallel unless the orchestrator explicitly coordinates the overlap.
-- Concurrent implementation tickets must use dedicated branches and worktrees. Reviewer and Tester verify the ticket's recorded commit SHA in that worktree; merge ticket commits into an integration branch for the full integration matrix before main.
 - Agents should use only the role-relevant skills assigned in the ticket's `Skill Context`.
 - Ticket updates should preserve previous notes instead of replacing them.
 - Completed tickets must include an `Agent Run Summary` for every role that ran: agent or task identity, actual model, effort, and token usage when available. Use `Unavailable` rather than estimating unavailable telemetry, and announce the summary in the final handoff.

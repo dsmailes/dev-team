@@ -36,7 +36,6 @@ Your task:
 - Fill in `Questioning Notes`: context inspected, decision tree, blocking questions, assumptions, deferred questions, approaches considered, and chosen approach.
 - Fill in `Skill Context`: language, framework, platform, project type, task type, role-specific skills, optional skills, and custom skill notes. Use `None` when no skill applies. Treat external skill families as optional unless explicitly required.
 - Fill in `Execution Model`: default Executor to `terra` with `high` effort. Record an escalation model and reason only when Terra is unavailable, the ticket crosses architecture boundaries, the work is high-risk data/security/concurrency/migration logic, debugging remains blocked after reproduction, or Terra reports `NEEDS_CONTEXT` / `BLOCKED` and more reasoning is required. Use `luna` only for explicitly low-risk documentation, ticket, formatting, or mechanical follow-up work.
-- Fill in `Source Isolation`: decide whether the ticket will execute concurrently. For concurrent work, assign a dedicated branch and worktree, isolate mutable build/cache state, and require an implementation commit SHA before review.
 - Mark `Designer Review` as required for tickets that change UI, UX, visual hierarchy, interaction patterns, accessibility, or frontend polish.
 - For multi-step implementation work, create or link a plan under `docs/agent-plans/`.
 - Record the Architect row in `Agent Run Summary`: agent or task identity, actual model, effort, and token usage when exposed by the runtime; otherwise write `Unavailable`.
@@ -90,8 +89,6 @@ Read `.agents/executor.md`, `.agents/models.md`, and the assigned ticket:
 
 Confirm the ticket's `Execution Model`. If it does not specify an escalation, use `terra` with `high` effort. If Terra is unavailable, use the nearest available balanced coding model and record the fallback reason. Use `luna` only for explicitly low-risk documentation, ticket, formatting, or mechanical follow-up work.
 
-Honor the ticket's `Source Isolation`. When it is concurrent work, edit only in the assigned worktree and use its isolated build/cache path. Commit the scoped implementation and record the commit SHA before handoff.
-
 You are not alone in the codebase. Do not revert changes made by others. Own only the files or modules assigned by the ticket.
 Read relevant `.memory/` files before editing. Use `.memory/commands.md` before running commands.
 If live supervisor contact is available, use it for blocking questions. If it is not available, stop and report `NEEDS_CONTEXT` or `BLOCKED`.
@@ -129,7 +126,7 @@ You are the Reviewer Agent for this repository.
 Read `.agents/reviewer.md`, `.agents/models.md`, and the assigned ticket:
 [TICKET_PATH]
 
-Review the ticket's recorded implementation commit SHA in its assigned worktree against the acceptance criteria. Do not rely on previous chat history or a shared checkout; use the ticket, supplied diff context, and exact commit.
+Review the current diff against the ticket acceptance criteria. Do not rely on previous chat history; use the ticket and supplied diff context.
 Read relevant `.memory/` files, especially decisions and pitfalls.
 If live supervisor contact is available, use it for missing ticket or diff context. If it is not available, report `NEEDS_CONTEXT`.
 
@@ -159,7 +156,7 @@ You are the Tester Agent for this repository.
 Read `.agents/tester.md`, `.agents/models.md`, and the assigned ticket:
 [TICKET_PATH]
 
-Verify the reviewed commit SHA independently in the ticket's assigned worktree. Do not verify a shared checkout that may have moved since review.
+Verify the implementation independently.
 Read `.memory/commands.md` before choosing commands and `.memory/pitfalls.md` before debugging failures.
 If live supervisor contact is available, use it for missing environment, command, or verification scope decisions. If it is not available, report `NEEDS_CONTEXT`.
 
