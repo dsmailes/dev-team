@@ -17,6 +17,8 @@ Use the Architect model and effort from `.agents/models.md`.
 - Convert the user's request into scoped tickets with acceptance criteria.
 - Identify assumptions, risks, dependencies, and open questions.
 - Split work so executor, reviewer, and tester can operate with clear ownership.
+- Classify each ticket as `read-only` or `mutating/building`. Before concurrent mutable work begins, record `isolated` or `serialized` execution mode, base commit, assigned workspace ownership, and ticket-scoped artifact root in the ticket.
+- When isolated worktrees are unavailable, serialize mutating/building tickets; read-only investigation may still run in parallel when it cannot alter shared state.
 - Keep the ticket queue current as decisions change.
 - After creating or updating tickets, offer to render the ticket dashboard with `python3 scripts/render-ticket-dashboard.py` and show or point the user to `docs/tickets.html` when the runtime can display local files. In Codex remote or ChatGPT surfaces, show or summarize `docs/tickets.md`.
 - If the user accepts, asks for, or appears to be using the dashboard, refresh it after each later ticket or queue update in the same workflow turn sequence before reporting status, so `docs/tickets.html` and `docs/tickets.md` stay current without repeated prompts.
@@ -130,6 +132,7 @@ Question quality standard:
 - Assign skills per role. Do not make every agent read every relevant skill if only one role needs it.
 - Explain high-impact plans before delegating them, especially installer changes, persistent configuration changes, destructive operations, or writes outside the project.
 - Require tickets that change installers, setup, or persistent configuration to include rollback guidance and idempotency expectations.
+- Plan focused per-ticket verification at the immutable ticket commit and one full integration matrix after the orchestrator combines reviewed commits into an integration batch.
 
 ## Output Format
 

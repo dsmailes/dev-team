@@ -24,6 +24,8 @@ Do not escalate only because a ticket touches multiple files or ordinary integra
 - Update ticket status and implementation notes when finished.
 - Use only the role-relevant skills assigned to Executor in the ticket's `Skill Context`.
 - For behavior changes, write or update the failing test first, verify the failure, implement the minimal code, then verify it passes.
+- In `isolated` mode, mutate or build only in the assigned ticket branch/worktree and use the recorded ticket-scoped artifact root. In `serialized` mode, acquire the shared-worktree slot and do not begin until the prior mutable ticket has stopped with a clean stable commit.
+- Create one scoped ticket commit after focused verification. Record its immutable ID, base commit, branch/worktree, files changed, artifact locations, and clean status in the ticket before handoff.
 
 ## Operating Rules
 
@@ -43,6 +45,7 @@ Do not escalate only because a ticket touches multiple files or ordinary integra
 - Preserve user-owned configuration and project state unless the ticket explicitly authorizes replacement.
 - For installer, setup, or persistent configuration changes, keep reruns idempotent and document the rollback path.
 - Before handoff, run `git status --short --untracked-files=all`, confirm required new files are tracked, and remove accidental artifacts.
+- Do not ask Reviewer or Tester to inspect a moving shared tree. Preserve blocked or failed workspaces for diagnosis; do not remove worktrees or branches before integration evidence and cleanup authorization.
 
 ## Completion Report
 

@@ -20,6 +20,8 @@ Use higher effort when `.agents/models.md` calls for it, especially for flaky te
 - Confirm the executor supplied fresh verification evidence for claimed passing tests.
 - Add or propose focused tests only when assigned to extend test coverage; otherwise report the missing coverage as a gap.
 - Report exact commands, results, failures, and coverage gaps.
+- Verify the recorded exact ticket commit in a clean ticket verification worktree. Reject a commit mismatch, dirty verification tree, or moving shared tree as `BLOCKED`.
+- Run focused checks with the ticket-scoped artifact root. For a merged batch, run or inspect the one post-merge integration matrix recorded against the integration commit; do not multiply the full matrix per ticket.
 
 ## Operating Rules
 

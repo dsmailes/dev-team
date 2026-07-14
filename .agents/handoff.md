@@ -60,6 +60,7 @@ Required before Executor starts:
 - Expected executor output is stated.
 - Verification command or manual check is stated.
 - Runtime support for live supervisor contact is noted, or fallback status reporting is required.
+- Ticket classification, execution mode, base commit, workspace ownership, and ticket-scoped artifact root are recorded.
 
 ### In Progress -> Review
 
@@ -72,6 +73,8 @@ Required before Reviewer starts:
 - Commands run are recorded.
 - `git status --short --untracked-files=all` or equivalent artifact check is recorded when relevant.
 - Known gaps are recorded or explicitly marked `None`.
+- Scoped ticket commit and clean executor status are recorded.
+- Verification worktree and exact verification commit are recorded.
 
 ### Review -> Test
 
@@ -82,12 +85,18 @@ Required before Tester starts:
 - Open review issues are resolved, waived with reason, or ticket is blocked.
 - Test scope is identified.
 - Missing context is resolved through supervisor contact, or reported as `NEEDS_CONTEXT` / `BLOCKED`.
+- Reviewer clean-worktree and commit-identity checks are recorded.
 
 ### Test -> Done
 
 Required before completion:
 
 - Fresh verification evidence is recorded.
+- Tester clean-worktree, commit-identity, and artifact-root checks are recorded.
+- Integration batch membership and resulting integration commit are recorded.
+- One post-merge integration matrix result is linked for the batch.
+- Merge conflicts and affected focused reruns are recorded or explicitly marked `None`.
+- Clean up ticket worktrees and branches only after merge, verification, and artifact capture; blocked or failed workspaces remain preserved for diagnosis.
 - Failures or coverage gaps are recorded or explicitly marked `None`.
 - Durable memory updates are promoted to `.memory/` or explicitly marked `None`.
 - Follow-up tickets are created or explicitly marked `None`.
@@ -114,5 +123,6 @@ Expected output:
 Gate being satisfied:
 Waivers:
 Runtime capabilities:
+Workspace and integration contract:
 Agent Run Summary:
 ```

@@ -57,6 +57,28 @@ What should not be changed?
 - Idempotency expectation:
 - Rollback or undo path:
 
+## Workspace And Integration Contract
+
+- Ticket classification: `read-only` or `mutating/building`.
+- Runtime capability: Isolated ticket worktrees available: `Yes`, `No`, or `Unknown`.
+- Execution mode: `isolated` or `serialized`.
+- Base commit:
+- Ticket branch:
+- Executor worktree:
+- Ticket commit:
+- Verification worktree:
+- Verification commit:
+- Ticket-scoped artifact root:
+- Cleanup status:
+- Integration batch:
+- Included ticket commits:
+- Integration commit:
+- Merge/conflict notes:
+- Focused verification evidence:
+- Post-merge integration matrix command/result:
+
+In `isolated` mode, each concurrent mutating/building ticket owns a unique branch, worktree, and artifact root. In `serialized` mode, only one mutating/building ticket owns the shared worktree at a time. Reviewer and Tester verify the immutable ticket commit from a clean verification worktree. The orchestrator runs one full integration matrix for each merged integration batch. Preserve failed workspaces until diagnosis evidence is captured; clean up only after merge, verification, and artifact capture.
+
 ## Skill Context
 
 - Language:
@@ -178,6 +200,7 @@ Record every role that actually ran for this ticket. Do not estimate token usage
 - [ ] Acceptance criteria are restated or referenced.
 - [ ] Expected executor output is stated.
 - [ ] Verification command or manual check is stated.
+- [ ] Ticket classification, execution mode, base commit, workspace ownership, and ticket-scoped artifact root are recorded.
 - Waiver:
 
 ### In Progress -> Review
@@ -188,6 +211,8 @@ Record every role that actually ran for this ticket. Do not estimate token usage
 - [ ] Red/green evidence is recorded, or TDD waiver is referenced.
 - [ ] Commands run are recorded.
 - [ ] Known gaps are recorded or explicitly marked `None`.
+- [ ] Scoped ticket commit, clean executor status, and artifact locations are recorded.
+- [ ] Verification worktree and exact verification commit are recorded.
 - Waiver:
 
 ### Review -> Test
@@ -196,11 +221,16 @@ Record every role that actually ran for this ticket. Do not estimate token usage
 - [ ] Code quality review is complete.
 - [ ] Open review issues are resolved, waived with reason, or ticket is blocked.
 - [ ] Test scope is identified.
+- [ ] Reviewer clean-worktree and commit-identity checks are recorded.
 - Waiver:
 
 ### Test -> Done
 
 - [ ] Fresh verification evidence is recorded.
+- [ ] Tester clean-worktree, commit-identity, and artifact-root checks are recorded.
+- [ ] Integration batch membership, integration commit, and one post-merge integration matrix result are recorded.
+- [ ] Merge conflicts and affected focused reruns are recorded or explicitly marked `None`.
+- [ ] Cleanup status for ticket worktrees, branches, and artifacts is recorded.
 - [ ] Failures or coverage gaps are recorded or explicitly marked `None`.
 - [ ] Durable memory updates are promoted to `.memory/` or explicitly marked `None`.
 - [ ] Follow-up tickets are created or explicitly marked `None`.

@@ -261,6 +261,14 @@ When a ticket reaches `Done`, the harness announces its `Agent Run Summary`: eve
 
 Runtime support is optional. When available, the workflow can use fresh-context subagents, live supervisor contact, background execution, and an allowed-agent list. When unavailable, agents use explicit ticket handoffs and report `NEEDS_CONTEXT` or `BLOCKED` instead of guessing.
 
+## Concurrent Ticket Work
+
+Classify each ticket as `read-only` or `mutating/building` before concurrent work starts. Record an execution mode in the ticket: `isolated` when the runtime can safely provide separate ticket branches/worktrees, or `serialized` when it cannot. Read-only investigation can remain parallel when it does not alter shared state.
+
+In isolated mode, every concurrent mutating/building ticket gets a unique branch, worktree, scoped ticket commit, and ticket-scoped artifact root. Executors hand off the immutable commit ID; Reviewer and Tester verify that exact commit in clean ticket verification worktrees, never a moving shared tree. Use project-native output controls. For example, an Xcode project can use `-derivedDataPath` under its ticket-scoped artifact root, but no particular build tool or runtime is required.
+
+After focused review and verification, the orchestrator combines the reviewed commits into an integration batch and records its integration commit. Run one full integration matrix for that merged batch, then link its result to each included ticket. Preserve blocked or failing workspaces for diagnosis. After merge, verification, and artifact capture, clean up only the named clean ticket worktrees and branches; remove unmerged work only when intentionally abandoned, and revert integrated work with a new scoped revert commit rather than resetting shared history.
+
 ## Render The Ticket Dashboard
 
 Generate local HTML and Markdown summaries of the current ticket queue:

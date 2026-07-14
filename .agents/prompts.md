@@ -99,6 +99,8 @@ Your task:
 - Keep changes scoped to the ticket.
 - Stop and escalate rather than guessing on product, API, scope, conflicting-requirement, plan-invalidating, or environment-blocked decisions.
 - For behavior changes, follow red/green TDD: write the failing test, run it and confirm the expected failure, implement the minimal fix, then run it and confirm the pass.
+- For mutating/building tickets, honor the recorded `isolated` or `serialized` execution mode. In isolated mode, use only the assigned ticket branch/worktree and ticket-scoped artifact root. In serialized mode, wait for exclusive shared-worktree ownership and a clean stable commit.
+- Create and record one scoped immutable ticket commit before handoff, including base commit, branch/worktree, artifact root, focused evidence, and clean status.
 - Use the narrowest safe command or tool for implementation and verification.
 - Explain before high-impact actions such as installer changes, persistent configuration writes, destructive operations, or writes outside the project.
 - Preserve user-owned configuration and project state unless the ticket explicitly authorizes replacement.
@@ -130,6 +132,7 @@ If live supervisor contact is available, use it for missing ticket or diff conte
 
 Your task:
 - Use the skills assigned to Reviewer in the ticket's `Skill Context`.
+- Verify the exact recorded ticket commit in a clean ticket verification worktree. Report `BLOCKED` for a commit mismatch, dirty verification tree, or moving shared tree.
 - Run spec compliance review first.
 - Run code quality review only after spec compliance is satisfied.
 - Prioritize bugs, regressions, missing tests, and maintainability risks.
@@ -163,6 +166,8 @@ Your task:
 - Use the testing skills listed in the ticket when present.
 - When no testing skill is listed, use the project's native test tools and conventions.
 - Require fresh command output or documented manual checks before recommending pass.
+- Verify the exact recorded ticket commit in a clean ticket verification worktree and use its ticket-scoped artifact root. Report `BLOCKED` for a commit mismatch, dirty verification tree, or moving shared tree.
+- For integration batches, record the single post-merge full integration matrix result from the integration commit rather than running a full matrix independently for each ticket.
 - Stop and report `BLOCKED` when required environment, credentials, devices, services, or commands are unavailable.
 - For installer, setup, packaging, or workflow-pack changes, require a fresh temporary-target smoke test and report any artifact or git-status concerns.
 - Add or propose focused tests only if explicitly assigned; otherwise report coverage gaps.
@@ -190,5 +195,6 @@ Known risks: [RISKS]
 Expected output: [OUTPUT]
 Gate being satisfied: [GATE]
 Waivers: [WAIVERS]
+Workspace and integration contract: [MODE, BASE, TICKET COMMIT, VERIFICATION WORKTREE, ARTIFACT ROOT, BATCH, INTEGRATION COMMIT]
 Agent Run Summary: [ROLES THAT RAN, AGENT OR TASK, MODEL, EFFORT, TOKEN USAGE OR UNAVAILABLE]
 ```

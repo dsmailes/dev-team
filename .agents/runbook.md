@@ -33,6 +33,8 @@ Only write durable verified knowledge to `.memory/`. Keep active task notes in `
 8. If a ticket includes UI/UX work, complete `Ready -> Design`, route it through the designer, then complete `Design -> Ready`.
 9. Select one `Ready` ticket for execution.
 
+Before concurrent mutation or build work begins, classify each selected ticket as `read-only` or `mutating/building` and record its execution mode. Use `isolated` mode when the runtime and repository can safely provide a unique ticket branch/worktree and ticket-scoped artifact root for each concurrent mutating/building ticket. Otherwise use `serialized` mode: grant shared-worktree ownership to one mutating/building ticket at a time. Read-only investigation may remain parallel when it cannot alter shared state.
+
 Use ticketing by default for non-trivial implementation work. Skip tickets only for simple explanations, one-command lookups, tiny typo fixes, or when the user explicitly opts out. The Architect should not ask permission to create tickets when the workflow applies; it should ask only unresolved blocking questions.
 
 For multi-step implementation work, the architect should also create or link an implementation plan under `docs/agent-plans/`. Tickets can represent the executable slices of that plan.
@@ -71,25 +73,31 @@ Use the designer only when a ticket changes screens, flows, visual hierarchy, in
 12. Complete the `Ready -> In Progress` handoff gate before Executor starts.
 13. When implementation returns, inspect the changed files and complete `In Progress -> Review` before review.
 
+The Executor must create a scoped ticket commit and record its immutable ID before handoff. Preserve the executor workspace until the integration outcome is captured.
+
 ## Review A Ticket
 
 1. Spawn or assign the reviewer with the Reviewer model and effort from `.agents/models.md` after implementation.
-2. Give the reviewer the ticket path and the diff context.
+2. Give the reviewer the ticket path, recorded ticket commit, and a clean ticket verification worktree at that exact commit.
 3. If the runtime supports live supervisor contact, allow Reviewer to ask for missing ticket or diff context. Otherwise require `NEEDS_CONTEXT` or `BLOCKED`.
 4. Run spec compliance review first.
 5. Run code quality review only after spec compliance is satisfied.
 6. If the reviewer recommends `Needs Changes`, create a fix ticket or return the same ticket to the executor.
 7. If the reviewer recommends `Ready For Test`, complete `Review -> Test` before moving the ticket to `Test`.
 
+Reviewer must reject a commit mismatch, dirty verification worktree, or moving shared tree as `BLOCKED`.
+
 ## Test A Ticket
 
 1. Spawn or assign the tester with the Tester model and effort from `.agents/models.md` after review.
-2. Give the tester the ticket path and expected verification scope.
+2. Give the tester the ticket path, recorded ticket commit, clean ticket verification worktree, ticket-scoped artifact root, and expected focused verification scope.
 3. If the runtime supports live supervisor contact, allow Tester to ask for missing environment, command, or verification scope decisions. Otherwise require `NEEDS_CONTEXT` or `BLOCKED`.
 4. Require fresh command output or documented manual-check evidence before accepting a pass.
 5. Record every role that ran in the ticket's `Agent Run Summary`, with the actual model, effort, and token usage when available. Use `Unavailable` rather than estimating telemetry the runtime does not expose.
 6. If verification passes, complete `Test -> Done` before moving the ticket to `Done`, then announce the completed `Agent Run Summary` to the user.
 7. If verification fails, move it back to `In Progress` or create a follow-up ticket.
+
+After focused review and testing, the orchestrator combines reviewed ticket commits into an integration batch and records the resulting integration commit. Resolve conflicts in a new integration commit and rerun focused checks for affected tickets. Run one full integration matrix against that integration commit, link its result to every included ticket, then clean up only named clean ticket worktrees and branches after merge, verification, and artifact capture. Preserve blocked or failed workspaces for diagnosis; remove an unmerged workspace only when it is intentionally abandoned, and revert integrated work with a scoped revert commit rather than resetting shared history.
 
 ## Parallel Work
 

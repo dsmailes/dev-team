@@ -28,6 +28,8 @@ This directory defines reusable role prompts for coordinating subagents on large
 7. The tester verifies the ticket.
 8. The orchestrator moves the ticket to `Done` or creates follow-up tickets.
 
+For concurrent work, the orchestrator records `isolated` or `serialized` execution mode before mutation or builds begin. Isolated mutating/building tickets use separate branch/worktree and artifact roots; serialized mode grants the shared worktree to one mutable ticket at a time. Reviewer and Tester use a clean verification worktree at the executor's recorded ticket commit. The orchestrator runs the full integration matrix once per merged integration batch, then performs non-destructive workspace cleanup after evidence capture.
+
 ## Handoff Contract
 
 Each handoff should include:
@@ -69,3 +71,4 @@ The packaged default is a Codex profile that uses Sol for architecture and produ
 - Completed tickets must include an `Agent Run Summary` for every role that ran: agent or task identity, actual model, effort, and token usage when available. Use `Unavailable` rather than estimating unavailable telemetry, and announce the summary in the final handoff.
 - Durable verified learnings should be promoted to `.memory/`; active task notes stay in `.tickets/`.
 - A ticket is not `Done` until review and verification have both been handled or intentionally waived.
+- A concurrent ticket is not `Done` until its focused ticket-commit evidence and its integration-batch evidence are attached or explicitly waived with a risk-based reason.

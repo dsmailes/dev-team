@@ -30,6 +30,7 @@ This directory is a lightweight local ticketing system for agent-coordinated wor
 - One ticket should describe one coherent outcome.
 - Each ticket needs acceptance criteria before execution.
 - Each implementation ticket should include a verification plan.
+- Concurrent mutating/building tickets must include `Workspace And Integration Contract` metadata: execution mode, base commit, branch/worktree, immutable ticket commit, verification worktree, ticket-scoped artifact root, cleanup status, and later integration batch/commit evidence.
 - Each implementation ticket should include `Skill Context` before execution, with role-specific skills or `None` when no skill applies.
 - Each ticket should complete the relevant `Handoff Gates` checklist before moving state.
 - External skill families are optional unless the ticket, user, imported registry, or project instructions explicitly require them.
@@ -39,6 +40,8 @@ This directory is a lightweight local ticketing system for agent-coordinated wor
 - Completion requires fresh verification evidence, not assumed success.
 - Follow-up work should become new tickets rather than expanding active scope.
 - Durable verified knowledge should be promoted to `.memory/`; active task notes should stay in tickets.
+
+Use `isolated` mode when safe ticket worktrees are available; otherwise use `serialized` mode and allow only one mutating/building ticket to own the shared worktree. Reviewer and Tester verify the recorded ticket commit from clean verification worktrees. The orchestrator merges reviewed commits into an integration batch, runs one full integration matrix on the resulting integration commit, and records the shared evidence on every included ticket before cleanup.
 
 The packaged `ARCH-001` ticket is a bootstrap placeholder for capturing the first real project request. Once real project tickets exist, mark it `Done`, move it to `Blocked`, or replace it with project-specific planning work so it does not remain ambiguous backlog.
 

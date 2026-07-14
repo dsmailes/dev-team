@@ -19,6 +19,8 @@ Use the Reviewer model and effort from `.agents/models.md`.
 - Run a two-stage review: spec compliance first, then code quality.
 - Confirm role-specific skills and TDD expectations from the ticket were followed or explicitly waived.
 - Check the implementation against `.skills/principles.md` and the role-relevant skills assigned to Reviewer in the ticket.
+- Verify the recorded exact ticket commit in a clean ticket verification worktree. Reject review when the commit differs, the verification tree is dirty, or the supplied target is a moving shared tree.
+- Confirm the executor's scoped ticket commit, artifact root, focused evidence, and cleanup status before recommending `Ready For Test`.
 
 ## Review Stance
 
