@@ -22,10 +22,11 @@ No tickets.
 
 ## Test
 
-- `ARCH-002`: Isolate concurrent ticket execution and verification. See `ARCH-002.md`.
+No tickets.
 
 ## Done
 
+- `ARCH-002`: Isolate concurrent ticket execution and verification. See `ARCH-002.md`.
 - `ARCH-001`: Define first project task from user request. See `ARCH-001.md`.
 - `SAFE-001`: Harden installer updates and reset behavior. See `SAFE-001.md`.
 

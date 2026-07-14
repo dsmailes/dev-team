@@ -10,7 +10,7 @@ Isolate concurrent ticket execution and verification.
 
 ## State
 
-`Test`
+`Done`
 
 ## Problem
 
@@ -109,13 +109,13 @@ Concurrent agents can currently mutate or build from one shared worktree. Review
 - Ticket commit: `83f9c5fd4c516d0e1cf243422fbf76aa9b46bf0c`.
 - Verification commit: `83f9c5fd4c516d0e1cf243422fbf76aa9b46bf0c`.
 - Ticket-scoped artifact root: `/tmp/dev-team-arch-002-artifacts/ARCH-002` (no persistent artifacts produced by this documentation/install regression work).
-- Cleanup status: Executor worktree was clean after the scoped commit. Preserve the clean verification worktree through Review/Test; branch/worktree cleanup remains pending merge, integration verification, and evidence capture.
-- Integration batch: Pending orchestrator merge after Review/Test.
-- Included ticket commits: Pending integration batch selection.
-- Integration commit: Pending orchestrator merge.
+- Cleanup status: Complete. Both clean ticket worktrees were removed after evidence capture, the merged `codex/arch-002-isolation` branch was deleted, and ticket/fresh-install artifact roots were removed. No unmerged or failed work was discarded.
+- Integration batch: `2026-07-14-ARCH-002`.
+- Included ticket commits: `83f9c5fd4c516d0e1cf243422fbf76aa9b46bf0c`.
+- Integration commit: `4adb40cd2d2e19abe6947e96bf72503add362a15`.
 - Stable verification target: Reviewer and Tester use the recorded ticket commit. A commit mismatch or dirty verification tree is `BLOCKED` until corrected.
-- Focused evidence: Record ticket-specific tests/checks against the ticket commit before integration.
-- Integration evidence: Record batch ID, included ticket commits, resulting integration commit, merge/conflict notes, full matrix commands/results, and artifact root.
+- Focused evidence: Reviewer and Tester passed the exact ticket commit from clean detached verification worktree `/tmp/dev-team-arch-002-verify` before integration.
+- Integration evidence: Fast-forward merge had no conflicts. At exact integration commit `4adb40cd2d2e19abe6947e96bf72503add362a15`, `sh tests/test-install.sh`, source dashboard validation, explicit fresh `--project` and `--here` installs plus installed dashboard validation, `git diff --check`, commit identity, and clean-status checks all passed. Temporary artifact roots were removed after capture.
 - Completion rule: A concurrent ticket is not `Done` until its focused evidence and the shared post-merge integration evidence are both attached or explicitly waived with a risk-based reason.
 - Runtime fallback: Without isolated worktree support, the orchestrator queues mutating/building tickets serially in the shared worktree and permits Reviewer/Tester only after a stable commit and clean status exist.
 
@@ -272,18 +272,18 @@ Record every role that actually ran for this ticket. Do not estimate token usage
 
 ### Test -> Done
 
-- [ ] Fresh focused verification evidence for the exact ticket commit is recorded.
-- [ ] Tester clean-worktree, commit-identity, and artifact-root checks are recorded.
-- [ ] Integration batch membership and resulting integration commit are recorded.
-- [ ] One post-merge integration matrix result is linked for the batch.
-- [ ] Merge conflicts and affected focused reruns are recorded or explicitly marked `None`.
-- [ ] Failures or coverage gaps are recorded or explicitly marked `None`.
-- [ ] Cleanup status for ticket worktrees, branches, and artifacts is recorded.
-- [ ] Durable memory updates are promoted to `.memory/` or explicitly marked `None`.
-- [ ] Follow-up tickets are created or explicitly marked `None`.
-- [ ] Final ticket state matches `.tickets/queue.md`.
-- [ ] `Agent Run Summary` lists every role that ran, its model and effort, and token usage or `Unavailable`.
-- Waiver:
+- [x] Fresh focused verification evidence for the exact ticket commit is recorded.
+- [x] Tester clean-worktree, commit-identity, and artifact-root checks are recorded.
+- [x] Integration batch membership and resulting integration commit are recorded.
+- [x] One post-merge integration matrix result is linked for the batch.
+- [x] Merge conflicts and affected focused reruns are recorded or explicitly marked `None`.
+- [x] Failures or coverage gaps are recorded or explicitly marked `None`.
+- [x] Cleanup status for ticket worktrees, branches, and artifacts is recorded.
+- [x] Durable memory updates are promoted to `.memory/` or explicitly marked `None`.
+- [x] Follow-up tickets are created or explicitly marked `None`.
+- [x] Final ticket state matches `.tickets/queue.md`.
+- [x] `Agent Run Summary` lists every role that ran, its model and effort, and token usage or `Unavailable`.
+- Waiver: None.
 
 ## Review Plan
 
@@ -302,9 +302,9 @@ Record every role that actually ran for this ticket. Do not estimate token usage
 ## Memory Updates
 
 - Project: None; this repository's checked-in workflow docs are the durable source of truth.
-- Commands: None; verification commands are already documented in `AGENTS.md` and this ticket.
-- Decisions: None; task-local architecture decisions remain in this ticket until implemented in reusable source docs.
-- Pitfalls: None; the repeated shared-worktree rerun problem is captured in this ticket until the source workflow changes.
+- Commands: None; verification commands are already documented in `AGENTS.md` and the reusable workflow.
+- Decisions: None; the accepted architecture is now implemented in the reusable source docs.
+- Pitfalls: None; the moving-worktree rerun risk is now addressed by the reusable contract.
 
 ## Implementation Notes
 
@@ -324,4 +324,8 @@ Record every role that actually ran for this ticket. Do not estimate token usage
 
 - Focused Tester result: `PASS` from Luna/high against clean detached worktree `/tmp/dev-team-arch-002-verify` at exact ticket commit `83f9c5fd4c516d0e1cf243422fbf76aa9b46bf0c`.
 - Fresh focused verification evidence: `sh tests/test-install.sh` passed; all five update-preservation hash checks passed; source dashboard validation passed; fresh `--project` and `--here` installs each produced 29 expected files and passed installed dashboard validation; 98 cross-file consistency matches contained no contradiction; `git diff --check` and clean-status checks passed; no ticket artifacts were left behind.
-- Remaining Test gate: merge the scoped branch into `main`, record the resulting integration commit/batch, run the single post-merge integration matrix, and then complete cleanup and final ticket metadata.
+- Post-merge integration result: `PASS` for batch `2026-07-14-ARCH-002` at exact integration commit `4adb40cd2d2e19abe6947e96bf72503add362a15`. The branch fast-forwarded with no conflicts. `sh tests/test-install.sh`, source validation, both explicit fresh-install modes and installed validation, diff hygiene, commit identity, and clean status all passed.
+- Failures or coverage gaps: None. The harmless sandboxed `xcodebuild` cache warnings emitted by the installer regression did not change its exit status or assertions.
+- Cleanup: Complete for both named worktrees, the merged ticket branch, and all named temporary artifact roots.
+- Durable memory updates: None; checked-in workflow documentation is authoritative.
+- Follow-up tickets: None.
