@@ -26,7 +26,6 @@ This project is a portable agent workflow pack. It is not an application.
 - Use `.memory/` for durable project knowledge only. Keep active task notes in `.tickets/`.
 - Do not move a ticket between states unless the relevant handoff gate is complete or explicitly waived with a reason.
 - Keep installer behavior conservative: no overwrites unless `--force` is explicitly passed.
-- For concurrent mutating or building tickets, use isolated branches/worktrees when available; otherwise serialize ownership of the shared worktree. Review and test immutable ticket commits in clean verification worktrees, then run the integration matrix after merge.
 - Prefer Markdown instructions that are easy to copy into project-local workflows.
 - Before concurrent mutation or build work begins, classify tickets as `read-only` or `mutating/building`. Execution mode: `isolated` or `serialized`. Use isolated ticket branches/worktrees and ticket-scoped artifact roots when the runtime supports them; otherwise serialize mutable work in one shared worktree.
 - Treat a recorded scoped ticket commit as the immutable target for review and focused testing. Merge reviewed ticket commits into an integration batch, run one full integration matrix against its integration commit, and clean up named worktrees only after evidence is captured.
