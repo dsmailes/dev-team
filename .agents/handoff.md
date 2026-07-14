@@ -27,6 +27,7 @@ Required before implementation can be assigned:
 - `Execution Model` is filled, defaulting Executor to `terra` unless escalation is justified.
 - Verification plan exists.
 - `Designer Review` is marked `Yes` or `No`.
+- `Second Review` is marked `Required` or `Not required`.
 - TDD plan exists for behavior changes, or a waiver explains why it does not apply.
 
 ### Ready -> Design
@@ -83,6 +84,7 @@ Required before Tester starts:
 - Spec compliance review is complete.
 - Code quality review is complete.
 - Open review issues are resolved, waived with reason, or ticket is blocked.
+- `Second Review` is marked `Required` or `Not required`. When required, its independent review is complete against the same ticket commit SHA and its outcome is recorded.
 - Test scope is identified.
 - Missing context is resolved through supervisor contact, or reported as `NEEDS_CONTEXT` / `BLOCKED`.
 - Reviewer clean-worktree and commit-identity checks are recorded.

@@ -30,12 +30,17 @@ The default profile is Codex GPT-5.6:
 - Architect: Sol with high effort.
 - Designer: Sol with high effort for UI/product decisions and frontend polish.
 - Executor: Terra with high effort by default.
-- Reviewer: GPT-5.5 with high effort, providing an independent review perspective.
-- Tester: Luna with high effort by default.
+- Reviewer: Terra with high effort by default.
+- Second Reviewer: GPT-5.5 with high effort only when an independent adversarial review is required.
+- Tester: Terra with high effort by default. Luna is reserved for narrow, deterministic, low-context checks.
 
 For other providers, the installer can infer provider-class placeholders such as `anthropic-balanced-coding` or `google-best-reasoning`. Replace those with exact model IDs supported by your local runner.
 
 Executor tickets include an `Execution Model` section. Codex installs default Executor to `terra` with `high` effort. Escalation to `sol` must be recorded in the ticket; ordinary multi-file or integration work is not enough by itself.
+
+Tickets also include a `Second Review` decision. Require it for high-risk changes, unresolved review uncertainty, or when the user asks for an independent pass; GPT-5.5 then reviews the exact same ticket commit after the primary Terra review. Escalate primary review or testing to Sol for high-risk or difficult work.
+
+Concurrent implementation tickets use dedicated worktrees, ticket-scoped artifacts, immutable verification commits, and one post-merge integration matrix per batch. Preserve blocked or failed workspaces for diagnosis; clean up only named, merged, verified workspaces after artifact capture.
 
 ## Install Into A Project
 
@@ -317,8 +322,8 @@ A completed ticket's handoff also announces a compact run summary, for example:
 ```text
 Agent Run Summary
 - Executor: task `executor-01`; model `terra`; effort `high`; tokens `Unavailable`.
-- Reviewer: task `reviewer-01`; model `gpt-5.5`; effort `high`; tokens `12,450`.
-- Tester: task `tester-01`; model `luna`; effort `high`; tokens `Unavailable`.
+- Reviewer: task `reviewer-01`; model `terra`; effort `high`; tokens `12,450`.
+- Tester: task `tester-01`; model `terra`; effort `high`; tokens `Unavailable`.
 ```
 
 ## License

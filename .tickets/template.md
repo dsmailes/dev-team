@@ -120,6 +120,7 @@ Record every role that actually ran for this ticket. Do not estimate token usage
 | Designer | Not run | Not run | Not run | Not run |
 | Executor | Not run | Not run | Not run | Not run |
 | Reviewer | Not run | Not run | Not run | Not run |
+| Second Reviewer | Not run | Not run | Not run | Not run |
 | Tester | Not run | Not run | Not run | Not run |
 
 ## Designer Review
@@ -130,6 +131,16 @@ Record every role that actually ran for this ticket. Do not estimate token usage
 - Preferred effort: See `.agents/models.md`.
 - Design tooling needed:
 - Output needed:
+
+## Second Review
+
+- Required: `Not required`
+- Trigger:
+- Model:
+- Effort:
+- Commit SHA:
+- Focus:
+- Outcome:
 
 ## Design Brief
 
@@ -171,6 +182,7 @@ Record every role that actually ran for this ticket. Do not estimate token usage
 - [ ] `Execution Model` is filled, defaulting Executor to `terra` unless escalation is justified.
 - [ ] Verification plan exists.
 - [ ] `Designer Review` is marked `Yes` or `No`.
+- [ ] `Second Review` is marked `Required` or `Not required`.
 - [ ] TDD plan exists for behavior changes, or a waiver explains why it does not apply.
 - Waiver:
 
@@ -220,6 +232,7 @@ Record every role that actually ran for this ticket. Do not estimate token usage
 - [ ] Spec compliance review is complete.
 - [ ] Code quality review is complete.
 - [ ] Open review issues are resolved, waived with reason, or ticket is blocked.
+- [ ] `Second Review` is marked `Required` or `Not required`. When required, the independent reviewer verified the same ticket commit SHA and its outcome is recorded.
 - [ ] Test scope is identified.
 - [ ] Reviewer clean-worktree and commit-identity checks are recorded.
 - Waiver:

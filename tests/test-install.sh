@@ -14,7 +14,6 @@ hash_file() {
 
 grep -Fq '## Agent Run Summary' "$PROJECT/.tickets/template.md"
 grep -Fq 'Token usage' "$PROJECT/.tickets/template.md"
-
 # Fresh installs must include the portable workspace and immutable-verification contract.
 grep -Fq 'Execution mode: `isolated` or `serialized`' "$PROJECT/AGENTS.md"
 grep -Fq 'concurrent mutation or build work begins' "$PROJECT/.agents/runbook.md"
@@ -30,6 +29,10 @@ grep -Fq '## Workspace And Integration Contract' "$PROJECT/.tickets/template.md"
 grep -Fq 'Ticket commit:' "$PROJECT/.tickets/template.md"
 grep -Fq 'Verification worktree:' "$PROJECT/.tickets/template.md"
 grep -Fq 'Integration commit:' "$PROJECT/.tickets/template.md"
+grep -Fq '| Reviewer | `terra` | `high`' "$PROJECT/.agents/models.md"
+grep -Fq '| Second Reviewer | `gpt-5.5` | `high`' "$PROJECT/.agents/models.md"
+grep -Fq '| Tester | `terra` | `high`' "$PROJECT/.agents/models.md"
+grep -Fq '## Second Review' "$PROJECT/.tickets/template.md"
 
 cat > "$PROJECT/.tickets/SAFE-900.md" <<'EOF'
 # SAFE-900
@@ -104,6 +107,7 @@ printf '%s\n' 'stale reusable ticket template' > "$PROJECT/.tickets/template.md"
 [ "$MODELS_HASH" = "$(hash_file "$PROJECT/.agents/models.md")" ]
 grep -Fq '## Workspace And Integration Contract' "$PROJECT/.tickets/template.md"
 ! grep -Fq 'stale reusable ticket template' "$PROJECT/.tickets/template.md"
+grep -Fq '## Second Review' "$PROJECT/.tickets/template.md"
 
 python3 "$PROJECT/scripts/render-ticket-dashboard.py" --project "$PROJECT" --validate
 python3 "$PROJECT/scripts/render-ticket-dashboard.py" --project "$PROJECT"

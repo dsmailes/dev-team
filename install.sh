@@ -476,7 +476,7 @@ set_model_defaults() {
   case "$provider_lc" in
     ""|codex|openai)
       MODELS_PROVIDER=codex
-      MODEL_PROFILE=gpt-5.6-sol-terra-luna-gpt-5.5-review
+      MODEL_PROFILE=gpt-5.6-sol-terra-luna-gpt-5.5-second-review
       ARCHITECT_MODEL=sol
       ARCHITECT_EFFORT=high
       DESIGNER_MODEL=sol
@@ -485,9 +485,11 @@ set_model_defaults() {
       EXECUTOR_MODEL=terra
       EXECUTOR_EFFORT=high
       EXECUTOR_ESCALATION="Escalate to sol only when a listed trigger applies: Terra is unavailable, the ticket crosses architecture boundaries, the work is high-risk data/security/concurrency/migration logic, debugging remains blocked after reproduction, or Terra reports NEEDS_CONTEXT / BLOCKED and more reasoning is required. Use luna only for explicitly low-risk documentation, ticket, formatting, or mechanical follow-up work. Do not escalate only because a ticket touches multiple files or ordinary integration code."
-      REVIEWER_MODEL=gpt-5.5
+      REVIEWER_MODEL=terra
       REVIEWER_EFFORT=high
-      TESTER_MODEL=luna
+      SECOND_REVIEWER_MODEL=gpt-5.5
+      SECOND_REVIEWER_EFFORT=high
+      TESTER_MODEL=terra
       TESTER_EFFORT=high
       ;;
     *)
@@ -501,10 +503,12 @@ set_model_defaults() {
       EXECUTOR_MODEL="${provider_lc}-balanced-coding"
       EXECUTOR_EFFORT=high
       EXECUTOR_ESCALATION="Escalate only when a listed trigger applies: the balanced coding model is unavailable, the ticket crosses architecture boundaries, the work is high-risk data/security/concurrency/migration logic, debugging remains blocked after reproduction, or the default model reports NEEDS_CONTEXT / BLOCKED and more reasoning is required. Use the provider's most cost-efficient model only for explicitly low-risk documentation, ticket, formatting, or mechanical follow-up work. Do not escalate only because a ticket touches multiple files or ordinary integration code."
-      REVIEWER_MODEL="${provider_lc}-best-reasoning"
+      REVIEWER_MODEL="${provider_lc}-balanced-reasoning"
       REVIEWER_EFFORT=high
+      SECOND_REVIEWER_MODEL="${provider_lc}-best-reasoning"
+      SECOND_REVIEWER_EFFORT=high
       TESTER_MODEL="${provider_lc}-balanced-reasoning"
-      TESTER_EFFORT=medium
+      TESTER_EFFORT=high
       ;;
   esac
 }
@@ -559,6 +563,8 @@ maybe_prompt_for_models() {
       EXECUTOR_EFFORT=$(prompt_value "Executor effort" "$EXECUTOR_EFFORT")
       REVIEWER_MODEL=$(prompt_value "Reviewer model" "$REVIEWER_MODEL")
       REVIEWER_EFFORT=$(prompt_value "Reviewer effort" "$REVIEWER_EFFORT")
+      SECOND_REVIEWER_MODEL=$(prompt_value "Second reviewer model" "$SECOND_REVIEWER_MODEL")
+      SECOND_REVIEWER_EFFORT=$(prompt_value "Second reviewer effort" "$SECOND_REVIEWER_EFFORT")
       TESTER_MODEL=$(prompt_value "Tester model" "$TESTER_MODEL")
       TESTER_EFFORT=$(prompt_value "Tester effort" "$TESTER_EFFORT")
       ;;
@@ -602,8 +608,9 @@ This file is project-local. Keep it aligned with the provider and model names av
 | Architect | \`$ARCHITECT_MODEL\` | \`$ARCHITECT_EFFORT\` | Use the strongest available reasoning model for ambiguous architecture, migrations, or high-risk planning. |
 | Designer | \`$DESIGNER_MODEL\` | \`$DESIGNER_EFFORT\` | Use $DESIGNER_ESCALATION |
 | Executor | \`$EXECUTOR_MODEL\` | \`$EXECUTOR_EFFORT\` | $EXECUTOR_ESCALATION |
-| Reviewer | \`$REVIEWER_MODEL\` | \`$REVIEWER_EFFORT\` | Use GPT-5.5 for an independent perspective on security, data-loss, concurrency, migration, public API risk, and spec compliance review. |
-| Tester | \`$TESTER_MODEL\` | \`$TESTER_EFFORT\` | Use Luna with high effort for verification; escalate to the strongest available reasoning model for flaky tests, complex async behavior, UI automation, or difficult failure triage. |
+| Reviewer | \`$REVIEWER_MODEL\` | \`$REVIEWER_EFFORT\` | Primary review. Escalate to the strongest available reasoning model for security, data-loss, concurrency, migration, public API risk, difficult regressions, or large-context debugging. |
+| Second Reviewer | \`$SECOND_REVIEWER_MODEL\` | \`$SECOND_REVIEWER_EFFORT\` | Run only when \`Second Review\` is required: use an independent, adversarial review of the same recorded ticket commit SHA. |
+| Tester | \`$TESTER_MODEL\` | \`$TESTER_EFFORT\` | Primary verification. Use a cost-efficient model only for narrow, deterministic, low-context checks; escalate to the strongest available reasoning model for flaky tests, complex async behavior, UI automation, difficult failure triage, or large-context debugging. |
 
 ## Provider Mapping Guidance
 
@@ -612,8 +619,9 @@ For non-Codex providers, map roles by capability rather than by exact names:
 - Architect: best reasoning model.
 - Designer: best design/reasoning model for major product or UI decisions.
 - Executor: balanced coding model by default; escalate to the best reasoning model as risk increases.
-- Reviewer: best reasoning model.
-- Tester: balanced reasoning model; raise effort for flaky, async, UI, or failure-triage work.
+- Reviewer: balanced reasoning model with high effort by default; escalate to the best reasoning model for high-risk or difficult review.
+- Second Reviewer: an independent model used only for explicitly required adversarial review of the same commit.
+- Tester: balanced reasoning model with high effort by default. Use a cost-efficient model only for narrow, deterministic, low-context checks; escalate to the best reasoning model for flaky, async, UI, failure-triage, or large-context work.
 - Low-risk work: use the provider's most cost-efficient model only for explicitly low-risk documentation, ticket, formatting, or mechanical follow-up work.
 
 If exact provider model IDs are not known during installation, use provider-class placeholders such as \`anthropic-balanced-coding\` or \`google-best-reasoning\`, then replace them with the exact IDs supported by your local agent runner.

@@ -43,6 +43,8 @@ The architect must fill in `Skill Context` before execution starts, including ro
 
 The architect must fill in `Execution Model` before execution starts. Executor defaults to `terra` with `high` effort. Escalation requires a specific recorded reason.
 
+The architect must also mark `Second Review` as required or not required before execution starts. Require it only for security, data-loss, concurrency, migration, public API risk, difficult regressions, unresolved review uncertainty, or an explicit user request.
+
 The architect must also fill in `Questioning Notes` before execution starts, including the decision tree. A ticket with unresolved `Blocking` questions cannot move to `Ready` unless the gate includes an explicit waiver and reason.
 
 Skill selection comes from `.skills/registry.md`, `.skills/principles.md`, project instructions, and user-provided custom skills. Assign skills per role so each subagent reads only what it needs.
@@ -82,14 +84,16 @@ The Executor must create a scoped ticket commit and record its immutable ID befo
 3. If the runtime supports live supervisor contact, allow Reviewer to ask for missing ticket or diff context. Otherwise require `NEEDS_CONTEXT` or `BLOCKED`.
 4. Run spec compliance review first.
 5. Run code quality review only after spec compliance is satisfied.
-6. If the reviewer recommends `Needs Changes`, create a fix ticket or return the same ticket to the executor.
-7. If the reviewer recommends `Ready For Test`, complete `Review -> Test` before moving the ticket to `Test`.
+6. Require `Second Review` only for security, data-loss, concurrency, migration, public API risk, difficult regressions, unresolved review uncertainty, or an explicit user request. Record the decision in the ticket before testing.
+7. When required, spawn the Second Reviewer with `gpt-5.5` and `high` effort (or the configured equivalent), give it the same ticket commit SHA and clean verification worktree, and record its independent outcome. Do not substitute a review of a newer or different commit.
+8. If either reviewer recommends `Needs Changes`, create a fix ticket or return the same ticket to the executor.
+9. If review is ready for testing and any required second review is complete, complete `Review -> Test` before moving the ticket to `Test`.
 
 Reviewer must reject a commit mismatch, dirty verification worktree, or moving shared tree as `BLOCKED`.
 
 ## Test A Ticket
 
-1. Spawn or assign the tester with the Tester model and effort from `.agents/models.md` after review.
+1. Spawn or assign the tester with the Tester model and effort from `.agents/models.md` after review. Terra with high effort is the primary default; use Luna only for narrow, deterministic, low-context checks, and escalate to Sol for flaky, async, UI, failure-triage, or large-context work.
 2. Give the tester the ticket path, recorded ticket commit, clean ticket verification worktree, ticket-scoped artifact root, and expected focused verification scope.
 3. If the runtime supports live supervisor contact, allow Tester to ask for missing environment, command, or verification scope decisions. Otherwise require `NEEDS_CONTEXT` or `BLOCKED`.
 4. Require fresh command output or documented manual-check evidence before accepting a pass.

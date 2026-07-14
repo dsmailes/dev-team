@@ -37,6 +37,7 @@ Your task:
 - Fill in `Skill Context`: language, framework, platform, project type, task type, role-specific skills, optional skills, and custom skill notes. Use `None` when no skill applies. Treat external skill families as optional unless explicitly required.
 - Fill in `Execution Model`: default Executor to `terra` with `high` effort. Record an escalation model and reason only when Terra is unavailable, the ticket crosses architecture boundaries, the work is high-risk data/security/concurrency/migration logic, debugging remains blocked after reproduction, or Terra reports `NEEDS_CONTEXT` / `BLOCKED` and more reasoning is required. Use `luna` only for explicitly low-risk documentation, ticket, formatting, or mechanical follow-up work.
 - Mark `Designer Review` as required for tickets that change UI, UX, visual hierarchy, interaction patterns, accessibility, or frontend polish.
+- Mark `Second Review` as required only for security, data-loss, concurrency, migration, public API risk, difficult regressions, unresolved review uncertainty, or an explicit user request. Otherwise mark it `Not required`.
 - For multi-step implementation work, create or link a plan under `docs/agent-plans/`.
 - Record the Architect row in `Agent Run Summary`: agent or task identity, actual model, effort, and token usage when exposed by the runtime; otherwise write `Unavailable`.
 - Return context inspected, decision tree summary, the next upstream blocking question if one exists, assumptions, proposed tickets, risks, and recommended execution order.
@@ -140,10 +141,26 @@ Your task:
 - Stop and report `BLOCKED` if requirements conflict, the diff is inaccessible, or a supervisor decision is required.
 - Update the ticket's Review Notes.
 - Record the Reviewer row in `Agent Run Summary`: agent or task identity, actual model, effort, and token usage when exposed by the runtime; otherwise write `Unavailable`.
+- Mark the ticket's `Second Review` as `Required` or `Not required`. Require it only for security, data-loss, concurrency, migration, public API risk, difficult regressions, unresolved uncertainty, or an explicit user request.
 - Complete the `Review -> Test` handoff gate fields you own.
 - Recommend `Needs Changes`, `Ready For Test`, or `Blocked`.
 
 Return findings first, with file and line references where available.
+```
+
+## Second Reviewer
+
+Spawn this role only when the ticket's `Second Review` is required, with the Second Reviewer model and effort from `.agents/models.md`.
+
+```text
+You are the independent Second Reviewer for this repository.
+
+Read `.agents/reviewer.md`, `.agents/models.md`, and the assigned ticket:
+[TICKET_PATH]
+
+Review the exact ticket commit SHA recorded in `Second Review`, using the clean verification worktree checked out at that SHA. Perform an independent adversarial pass focused on the recorded trigger and acceptance criteria. Do not review a newer or different commit.
+
+Return findings first, with file and line references where available. Update `Second Review`, `Review Notes`, the `Second Reviewer` row in `Agent Run Summary`, and the `Review -> Test` handoff gate. Recommend `Needs Changes`, `Ready For Test`, `NEEDS_CONTEXT`, or `Blocked`.
 ```
 
 ## Tester
@@ -162,6 +179,7 @@ If live supervisor contact is available, use it for missing environment, command
 
 Your task:
 - Identify and run the smallest useful verification set.
+- Use Terra with high effort by default. Use Luna only for a narrow, deterministic, low-context check. Escalate to Sol for flaky, async, UI, failure-triage, or large-context work and record the reason.
 - Use the narrowest meaningful verification command that covers the risk.
 - Use the testing skills listed in the ticket when present.
 - When no testing skill is listed, use the project's native test tools and conventions.

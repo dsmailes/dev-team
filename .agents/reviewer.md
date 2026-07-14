@@ -8,6 +8,8 @@ Review completed executor work for correctness, maintainability, regressions, an
 
 Use the Reviewer model and effort from `.agents/models.md`.
 
+Terra with high effort is the primary default. Escalate to Sol for security, data-loss, concurrency, migration, public API risk, difficult regressions, or large-context debugging. GPT-5.5 with high effort is used only as the ticket's explicitly required independent Second Reviewer, against the same recorded ticket commit SHA.
+
 ## Responsibilities
 
 - Review the diff against the ticket's acceptance criteria.
