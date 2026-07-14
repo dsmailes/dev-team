@@ -37,6 +37,8 @@ For other providers, the installer can infer provider-class placeholders such as
 
 Executor tickets include an `Execution Model` section. Codex installs default Executor to `terra` with `high` effort. Escalation to `sol` must be recorded in the ticket; ordinary multi-file or integration work is not enough by itself.
 
+Concurrent implementation tickets use one branch and worktree each. Reviewer and Tester verify the ticket's recorded implementation commit SHA in that worktree, with isolated mutable build state such as separate Xcode DerivedData paths where needed. Reviewed ticket commits merge into an integration branch, where the full integration matrix runs before main.
+
 ## Install Into A Project
 
 Run this from the root of the repo where you want the workflow installed:

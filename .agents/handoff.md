@@ -25,6 +25,7 @@ Required before implementation can be assigned:
 - Rollback and persistence impact is documented, or explicitly marked `None`.
 - `Skill Context` is filled, including role-specific skills or `None`.
 - `Execution Model` is filled, defaulting Executor to `terra` unless escalation is justified.
+- `Source Isolation` says whether concurrent execution is planned; concurrent tickets have a dedicated branch and worktree.
 - Verification plan exists.
 - `Designer Review` is marked `Yes` or `No`.
 - TDD plan exists for behavior changes, or a waiver explains why it does not apply.
@@ -69,6 +70,7 @@ Required before Reviewer starts:
 - Files changed are listed.
 - Implementation notes are written.
 - Model actually used is recorded.
+- Implementation commit SHA is recorded.
 - Red/green evidence is recorded, or TDD waiver is referenced.
 - Commands run are recorded.
 - `git status --short --untracked-files=all` or equivalent artifact check is recorded when relevant.
@@ -84,6 +86,7 @@ Required before Tester starts:
 - Code quality review is complete.
 - Open review issues are resolved, waived with reason, or ticket is blocked.
 - Test scope is identified.
+- Reviewer verified the implementation commit SHA recorded by Executor.
 - Missing context is resolved through supervisor contact, or reported as `NEEDS_CONTEXT` / `BLOCKED`.
 - Reviewer clean-worktree and commit-identity checks are recorded.
 
@@ -101,6 +104,8 @@ Required before completion:
 - Durable memory updates are promoted to `.memory/` or explicitly marked `None`.
 - Follow-up tickets are created or explicitly marked `None`.
 - Final ticket state matches `.tickets/queue.md`.
+- Tester verified the same commit SHA reviewed by Reviewer, or recorded why a newer commit required re-review.
+- Concurrent-ticket integration matrix is recorded after merge, or explicitly marked `Not applicable`.
 - `Agent Run Summary` lists every role that ran, its model and effort, and token usage or `Unavailable`.
 
 ## Handoff Summary
@@ -116,6 +121,7 @@ Relevant files:
 Relevant memory entries:
 Skill Context:
 Execution Model:
+Source Isolation:
 Questioning Notes:
 Acceptance criteria:
 Known risks:

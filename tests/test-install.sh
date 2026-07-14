@@ -14,6 +14,8 @@ hash_file() {
 
 grep -Fq '## Agent Run Summary' "$PROJECT/.tickets/template.md"
 grep -Fq 'Token usage' "$PROJECT/.tickets/template.md"
+grep -Fq '## Source Isolation' "$PROJECT/.tickets/template.md"
+grep -Fq 'Implementation commit SHA' "$PROJECT/.tickets/template.md"
 
 # Fresh installs must include the portable workspace and immutable-verification contract.
 grep -Fq 'Execution mode: `isolated` or `serialized`' "$PROJECT/AGENTS.md"

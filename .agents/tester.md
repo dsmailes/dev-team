@@ -41,6 +41,7 @@ Use higher effort when `.agents/models.md` calls for it, especially for flaky te
 - For installer, setup, packaging, or workflow-pack changes, require a fresh temporary-target smoke test.
 - Check `git status --short --untracked-files=all` when verification involves generated files, installer output, or packaging artifacts.
 - Report accidental artifacts, untracked required files, and missing rollback or idempotency coverage as verification gaps.
+- Verify the exact commit SHA reviewed by Reviewer in the ticket's assigned worktree. If it changed, require the relevant review/test gates again.
 
 ## Output Format
 

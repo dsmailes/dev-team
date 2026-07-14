@@ -65,13 +65,15 @@ Use the designer only when a ticket changes screens, flows, visual hierarchy, in
 4. Use `luna` only for explicitly low-risk documentation, ticket, formatting, or mechanical follow-up work.
 5. If Terra is unavailable, use the nearest available balanced coding model and record the fallback in `Execution Model`.
 6. Assign exactly one ticket unless the tickets share the same files and scope.
-7. Tell the executor which files or modules it owns.
-8. Provide exact context in the prompt: ticket text, relevant files, relevant memory entries, `Skill Context`, `Execution Model`, acceptance criteria, and expected verification.
-9. If the runtime supports fresh subagent context, use it. Do not rely on inherited conversation history.
-10. If the runtime supports live supervisor contact, allow Executor to ask the orchestrator blocking questions. Otherwise require `NEEDS_CONTEXT` or `BLOCKED` in the completion report.
-11. For behavior changes, require red/green TDD evidence unless TDD is explicitly waived in the ticket.
-12. Complete the `Ready -> In Progress` handoff gate before Executor starts.
-13. When implementation returns, inspect the changed files and complete `In Progress -> Review` before review.
+7. For concurrent tickets, create a dedicated branch and worktree before assigning work. Use a separate build/cache path when the platform has mutable build state, such as Xcode DerivedData.
+8. Tell the executor which files or modules it owns.
+9. Provide exact context in the prompt: ticket text, relevant files, relevant memory entries, `Skill Context`, `Execution Model`, `Source Isolation`, acceptance criteria, and expected verification.
+10. If the runtime supports fresh subagent context, use it. Do not rely on inherited conversation history.
+11. If the runtime supports live supervisor contact, allow Executor to ask the orchestrator blocking questions. Otherwise require `NEEDS_CONTEXT` or `BLOCKED` in the completion report.
+12. For behavior changes, require red/green TDD evidence unless TDD is explicitly waived in the ticket.
+13. Require the executor to commit the ticket's scoped changes and record the resulting SHA before review.
+14. Complete the `Ready -> In Progress` handoff gate before Executor starts.
+15. When implementation returns, inspect the changed files and complete `In Progress -> Review` before review.
 
 The Executor must create a scoped ticket commit and record its immutable ID before handoff. Preserve the executor workspace until the integration outcome is captured.
 
@@ -101,7 +103,17 @@ After focused review and testing, the orchestrator combines reviewed ticket comm
 
 ## Parallel Work
 
-Parallelize only when tickets have disjoint ownership.
+Parallelize only when tickets have disjoint ownership and can use separate branches/worktrees. A shared checkout is not an acceptable concurrent implementation environment.
+
+For every concurrent ticket:
+
+1. Create a dedicated branch and worktree before assigning the ticket.
+2. Record the worktree path and branch in `Source Isolation`.
+3. Use isolated mutable build state where needed, for example a unique DerivedData path for each Xcode worktree.
+4. Commit the scoped implementation and record its SHA.
+5. Review and test that exact SHA in the same ticket worktree.
+6. If a fix creates a new SHA, repeat the applicable review and test gates for that SHA.
+7. Merge only reviewed, tested ticket commits into an integration branch, then run the full integration matrix before merging to the main branch.
 
 Good parallel splits:
 
@@ -115,6 +127,7 @@ Avoid parallel splits when:
 - The executor depends on the architect's unresolved decision.
 - The tester needs implementation details that do not exist yet.
 - Review has not completed for a ticket that the next ticket depends on.
+- The tickets cannot be assigned separate worktrees, branches, or required mutable build/cache paths.
 
 ## Queue Hygiene
 
