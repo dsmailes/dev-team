@@ -42,6 +42,24 @@ Tickets also include a `Second Review` decision. Require it for high-risk change
 
 Concurrent implementation tickets use dedicated worktrees, ticket-scoped artifacts, immutable verification commits, and one post-merge integration matrix per batch. Preserve blocked or failed workspaces for diagnosis; clean up only named, merged, verified workspaces after artifact capture.
 
+## Shared Host Resources
+
+Worktrees isolate source and per-ticket artifact roots isolate build outputs, but simulator/device verification remains a machine-wide resource. Run only the device-bound phase under the installed lease helper so builds, linting, review, and non-device tests can continue in parallel:
+
+```sh
+scripts/with-host-resource-lease.sh --timeout 600 simulator -- xcodebuild test [your usual arguments]
+```
+
+The helper uses a host-wide local lease root and records the holder in an `owner` file. It releases only its own lease and never auto-deletes an existing one; inspect the owner record before removing a confirmed inactive lease.
+
+To keep Xcode products off the internal drive, optionally configure a user-owned external build root before running agents:
+
+```sh
+export DEV_TEAM_BUILD_ROOT=/Volumes/ExternalSSD/builds
+```
+
+Verify that the volume is mounted, local, writable, and has sufficient space before each build. Derive a distinct path such as `$DEV_TEAM_BUILD_ROOT/<project>/<ticket>/DerivedData`, pass it with `-derivedDataPath`, and do not share or clean that path while another ticket may use it. A missing configured build root is a blocker: do not silently fall back to Xcode's default DerivedData location.
+
 ## Install Into A Project
 
 Run this from the root of the repo where you want the workflow installed:

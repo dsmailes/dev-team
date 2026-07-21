@@ -38,6 +38,7 @@ Your task:
 - Fill in `Execution Model`: default Executor to `terra` with `high` effort. Record an escalation model and reason only when Terra is unavailable, the ticket crosses architecture boundaries, the work is high-risk data/security/concurrency/migration logic, debugging remains blocked after reproduction, or Terra reports `NEEDS_CONTEXT` / `BLOCKED` and more reasoning is required. Use `luna` only for explicitly low-risk documentation, ticket, formatting, or mechanical follow-up work.
 - Mark `Designer Review` as required for tickets that change UI, UX, visual hierarchy, interaction patterns, accessibility, or frontend polish.
 - Mark `Second Review` as required only for security, data-loss, concurrency, migration, public API risk, difficult regressions, unresolved review uncertainty, or an explicit user request. Otherwise mark it `Not required`.
+- Fill in `Host Resource Coordination`: mark simulator/device work as required or not required. When required, record a named lease, the narrow command that uses it, and the configured build-root checks. If `DEV_TEAM_BUILD_ROOT` is set but unavailable, mark the ticket `Blocked` rather than assuming default DerivedData.
 - For multi-step implementation work, create or link a plan under `docs/agent-plans/`.
 - Record the Architect row in `Agent Run Summary`: agent or task identity, actual model, effort, and token usage when exposed by the runtime; otherwise write `Unavailable`.
 - Return context inspected, decision tree summary, the next upstream blocking question if one exists, assumptions, proposed tickets, risks, and recommended execution order.
@@ -101,6 +102,8 @@ Your task:
 - Stop and escalate rather than guessing on product, API, scope, conflicting-requirement, plan-invalidating, or environment-blocked decisions.
 - For behavior changes, follow red/green TDD: write the failing test, run it and confirm the expected failure, implement the minimal fix, then run it and confirm the pass.
 - For mutating/building tickets, honor the recorded `isolated` or `serialized` execution mode. In isolated mode, use only the assigned ticket branch/worktree and ticket-scoped artifact root. In serialized mode, wait for exclusive shared-worktree ownership and a clean stable commit.
+- When `DEV_TEAM_BUILD_ROOT` is configured, verify it is mounted, local, writable, and has sufficient space before using the ticket's unique project/ticket artifact path. Do not silently fall back to a different path.
+- Use `scripts/with-host-resource-lease.sh RESOURCE -- COMMAND` only around a recorded simulator/device command. Keep source edits, ordinary builds, lint, and non-device tests outside the host-wide lease.
 - Create and record one scoped immutable ticket commit before handoff, including base commit, branch/worktree, artifact root, focused evidence, and clean status.
 - Use the narrowest safe command or tool for implementation and verification.
 - Explain before high-impact actions such as installer changes, persistent configuration writes, destructive operations, or writes outside the project.
@@ -186,6 +189,7 @@ Your task:
 - Require fresh command output or documented manual checks before recommending pass.
 - Verify the exact recorded ticket commit in a clean ticket verification worktree and use its ticket-scoped artifact root. Report `BLOCKED` for a commit mismatch, dirty verification tree, or moving shared tree.
 - For integration batches, record the single post-merge full integration matrix result from the integration commit rather than running a full matrix independently for each ticket.
+- Run non-device verification without the lease. For simulator/device verification, use the ticket's named resource lease only around that command. If the lease times out, include its owner record and report `BLOCKED`.
 - Stop and report `BLOCKED` when required environment, credentials, devices, services, or commands are unavailable.
 - For installer, setup, packaging, or workflow-pack changes, require a fresh temporary-target smoke test and report any artifact or git-status concerns.
 - Add or propose focused tests only if explicitly assigned; otherwise report coverage gaps.

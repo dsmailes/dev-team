@@ -31,6 +31,7 @@ This directory is a lightweight local ticketing system for agent-coordinated wor
 - Each ticket needs acceptance criteria before execution.
 - Each implementation ticket should include a verification plan.
 - Concurrent mutating/building tickets must include `Workspace And Integration Contract` metadata: execution mode, base commit, branch/worktree, immutable ticket commit, verification worktree, ticket-scoped artifact root, cleanup status, and later integration batch/commit evidence.
+- Tickets using simulator/device verification must include `Host Resource Coordination`: whether a lease is needed, its named resource, the narrow command scope, the lease root, and evidence or a blocker. `DEV_TEAM_BUILD_ROOT`, when configured, must produce a unique project/ticket artifact path after mount and write checks.
 - Each implementation ticket should include `Skill Context` before execution, with role-specific skills or `None` when no skill applies.
 - Each ticket should complete the relevant `Handoff Gates` checklist before moving state.
 - External skill families are optional unless the ticket, user, imported registry, or project instructions explicitly require them.

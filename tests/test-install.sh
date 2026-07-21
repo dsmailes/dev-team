@@ -29,10 +29,37 @@ grep -Fq '## Workspace And Integration Contract' "$PROJECT/.tickets/template.md"
 grep -Fq 'Ticket commit:' "$PROJECT/.tickets/template.md"
 grep -Fq 'Verification worktree:' "$PROJECT/.tickets/template.md"
 grep -Fq 'Integration commit:' "$PROJECT/.tickets/template.md"
+grep -Fq '## Host Resource Coordination' "$PROJECT/.tickets/template.md"
+grep -Fq 'DEV_TEAM_BUILD_ROOT' "$PROJECT/.agents/runbook.md"
+test -x "$PROJECT/scripts/with-host-resource-lease.sh"
 grep -Fq '| Reviewer | `terra` | `high`' "$PROJECT/.agents/models.md"
 grep -Fq '| Second Reviewer | `gpt-5.5` | `high`' "$PROJECT/.agents/models.md"
 grep -Fq '| Tester | `terra` | `high`' "$PROJECT/.agents/models.md"
 grep -Fq '## Second Review' "$PROJECT/.tickets/template.md"
+grep -Fq '## Host Resource Coordination' "$PROJECT/.tickets/template.md"
+test -x "$PROJECT/scripts/with-host-resource-lease.sh"
+
+LEASE_ROOT=$TMPDIR/host-resource-leases
+"$PROJECT/scripts/with-host-resource-lease.sh" --root "$LEASE_ROOT" --timeout 5 simulator -- sh -c 'sleep 1' &
+LEASE_PID=$!
+while [ ! -d "$LEASE_ROOT/simulator.lease" ]; do
+  sleep 1
+done
+if "$PROJECT/scripts/with-host-resource-lease.sh" --root "$LEASE_ROOT" --timeout 0 simulator -- sh -c ':'; then
+  echo "expected simulator lease contention to fail" >&2
+  exit 1
+fi
+wait "$LEASE_PID"
+[ ! -e "$LEASE_ROOT/simulator.lease" ]
+
+mkdir "$LEASE_ROOT/stale.lease"
+printf '%s\n' 'pid=unknown' > "$LEASE_ROOT/stale.lease/owner"
+if "$PROJECT/scripts/with-host-resource-lease.sh" --root "$LEASE_ROOT" --timeout 0 stale -- sh -c ':'; then
+  echo "expected existing lease to remain unavailable" >&2
+  exit 1
+fi
+[ -d "$LEASE_ROOT/stale.lease" ]
+rm -rf "$LEASE_ROOT/stale.lease"
 
 cat > "$PROJECT/.tickets/SAFE-900.md" <<'EOF'
 # SAFE-900

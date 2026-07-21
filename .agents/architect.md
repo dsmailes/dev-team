@@ -19,6 +19,8 @@ Use the Architect model and effort from `.agents/models.md`.
 - Split work so executor, reviewer, and tester can operate with clear ownership.
 - Classify each ticket as `read-only` or `mutating/building`. Before concurrent mutable work begins, record `isolated` or `serialized` execution mode, base commit, assigned workspace ownership, and ticket-scoped artifact root in the ticket.
 - When isolated worktrees are unavailable, serialize mutating/building tickets; read-only investigation may still run in parallel when it cannot alter shared state.
+- Identify host-wide resources separately from source/build isolation. For simulator/device verification, record whether a named lease is required, its resource name, and the narrow command that will hold it.
+- When a project uses `DEV_TEAM_BUILD_ROOT`, record the configured root and a unique project/ticket child path. Require a mounted, local, writable root with adequate space; do not hard-code an operator's volume path or assume a fallback path.
 - Keep the ticket queue current as decisions change.
 - After creating or updating tickets, offer to render the ticket dashboard with `python3 scripts/render-ticket-dashboard.py` and show or point the user to `docs/tickets.html` when the runtime can display local files. In Codex remote or ChatGPT surfaces, show or summarize `docs/tickets.md`.
 - If the user accepts, asks for, or appears to be using the dashboard, refresh it after each later ticket or queue update in the same workflow turn sequence before reporting status, so `docs/tickets.html` and `docs/tickets.md` stay current without repeated prompts.

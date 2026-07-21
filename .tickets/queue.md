@@ -14,7 +14,7 @@ No tickets.
 
 ## In Progress
 
-No tickets.
+- `HOST-001`: Coordinate shared simulator and external build resources. See `HOST-001.md`.
 
 ## Review
 

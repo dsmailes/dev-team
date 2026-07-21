@@ -79,6 +79,18 @@ What should not be changed?
 
 In `isolated` mode, each concurrent mutating/building ticket owns a unique branch, worktree, and artifact root. In `serialized` mode, only one mutating/building ticket owns the shared worktree at a time. Reviewer and Tester verify the immutable ticket commit from a clean verification worktree. The orchestrator runs one full integration matrix for each merged integration batch. Preserve failed workspaces until diagnosis evidence is captured; clean up only after merge, verification, and artifact capture.
 
+## Host Resource Coordination
+
+- Simulator/device required: `No`
+- Lease resource: `simulator`
+- Lease root: `${DEV_TEAM_HOST_RESOURCE_ROOT:-${TMPDIR:-/tmp}/dev-team-host-resources}`
+- Lease command/evidence: Not applicable.
+- Build root configuration: `DEV_TEAM_BUILD_ROOT` not configured.
+- Project/ticket artifact path:
+- Mount, write, and free-space check: Not applicable.
+
+Hold the lease only for simulator/device commands with `scripts/with-host-resource-lease.sh RESOURCE -- COMMAND`. Run non-device checks outside it. When `DEV_TEAM_BUILD_ROOT` is configured, use a unique project/ticket child path only after the root is confirmed mounted, local, writable, and sufficiently spacious. Do not silently fall back to a different DerivedData location.
+
 ## Skill Context
 
 - Language:
@@ -213,6 +225,7 @@ Record every role that actually ran for this ticket. Do not estimate token usage
 - [ ] Expected executor output is stated.
 - [ ] Verification command or manual check is stated.
 - [ ] Ticket classification, execution mode, base commit, workspace ownership, and ticket-scoped artifact root are recorded.
+- [ ] `Host Resource Coordination` is complete, including lease and build-root checks when applicable.
 - Waiver:
 
 ### In Progress -> Review
@@ -241,6 +254,7 @@ Record every role that actually ran for this ticket. Do not estimate token usage
 
 - [ ] Fresh verification evidence is recorded.
 - [ ] Tester clean-worktree, commit-identity, and artifact-root checks are recorded.
+- [ ] Simulator/device lease evidence is recorded, or `Not applicable` is explicit.
 - [ ] Integration batch membership, integration commit, and one post-merge integration matrix result are recorded.
 - [ ] Merge conflicts and affected focused reruns are recorded or explicitly marked `None`.
 - [ ] Cleanup status for ticket worktrees, branches, and artifacts is recorded.

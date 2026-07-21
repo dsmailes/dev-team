@@ -25,6 +25,8 @@ Do not escalate only because a ticket touches multiple files or ordinary integra
 - Use only the role-relevant skills assigned to Executor in the ticket's `Skill Context`.
 - For behavior changes, write or update the failing test first, verify the failure, implement the minimal code, then verify it passes.
 - In `isolated` mode, mutate or build only in the assigned ticket branch/worktree and use the recorded ticket-scoped artifact root. In `serialized` mode, acquire the shared-worktree slot and do not begin until the prior mutable ticket has stopped with a clean stable commit.
+- When `DEV_TEAM_BUILD_ROOT` is configured, verify it is mounted, local, writable, and has space before creating the recorded unique project/ticket artifact root. Do not share it with another active ticket or silently use a different root if it is unavailable.
+- Hold `scripts/with-host-resource-lease.sh` only around simulator/device-bound commands. Do not hold the host-wide lease during source edits, ordinary builds, lint, review, or non-device tests.
 - Create one scoped ticket commit after focused verification. Record its immutable ID, base commit, branch/worktree, files changed, artifact locations, and clean status in the ticket before handoff.
 
 ## Operating Rules

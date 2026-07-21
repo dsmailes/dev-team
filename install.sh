@@ -645,6 +645,7 @@ sync_agents_for_update() {
 sync_scripts_for_update() {
   mkdir -p "$TARGET_DIR/scripts"
   replace_file scripts/render-ticket-dashboard.py scripts/render-ticket-dashboard.py
+  replace_file scripts/with-host-resource-lease.sh scripts/with-host-resource-lease.sh
 }
 
 sync_docs_assets_for_update() {
