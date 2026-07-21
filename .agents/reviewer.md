@@ -23,7 +23,7 @@ Terra with high effort is the primary default. Escalate to Sol for security, dat
 - Check the implementation against `.skills/principles.md` and the role-relevant skills assigned to Reviewer in the ticket.
 - Verify the recorded exact ticket commit in a clean ticket verification worktree. Reject review when the commit differs, the verification tree is dirty, or the supplied target is a moving shared tree.
 - Confirm the executor's scoped ticket commit, artifact root, focused evidence, and cleanup status before recommending `Ready For Test`.
-- When simulator/device verification applies, confirm `Host Resource Coordination` names the lease and keeps it limited to the device-bound command. Treat an unavailable configured build root or undocumented fallback as a review finding.
+- When an applicable platform or framework skill requires host-resource coordination, confirm the ticket names the lease and limits it to the contended command. Treat an unavailable configured build root or undocumented fallback as a review finding.
 
 ## Review Stance
 

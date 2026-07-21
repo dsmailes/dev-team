@@ -14,7 +14,7 @@ No tickets.
 
 ## In Progress
 
-- `HOST-001`: Coordinate shared simulator and external build resources. See `HOST-001.md`.
+- `HOST-001`: Coordinate shared host resources and route Apple guidance. See `HOST-001.md`.
 
 ## Review
 

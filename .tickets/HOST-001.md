@@ -6,7 +6,7 @@
 
 ## Title
 
-Coordinate shared simulator and external build resources.
+Coordinate shared host resources and route Apple guidance.
 
 ## State
 
@@ -19,7 +19,7 @@ Several projects can run dev-team work on one machine at once. Simulator-backed 
 ## Scope
 
 - Add a portable host-resource lease helper for exclusive simulator/device phases.
-- Define ticket metadata and handoff rules for simulator leases and configurable build roots.
+- Define optional ticket metadata and handoff rules for shared host resources.
 - Require unique project/ticket artifact paths beneath an explicitly configured build root.
 - Document mount, permission, cleanup, and stale-lease safety checks.
 - Install and regression-test the helper with the workflow pack.
@@ -34,20 +34,20 @@ Several projects can run dev-team work on one machine at once. Simulator-backed 
 
 - Simulator/device verification can run through an installed host-resource lease helper that serializes one named resource across projects on the same machine.
 - The helper supports bounded waiting, records lease ownership, cleans up its own lease on normal exit or signals, and never automatically removes a possibly live stale lease.
-- Tickets capture whether simulator access is needed, the resource name, lease root, and the command or evidence that used the lease.
-- Build guidance uses `DEV_TEAM_BUILD_ROOT` as an optional user-owned root and derives a unique project/ticket artifact root without hard-coding a volume path or silently falling back when the configured root is unavailable.
-- Tester guidance runs non-device checks in parallel where possible and holds the lease only around simulator/device-bound commands.
+- Only a selected platform or framework skill can require host-resource coordination; generic tickets do not receive Apple-specific fields or gates.
+- Apple Xcode/CoreSimulator guidance uses `DEV_TEAM_BUILD_ROOT` as an optional user-owned root and derives a unique project/ticket artifact root without hard-coding a volume path or silently falling back when the configured root is unavailable.
+- Tester guidance runs work that does not need a shared resource in parallel and holds the lease only around the platform-identified contended command.
 - Fresh install and update-preservation regression coverage confirms the helper and workflow guidance are installed.
 
 ## Questioning Notes
 
-- Context inspected: workflow docs, ticket template, installer script, installer regression, workspace/integration contract, and external-build/simulator guidance already present.
+- Context inspected: workflow docs, ticket template, installer script, installer regression, workspace/integration contract, and platform skill registry.
 - Decision tree: A host-wide resource needs real coordination rather than per-worktree metadata. Use an atomic directory lease because POSIX `flock` is not portable to macOS. Build outputs need separation but must remain user-configurable, so use an environment root and per-project/ticket descendants.
 - Blocking questions: None. The workflow remains framework-neutral and uses Xcode/DerivedData only as an example.
 - Assumptions: Projects can run shell commands; `mkdir` is atomic on the local filesystem that holds the lease root; a host-wide temporary directory is shared by concurrent local runs.
 - Deferred questions: A runtime adapter may later auto-select simulator UDIDs or expose lease status in the ticket dashboard.
 - Approaches considered: Documentation-only advisory lock; a platform-specific `flock`; a portable `mkdir` lease helper.
-- Chosen approach: Install a portable `mkdir` lease helper with explicit ownership and bounded waiting, plus documented per-ticket build-root convention.
+- Chosen approach: Install a portable `mkdir` lease helper with explicit ownership and bounded waiting, then route Apple-specific CoreSimulator/DerivedData guidance through the Apple platform skill.
 - Rejected alternatives: Documentation alone cannot coordinate independent apps. `flock` is unavailable by default on macOS. Automatic stale-lock deletion risks interrupting another active process.
 
 ## Likely Files
@@ -211,9 +211,9 @@ Several projects can run dev-team work on one machine at once. Simulator-backed 
 
 - Added `scripts/with-host-resource-lease.sh`, a portable atomic-directory lease helper. It supports `--root`, bounded `--timeout`, an owner record, normal/signal cleanup, and refuses to delete an existing lease.
 - Installed the helper on both fresh installs and `--update`.
-- Added `Host Resource Coordination` to ticket metadata, handoff gates, role prompts, and runbook guidance.
-- Added `DEV_TEAM_BUILD_ROOT` guidance requiring a mounted, local, writable, adequately sized root and unique project/ticket paths without silent fallback.
-- Updated Tester guidance to hold a simulator lease only around the device-bound command.
+- Added optional Host Resource Coordination to ticket metadata and workflow guidance; it now applies only when a selected platform/framework skill identifies a shared resource.
+- Routed `DEV_TEAM_BUILD_ROOT`, CoreSimulator, and DerivedData guidance through the Apple platform section of `.skills/registry.md`.
+- Updated Tester guidance to hold a lease only around a platform-identified contended command.
 - Implementation remains uncommitted pending the requested commit step.
 
 ## Review Notes

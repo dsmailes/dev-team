@@ -20,8 +20,7 @@ These practices are reusable across frameworks and should inform every agent rol
 - Assert against complete relevant state where practical; avoid transforming away the signal under test.
 - Use snapshot tests deliberately for stable rendered output, and record/update snapshots through the project-approved workflow rather than hand-editing them.
 - For concurrent mutating/building tickets, use a ticket-scoped artifact root so builds, test outputs, caches, and logs do not collide. Prefer project-native output controls; for example, Xcode may set `-derivedDataPath` beneath that root, but the workflow does not require Xcode or any specific runtime.
-- `DEV_TEAM_BUILD_ROOT` is optional user-owned configuration for project/ticket artifact roots. Before use, verify it is mounted, local, writable, and has adequate free space. Do not hard-code a volume path, share one child directory between active tickets, clean an in-use root, or silently fall back when a configured root is unavailable.
-- Source and artifact isolation do not isolate machine-wide services. Use `scripts/with-host-resource-lease.sh RESOURCE -- COMMAND` for a narrow simulator/device command, and keep ordinary builds, lint, review, and non-device tests outside the lease. The helper records ownership and never deletes an existing lease automatically.
+- Source and artifact isolation do not isolate every host-wide service. When a selected platform or framework skill identifies a contended resource, use `scripts/with-host-resource-lease.sh RESOURCE -- COMMAND` only for that narrow command. The helper records ownership and never deletes an existing lease automatically.
 - Review and focused verification target the recorded immutable ticket commit from a clean verification worktree. The full integration matrix targets the later integration commit once per merge batch.
 
 ## Debugging

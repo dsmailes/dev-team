@@ -62,7 +62,7 @@ Required before Executor starts:
 - Verification command or manual check is stated.
 - Runtime support for live supervisor contact is noted, or fallback status reporting is required.
 - Ticket classification, execution mode, base commit, workspace ownership, and ticket-scoped artifact root are recorded.
-- Host Resource Coordination is complete: simulator/device requirement, lease resource, command scope, and build-root availability are recorded when applicable.
+- Optional Host Resource Coordination is complete when an applicable platform or framework skill requires it: resource, lease command scope, and platform-specific build-root checks are recorded.
 
 ### In Progress -> Review
 
@@ -96,7 +96,7 @@ Required before completion:
 
 - Fresh verification evidence is recorded.
 - Tester clean-worktree, commit-identity, and artifact-root checks are recorded.
-- Simulator/device lease evidence or an explicit `Not applicable` is recorded. Any lease timeout identifies the owner and is handled as a blocker.
+- Host-resource lease evidence is recorded when applicable. Any lease timeout identifies the owner and is handled as a blocker.
 - Integration batch membership and resulting integration commit are recorded.
 - One post-merge integration matrix result is linked for the batch.
 - Merge conflicts and affected focused reruns are recorded or explicitly marked `None`.

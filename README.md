@@ -44,13 +44,17 @@ Concurrent implementation tickets use dedicated worktrees, ticket-scoped artifac
 
 ## Shared Host Resources
 
-Worktrees isolate source and per-ticket artifact roots isolate build outputs, but simulator/device verification remains a machine-wide resource. Run only the device-bound phase under the installed lease helper so builds, linting, review, and non-device tests can continue in parallel:
+Worktrees isolate source and per-ticket artifact roots isolate build outputs, but some platforms also have machine-wide resources. When an applicable platform skill identifies one, run only the contended phase under the installed lease helper so unrelated work can continue in parallel:
 
 ```sh
-scripts/with-host-resource-lease.sh --timeout 600 simulator -- xcodebuild test [your usual arguments]
+scripts/with-host-resource-lease.sh --timeout 600 resource-name -- command [arguments]
 ```
 
 The helper uses a host-wide local lease root and records the holder in an `owner` file. It releases only its own lease and never auto-deletes an existing one; inspect the owner record before removing a confirmed inactive lease.
+
+### Apple Platform
+
+Only Apple-platform tickets that use Xcode/CoreSimulator should apply the following build-root convention:
 
 To keep Xcode products off the internal drive, optionally configure a user-owned external build root before running agents:
 

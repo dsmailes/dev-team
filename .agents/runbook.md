@@ -35,7 +35,7 @@ Only write durable verified knowledge to `.memory/`. Keep active task notes in `
 
 Before concurrent mutation or build work begins, classify each selected ticket as `read-only` or `mutating/building` and record its execution mode. Use `isolated` mode when the runtime and repository can safely provide a unique ticket branch/worktree and ticket-scoped artifact root for each concurrent mutating/building ticket. Otherwise use `serialized` mode: grant shared-worktree ownership to one mutating/building ticket at a time. Read-only investigation may remain parallel when it cannot alter shared state.
 
-Treat host-wide resources separately from source and artifact isolation. Simulator/device commands use one named lease across local projects through `scripts/with-host-resource-lease.sh RESOURCE -- COMMAND`; acquire it only immediately before the device-bound command and release it as soon as that command exits. Run ordinary builds, lint, review, and non-device tests without the lease. When `DEV_TEAM_BUILD_ROOT` is configured, verify the root is mounted, local, writable, and has space, then derive a unique project/ticket artifact path; an unavailable configured root is a blocker, not a reason to silently use default DerivedData.
+Treat host-wide resources separately from source and artifact isolation only when an applicable platform or framework skill identifies one. Use `scripts/with-host-resource-lease.sh RESOURCE -- COMMAND` immediately around the contended command and release it when that command exits. Run unrelated work without the lease. Platform-specific build-root conventions belong to the selected platform skill; an unavailable configured root is a blocker, not a reason to silently substitute a different path.
 
 Use ticketing by default for non-trivial implementation work. Skip tickets only for simple explanations, one-command lookups, tiny typo fixes, or when the user explicitly opts out. The Architect should not ask permission to create tickets when the workflow applies; it should ask only unresolved blocking questions.
 
@@ -70,7 +70,7 @@ Use the designer only when a ticket changes screens, flows, visual hierarchy, in
 5. If Terra is unavailable, use the nearest available balanced coding model and record the fallback in `Execution Model`.
 6. Assign exactly one ticket unless the tickets share the same files and scope.
 7. Tell the executor which files or modules it owns.
-8. Provide exact context in the prompt: ticket text, relevant files, relevant memory entries, `Skill Context`, `Execution Model`, `Host Resource Coordination`, acceptance criteria, and expected verification.
+8. Provide exact context in the prompt: ticket text, relevant files, relevant memory entries, `Skill Context`, `Execution Model`, optional host-resource coordination required by selected platform skills, acceptance criteria, and expected verification.
 9. If the runtime supports fresh subagent context, use it. Do not rely on inherited conversation history.
 10. If the runtime supports live supervisor contact, allow Executor to ask the orchestrator blocking questions. Otherwise require `NEEDS_CONTEXT` or `BLOCKED` in the completion report.
 11. For behavior changes, require red/green TDD evidence unless TDD is explicitly waived in the ticket.
@@ -99,7 +99,7 @@ Reviewer must reject a commit mismatch, dirty verification worktree, or moving s
 2. Give the tester the ticket path, recorded ticket commit, clean ticket verification worktree, ticket-scoped artifact root, and expected focused verification scope.
 3. If the runtime supports live supervisor contact, allow Tester to ask for missing environment, command, or verification scope decisions. Otherwise require `NEEDS_CONTEXT` or `BLOCKED`.
 4. Require fresh command output or documented manual-check evidence before accepting a pass.
-5. Run non-device verification without a host lease where possible. For simulator/device checks, acquire the named lease only around that command; report a timed-out lease with its owner record as `BLOCKED`.
+5. Run work that does not need a shared host resource without a lease where possible. When a selected platform skill requires one, acquire the named lease only around that command; report a timed-out lease with its owner record as `BLOCKED`.
 6. Record every role that ran in the ticket's `Agent Run Summary`, with the actual model, effort, and token usage when available. Use `Unavailable` rather than estimating telemetry the runtime does not expose.
 7. If verification passes, complete `Test -> Done` before moving the ticket to `Done`, then announce the completed `Agent Run Summary` to the user.
 8. If verification fails, move it back to `In Progress` or create a follow-up ticket.

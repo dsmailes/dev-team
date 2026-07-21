@@ -138,6 +138,30 @@ Agent usage:
 - Reviewer: check lifecycle, performance, memory, and integration risks.
 - Tester: verify on the relevant simulator, emulator, device, or desktop workflow when available.
 
+### Apple Platforms
+
+Applies only when:
+
+- The project uses Xcode, Apple simulators, CoreSimulator, or Apple-platform `DerivedData`.
+
+Skill selection:
+
+- Choose local Apple, Xcode, simulator/device, build, test, accessibility, or performance skills if available.
+
+Host-resource coordination:
+
+- CoreSimulator is host-wide even when projects use separate worktrees. Use `scripts/with-host-resource-lease.sh --timeout 600 simulator -- xcodebuild test [arguments]` only around simulator/device-bound commands; run ordinary builds, lint, review, and non-device tests outside the lease.
+- `DEV_TEAM_BUILD_ROOT` is optional user-owned configuration for keeping Xcode products off the internal drive. Verify the root is mounted, local, writable, and has sufficient free space; derive a unique `$DEV_TEAM_BUILD_ROOT/<project>/<ticket>/DerivedData` path and pass it with `-derivedDataPath`.
+- A configured but unavailable build root is `BLOCKED`. Do not silently fall back to Xcode's default DerivedData location, share an active ticket path, or remove it while another ticket may use it.
+- Inspect an existing lease `owner` file before manually removing a confirmed inactive lease. The helper never removes an existing lease automatically.
+
+Agent usage:
+
+- Architect: add `Host Resource Coordination` only to Apple tickets that need simulator/device work, recording the resource, narrow command, and build-root checks.
+- Executor: use the ticket's unique DerivedData path and acquire the simulator lease only for device-bound work.
+- Reviewer: check that the lease scope and DerivedData isolation match the ticket.
+- Tester: run non-device checks first; treat a lease timeout or unavailable configured root as `BLOCKED` with recorded evidence.
+
 ### Backend, CLI, Or Services
 
 Applies when:

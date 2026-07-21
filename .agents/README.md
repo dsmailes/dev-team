@@ -30,7 +30,7 @@ This directory defines reusable role prompts for coordinating subagents on large
 
 For concurrent work, the orchestrator records `isolated` or `serialized` execution mode before mutation or builds begin. Isolated mutating/building tickets use separate branch/worktree and artifact roots; serialized mode grants the shared worktree to one mutable ticket at a time. Reviewer and Tester use a clean verification worktree at the executor's recorded ticket commit. The orchestrator runs the full integration matrix once per merged integration batch, then performs non-destructive workspace cleanup after evidence capture.
 
-Simulator/device commands are host-wide shared resources even when source and artifact roots are isolated. Use the installed `scripts/with-host-resource-lease.sh` helper only around the device-bound command, record the lease in the ticket, and leave non-device work parallel. `DEV_TEAM_BUILD_ROOT` is optional user-owned configuration; when set, every project/ticket receives a unique child path after the root is confirmed mounted, local, writable, and sufficiently spacious.
+Some selected platform skills may identify a host-wide resource even when source and artifact roots are isolated. In that case, use the installed `scripts/with-host-resource-lease.sh` helper only around the contended command, record the lease in the ticket, and leave unrelated work parallel. Apple Xcode/CoreSimulator guidance belongs to the Apple platform routing, not to every project.
 
 ## Handoff Contract
 

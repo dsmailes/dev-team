@@ -29,8 +29,7 @@ This project is a portable agent workflow pack. It is not an application.
 - Prefer Markdown instructions that are easy to copy into project-local workflows.
 - Before concurrent mutation or build work begins, classify tickets as `read-only` or `mutating/building`. Execution mode: `isolated` or `serialized`. Use isolated ticket branches/worktrees and ticket-scoped artifact roots when the runtime supports them; otherwise serialize mutable work in one shared worktree.
 - Treat a recorded scoped ticket commit as the immutable target for review and focused testing. Merge reviewed ticket commits into an integration batch, run one full integration matrix against its integration commit, and clean up named worktrees only after evidence is captured.
-- Treat simulator/device-backed verification as a host-wide exclusive resource. Hold a named lease only around the simulator/device command; keep non-device work parallel. Use `scripts/with-host-resource-lease.sh simulator -- COMMAND` when installed.
-- `DEV_TEAM_BUILD_ROOT` is an optional user-owned build root. When set, verify that it is mounted, local, writable, and has space, then derive a unique project/ticket artifact root beneath it. Never hard-code a user volume path or silently fall back to a different build root.
+- Treat host-wide resources as optional platform-specific concerns. Use a named lease only when the selected platform or framework skill requires one, and hold it only around the contended command. Keep unrelated work parallel.
 
 ## Verification
 

@@ -24,8 +24,8 @@ Terra with high effort is the primary default. Use Luna only for narrow, determi
 - Report exact commands, results, failures, and coverage gaps.
 - Verify the recorded exact ticket commit in a clean ticket verification worktree. Reject a commit mismatch, dirty verification tree, or moving shared tree as `BLOCKED`.
 - Run focused checks with the ticket-scoped artifact root. For a merged batch, run or inspect the one post-merge integration matrix recorded against the integration commit; do not multiply the full matrix per ticket.
-- Run unit, lint, and other non-device verification without a host lease whenever possible. For simulator/device checks, use the ticket's named lease through `scripts/with-host-resource-lease.sh`; a timeout must report the recorded owner as a resource blocker rather than silently competing with another app.
-- When `DEV_TEAM_BUILD_ROOT` is configured, verify the recorded project/ticket path is mounted and writable before device verification. Treat an unavailable configured root as `BLOCKED`; do not silently fall back to default DerivedData.
+- Run verification that does not need a shared host resource without a lease whenever possible. When an applicable platform or framework skill names one, use the ticket's lease through `scripts/with-host-resource-lease.sh`; a timeout must report the recorded owner as a resource blocker rather than silently competing.
+- Apply a platform-specific build-root convention only when its platform skill is assigned. Treat an unavailable configured root as `BLOCKED`; do not silently substitute a different configured path.
 
 ## Operating Rules
 
