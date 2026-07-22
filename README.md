@@ -284,7 +284,7 @@ Ticket IDs are allocated by scanning `.tickets/*.md` and choosing the next unuse
 
 Use `.memory/` for durable knowledge only: verified commands, architectural decisions, project orientation, and pitfalls. Keep active task notes in `.tickets/`.
 
-When a ticket reaches `Done`, the harness announces its `Agent Run Summary`: every role that ran, the agent or task identity, actual model and effort, and token usage when the runtime exposes it. If token telemetry is unavailable, the summary says `Unavailable`; it never estimates usage.
+When a ticket reaches `Done`, the harness announces its `Agent Run Summary`: every role that ran, the agent or task identity, actual model and effort, and token usage when the runtime exposes it. If token telemetry is unavailable, the summary says `Unavailable`; it never estimates usage. This summary is not handoff proof: `.agents/handoff-evidence.md` requires the runner to create immutable Executor, independent Reviewer, and independent Tester records for the same executor commit. Only the runner completion operation may move `Test` to `Done`.
 
 Runtime support is optional. When available, the workflow can use fresh-context subagents, live supervisor contact, background execution, and an allowed-agent list. When unavailable, agents use explicit ticket handoffs and report `NEEDS_CONTEXT` or `BLOCKED` instead of guessing.
 

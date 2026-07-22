@@ -16,6 +16,7 @@ No tickets.
 
 - `HOST-001`: Coordinate shared host resources and route Apple guidance. See `HOST-001.md`.
 - `MODEL-001`: Prefer Sonnet 5 for review when available. See `MODEL-001.md`.
+- `POLICY-001`: Define portable runtime handoff evidence contract. See `POLICY-001.md`.
 
 ## Review
 

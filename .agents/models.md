@@ -10,14 +10,17 @@ This file is project-local. Keep it aligned with the provider and model names av
 
 ## Role Assignments
 
-| Role | Default model | Effort | Escalation |
-| --- | --- | --- | --- |
-| Architect | `sol` | `high` | Use Sol for ambiguous architecture, migrations, high-risk planning, and cross-ticket decomposition. |
-| Designer | `sol` | `high` | Use Sol for important product decisions, broad workflow design, brand-sensitive UI, major design-system changes, and frontend polish. |
-| Executor | `terra` | `high` | Escalate to Sol only when a listed trigger applies: Terra is unavailable, the ticket crosses architecture boundaries, the work is high-risk data/security/concurrency/migration logic, debugging remains blocked after reproduction, or Terra reports `NEEDS_CONTEXT` / `BLOCKED` and more reasoning is required. Use Luna only for explicitly low-risk documentation, ticket, formatting, or mechanical follow-up work. Do not escalate only because a ticket touches multiple files or ordinary integration code. |
-| Reviewer | `anthropic-sonnet-5` | `high` | Use only when the active runtime exposes this model; otherwise fall back to `terra` with `high` effort. Record the actual model selected. Escalate to Sol for security, data-loss, concurrency, migration, public API risk, difficult regressions, or large-context debugging. |
-| Second Reviewer | `gpt-5.5` | `high` | Run only when `Second Review` is required: use an independent, adversarial review of the same recorded ticket commit SHA. |
-| Tester | `terra` | `high` | Primary verification. Use Luna only for narrow, deterministic, low-context checks. Escalate to Sol for flaky tests, complex async behavior, UI automation, difficult failure triage, or large-context debugging. |
+The table below is machine-readable. Runners select exactly one preferred or
+fallback assignment; prose in this file does not override its fields.
+
+| Role | Model | Effort | Provider | Fallback Provider | Fallback Model |
+| --- | --- | --- | --- | --- | --- |
+| Architect | `sol` | `high` | `codex` | `codex` | `sol` |
+| Designer | `sol` | `high` | `codex` | `codex` | `sol` |
+| Executor | `terra` | `high` | `codex` | `codex` | `terra` |
+| Reviewer | `anthropic-sonnet-5` | `high` | `anthropic` | `codex` | `terra` |
+| Second Reviewer | `gpt-5.5` | `high` | `codex` | `codex` | `gpt-5.5` |
+| Tester | `terra` | `high` | `codex` | `codex` | `terra` |
 
 ## Provider Mapping Guidance
 

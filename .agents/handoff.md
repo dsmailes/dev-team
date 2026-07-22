@@ -2,11 +2,18 @@
 
 The orchestrator is responsible for moving tickets between roles. Agents do not call each other directly.
 
+Read `.agents/handoff-evidence.md` before a protected transition. Role handoff
+evidence is generated and validated by the runner, not entered by an agent as
+ticket prose. `Agent Run Summary` is informative telemetry only.
+
 ## Rule
 
 Do not move a ticket to the next state until that transition's handoff gate is complete or explicitly waived with a reason.
 
 Waivers must be written in the ticket under the relevant gate.
+
+The Executor, Reviewer, Tester, and completion gates below are protected in
+normal mode and cannot be waived by an agent or generic ticket-state edit.
 
 ## Transition Gates
 
@@ -70,7 +77,8 @@ Required before Reviewer starts:
 
 - Files changed are listed.
 - Implementation notes are written.
-- Model actually used is recorded.
+- Runner has recorded one passing Executor evidence record for this ticket.
+- Executor record provider, model, and effort match a preferred or fallback assignment in `.agents/models.md`.
 - Red/green evidence is recorded, or TDD waiver is referenced.
 - Commands run are recorded.
 - `git status --short --untracked-files=all` or equivalent artifact check is recorded when relevant.
@@ -84,6 +92,8 @@ Required before Tester starts:
 
 - Spec compliance review is complete.
 - Code quality review is complete.
+- Runner has recorded one passing Reviewer evidence record for this ticket that references the Executor commit and has an independent session ID.
+- Reviewer record provider, model, and effort match a preferred or fallback assignment in `.agents/models.md`.
 - Open review issues are resolved, waived with reason, or ticket is blocked.
 - `Second Review` is marked `Required` or `Not required`. When required, its independent review is complete against the same ticket commit SHA and its outcome is recorded.
 - Test scope is identified.
@@ -95,6 +105,8 @@ Required before Tester starts:
 Required before completion:
 
 - Fresh verification evidence is recorded.
+- The runner completion operation has recorded one passing Tester evidence record that references the Executor commit and has a session ID independent of Executor and Reviewer.
+- Tester record provider, model, and effort match a preferred or fallback assignment in `.agents/models.md`.
 - Tester clean-worktree, commit-identity, and artifact-root checks are recorded.
 - Host-resource lease evidence is recorded when applicable. Any lease timeout identifies the owner and is handled as a blocker.
 - Integration batch membership and resulting integration commit are recorded.
@@ -106,6 +118,9 @@ Required before completion:
 - Follow-up tickets are created or explicitly marked `None`.
 - Final ticket state matches `.tickets/queue.md`.
 - `Agent Run Summary` lists every role that ran, its model and effort, and token usage or `Unavailable`.
+
+Generic ticket-state editing must reject `Test -> Done`. Only the runner's
+completion operation may evaluate the evidence chain and mark the ticket done.
 
 ## Handoff Summary
 
@@ -129,5 +144,6 @@ Waivers:
 Runtime capabilities:
 Workspace and integration contract:
 Host resource coordination:
+Runner handoff evidence IDs:
 Agent Run Summary:
 ```

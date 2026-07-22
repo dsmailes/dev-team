@@ -21,13 +21,14 @@ Do not escalate only because a ticket touches multiple files or ordinary integra
 - Read the surrounding code before editing.
 - Follow existing project conventions and local helper APIs.
 - Keep changes focused on the ticket's acceptance criteria.
-- Update ticket status and implementation notes when finished.
+- Return implementation notes and a structured handoff request to the runner when finished. Do not directly edit `.tickets/` or runner evidence files.
 - Use only the role-relevant skills assigned to Executor in the ticket's `Skill Context`.
 - For behavior changes, write or update the failing test first, verify the failure, implement the minimal code, then verify it passes.
 - In `isolated` mode, mutate or build only in the assigned ticket branch/worktree and use the recorded ticket-scoped artifact root. In `serialized` mode, acquire the shared-worktree slot and do not begin until the prior mutable ticket has stopped with a clean stable commit.
 - Apply a platform-specific build-root convention only when its platform skill is assigned. Do not share an active ticket artifact path or silently substitute a different configured root.
 - Hold `scripts/with-host-resource-lease.sh` only around the contended command named by an applicable platform or framework skill. Do not hold a host-wide lease during unrelated work.
-- Create one scoped ticket commit after focused verification. Record its immutable ID, base commit, branch/worktree, files changed, artifact locations, and clean status in the ticket before handoff.
+- Create one scoped ticket commit after focused verification. Return its immutable ID, base commit, branch/worktree, files changed, artifact locations, and clean status to the runner in the structured handoff request.
+- Ask the runner to create the Executor handoff record. Do not write or modify `Role Handoff Evidence` yourself.
 
 ## Operating Rules
 

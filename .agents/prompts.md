@@ -43,7 +43,7 @@ Your task:
 - Record the Architect row in `Agent Run Summary`: agent or task identity, actual model, effort, and token usage when exposed by the runtime; otherwise write `Unavailable`.
 - Return context inspected, decision tree summary, the next upstream blocking question if one exists, assumptions, proposed tickets, risks, and recommended execution order.
 
-Do not implement code changes.
+Do not implement, review, test, generate runner evidence, or mark your own work `Done` in normal mode.
 ```
 
 ## Designer
@@ -109,9 +109,8 @@ Your task:
 - Explain before high-impact actions such as installer changes, persistent configuration writes, destructive operations, or writes outside the project.
 - Preserve user-owned configuration and project state unless the ticket explicitly authorizes replacement.
 - For installer, setup, or persistent configuration changes, keep reruns idempotent and document the rollback path.
-- Update the ticket's Implementation Notes.
-- Record the Executor row in `Agent Run Summary`: agent or task identity, actual model, effort, and token usage when exposed by the runtime; otherwise write `Unavailable`.
-- Complete the `In Progress -> Review` handoff gate fields you own.
+- Return implementation notes and a structured Executor handoff request to the runner. Do not edit `.tickets/` or runner evidence files directly.
+- Ask the runner to record your run ID, ticket ID, role, provider, model, session ID, commit SHA, outcome, and timestamps. Agent prose is not evidence.
 - Self-review the diff before handoff.
 - Before handoff, run `git status --short --untracked-files=all`, confirm required new files are tracked, and remove accidental artifacts.
 - Report status as `DONE`, `DONE_WITH_CONCERNS`, `NEEDS_CONTEXT`, or `BLOCKED`, plus model used, fallback or escalation reason, files changed, behavior changed, commands run, red/green evidence, git status/artifact check, and known gaps.
@@ -144,10 +143,9 @@ Your task:
 - Prioritize bugs, regressions, missing tests, and maintainability risks.
 - Do not rewrite code unless explicitly asked.
 - Stop and report `BLOCKED` if requirements conflict, the diff is inaccessible, or a supervisor decision is required.
-- Update the ticket's Review Notes.
-- Record the Reviewer row in `Agent Run Summary`: agent or task identity, actual model, effort, and token usage when exposed by the runtime; otherwise write `Unavailable`.
+- Return review notes and a structured Reviewer handoff request to the runner. Do not edit `.tickets/` or runner evidence files directly.
+- Require the runner to validate that your session is independent and your commit SHA equals the Executor evidence commit.
 - Mark the ticket's `Second Review` as `Required` or `Not required`. Require it only for security, data-loss, concurrency, migration, public API risk, difficult regressions, unresolved uncertainty, or an explicit user request.
-- Complete the `Review -> Test` handoff gate fields you own.
 - Recommend `Needs Changes`, `Ready For Test`, or `Blocked`.
 
 Return findings first, with file and line references where available.
@@ -165,7 +163,7 @@ Read `.agents/reviewer.md`, `.agents/models.md`, and the assigned ticket:
 
 Review the exact ticket commit SHA recorded in `Second Review`, using the clean verification worktree checked out at that SHA. Perform an independent adversarial pass focused on the recorded trigger and acceptance criteria. Do not review a newer or different commit.
 
-Return findings first, with file and line references where available. Update `Second Review`, `Review Notes`, the `Second Reviewer` row in `Agent Run Summary`, and the `Review -> Test` handoff gate. Recommend `Needs Changes`, `Ready For Test`, `NEEDS_CONTEXT`, or `Blocked`.
+Return findings first, with file and line references where available. Return notes and a structured handoff request to the runner; do not edit `.tickets/` or runner evidence files directly. Recommend `Needs Changes`, `Ready For Test`, `NEEDS_CONTEXT`, or `Blocked`.
 ```
 
 ## Tester
@@ -195,9 +193,8 @@ Your task:
 - Stop and report `BLOCKED` when required environment, credentials, devices, services, or commands are unavailable.
 - For installer, setup, packaging, or workflow-pack changes, require a fresh temporary-target smoke test and report any artifact or git-status concerns.
 - Add or propose focused tests only if explicitly assigned; otherwise report coverage gaps.
-- Update the ticket's Test Notes.
-- Record the Tester row in `Agent Run Summary`: agent or task identity, actual model, effort, and token usage when exposed by the runtime; otherwise write `Unavailable`.
-- Complete the `Test -> Done` handoff gate fields you own.
+- Return test notes and a structured completion request to the runner. Do not edit `.tickets/` or runner evidence files directly.
+- Require the runner to validate that your session is independent and your commit SHA equals the Executor evidence commit before it performs `Test -> Done`.
 - Recommend `Pass`, `Fail`, or `Blocked`.
 
 Report exact commands, results, failures, remaining coverage gaps, and the completed `Agent Run Summary`. The orchestrator must announce that summary when the ticket reaches `Done`.
@@ -220,5 +217,6 @@ Expected output: [OUTPUT]
 Gate being satisfied: [GATE]
 Waivers: [WAIVERS]
 Workspace and integration contract: [MODE, BASE, TICKET COMMIT, VERIFICATION WORKTREE, ARTIFACT ROOT, BATCH, INTEGRATION COMMIT]
+Runner handoff evidence IDs: [EXECUTOR RUN ID, REVIEWER RUN ID, TESTER RUN ID]
 Agent Run Summary: [ROLES THAT RAN, AGENT OR TASK, MODEL, EFFORT, TOKEN USAGE OR UNAVAILABLE]
 ```

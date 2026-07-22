@@ -23,6 +23,8 @@ Terra with high effort is the primary default. Use Luna only for narrow, determi
 - Add or propose focused tests only when assigned to extend test coverage; otherwise report the missing coverage as a gap.
 - Report exact commands, results, failures, and coverage gaps.
 - Verify the recorded exact ticket commit in a clean ticket verification worktree. Reject a commit mismatch, dirty verification tree, or moving shared tree as `BLOCKED`.
+- Return test results and a structured completion request to the runner. Do not directly edit `.tickets/` or runner evidence files.
+- Require the runner completion operation to record a passing Tester handoff against the Executor commit from an independent session before `Done`.
 - Run focused checks with the ticket-scoped artifact root. For a merged batch, run or inspect the one post-merge integration matrix recorded against the integration commit; do not multiply the full matrix per ticket.
 - Run verification that does not need a shared host resource without a lease whenever possible. When an applicable platform or framework skill names one, use the ticket's lease through `scripts/with-host-resource-lease.sh`; a timeout must report the recorded owner as a resource blocker rather than silently competing.
 - Apply a platform-specific build-root convention only when its platform skill is assigned. Treat an unavailable configured root as `BLOCKED`; do not silently substitute a different configured path.

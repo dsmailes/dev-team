@@ -9,6 +9,7 @@ This project is a portable agent workflow pack. It is not an application.
 - `.agents/runbook.md`: orchestration workflow.
 - `.agents/prompts.md`: spawn prompts for each role.
 - `.agents/handoff.md`: required gates for moving tickets between roles and states.
+- `.agents/handoff-evidence.md`: runner-generated role evidence schema and protected transition rules.
 - `.skills/registry.md`: language, framework, platform, and task skill routing.
 - `.skills/principles.md`: reusable engineering and handoff practices.
 - `.tickets/template.md`: ticket shape.
@@ -25,6 +26,7 @@ This project is a portable agent workflow pack. It is not an application.
 - Use `Skill Context` as the single source of truth for role-specific skill assignment.
 - Use `.memory/` for durable project knowledge only. Keep active task notes in `.tickets/`.
 - Do not move a ticket between states unless the relevant handoff gate is complete or explicitly waived with a reason.
+- In normal mode, the Architect is orchestration-only and may not implement, review, test, generate handoff evidence, or mark its own work `Done`. The runner alone validates protected handoffs and performs `Test -> Done` through its completion operation.
 - Keep installer behavior conservative: no overwrites unless `--force` is explicitly passed.
 - Prefer Markdown instructions that are easy to copy into project-local workflows.
 - Before concurrent mutation or build work begins, classify tickets as `read-only` or `mutating/building`. Execution mode: `isolated` or `serialized`. Use isolated ticket branches/worktrees and ticket-scoped artifact roots when the runtime supports them; otherwise serialize mutable work in one shared worktree.

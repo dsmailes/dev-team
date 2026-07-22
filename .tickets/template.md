@@ -122,9 +122,25 @@ Add this section only when a selected platform or framework skill identifies a h
 - Terra unavailable fallback:
 - Model actually used:
 
+## Role Handoff Evidence
+
+This section is runtime-managed. The runner writes immutable records here or
+links the authoritative external evidence ledger. Agents must not add, alter,
+or claim these records in prose. `Agent Run Summary` below is not proof.
+
+| Run ID | Ticket ID | Role | Provider | Model | Session ID | Commit SHA | Outcome | Started At | Completed At |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Runner-managed | `ARCH-000` | Not run | Not run | Not run | Not run | Not run | Not run | Not run | Not run |
+
+Protected transitions require runner-validated `pass` records: Executor for
+`In Progress -> Review`, independent Reviewer for `Review -> Test`, and
+independent Tester for the runner completion operation `Test -> Done`. Reviewer
+and Tester must use the Executor commit SHA. Generic state edits cannot mark a
+ticket `Done`.
+
 ## Agent Run Summary
 
-Record every role that actually ran for this ticket. Do not estimate token usage: write `Unavailable` when the runtime does not expose it.
+Record every role that actually ran for this ticket. Do not estimate token usage: write `Unavailable` when the runtime does not expose it. This is status context, not handoff evidence.
 
 | Role | Agent or task | Model | Effort | Token usage |
 | --- | --- | --- | --- | --- |
@@ -232,27 +248,32 @@ Record every role that actually ran for this ticket. Do not estimate token usage
 
 - [ ] Files changed are listed.
 - [ ] Implementation notes are written.
-- [ ] Model actually used is recorded.
+- [ ] Runner-generated passing Executor evidence record is attached or linked.
+- [ ] Executor provider, model, and effort match `.agents/models.md`.
 - [ ] Red/green evidence is recorded, or TDD waiver is referenced.
 - [ ] Commands run are recorded.
 - [ ] Known gaps are recorded or explicitly marked `None`.
 - [ ] Scoped ticket commit, clean executor status, and artifact locations are recorded.
 - [ ] Verification worktree and exact verification commit are recorded.
-- Waiver:
+- Waiver: Not permitted in normal mode; the runner must validate Executor evidence.
 
 ### Review -> Test
 
 - [ ] Spec compliance review is complete.
 - [ ] Code quality review is complete.
+- [ ] Runner-generated passing Reviewer record references the Executor commit and an independent session.
+- [ ] Reviewer provider, model, and effort match `.agents/models.md`.
 - [ ] Open review issues are resolved, waived with reason, or ticket is blocked.
 - [ ] `Second Review` is marked `Required` or `Not required`. When required, the independent reviewer verified the same ticket commit SHA and its outcome is recorded.
 - [ ] Test scope is identified.
 - [ ] Reviewer clean-worktree and commit-identity checks are recorded.
-- Waiver:
+- Waiver: Not permitted in normal mode; the runner must validate independent Reviewer evidence.
 
 ### Test -> Done
 
 - [ ] Fresh verification evidence is recorded.
+- [ ] Runner completion operation recorded a passing Tester record for the Executor commit with an independent session.
+- [ ] Tester provider, model, and effort match `.agents/models.md`.
 - [ ] Tester clean-worktree, commit-identity, and artifact-root checks are recorded.
 - [ ] Host-resource lease evidence is recorded when applicable.
 - [ ] Integration batch membership, integration commit, and one post-merge integration matrix result are recorded.
@@ -263,7 +284,9 @@ Record every role that actually ran for this ticket. Do not estimate token usage
 - [ ] Follow-up tickets are created or explicitly marked `None`.
 - [ ] Final ticket state matches `.tickets/queue.md`.
 - [ ] `Agent Run Summary` lists every role that ran, its model and effort, and token usage or `Unavailable`.
-- Waiver:
+- Waiver: Not permitted in normal mode; the runner completion operation must validate independent Tester evidence.
+
+`Test -> Done` is unavailable through generic state editing. The runner completion operation must validate this section and the protected evidence chain.
 
 ## Review Plan
 

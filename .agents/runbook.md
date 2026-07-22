@@ -4,6 +4,10 @@ This runbook describes how to run the architect, executor, reviewer, and tester 
 
 Read `.agents/handoff.md` before moving any ticket between states.
 
+Read `.agents/handoff-evidence.md` before any protected transition. It defines
+runner-generated records, independent session requirements, and the completion
+operation that alone may perform `Test -> Done`.
+
 The orchestrator may not move a ticket to the next state until that transition's handoff gate is complete or explicitly waived with a reason in the ticket.
 
 Use `.agents/models.md` as the source of truth for model names and effort levels when spawning each role.
@@ -32,6 +36,9 @@ Only write durable verified knowledge to `.memory/`. Keep active task notes in `
 7. Complete the `Backlog -> Ready` handoff gate before marking a ticket `Ready`.
 8. If a ticket includes UI/UX work, complete `Ready -> Design`, route it through the designer, then complete `Design -> Ready`.
 9. Select one `Ready` ticket for execution.
+
+In normal mode, Architect ends its role after planning and delegation. It must
+not implement, review, test, create runner evidence, or complete its own ticket.
 
 Before concurrent mutation or build work begins, classify each selected ticket as `read-only` or `mutating/building` and record its execution mode. Use `isolated` mode when the runtime and repository can safely provide a unique ticket branch/worktree and ticket-scoped artifact root for each concurrent mutating/building ticket. Otherwise use `serialized` mode: grant shared-worktree ownership to one mutating/building ticket at a time. Read-only investigation may remain parallel when it cannot alter shared state.
 
@@ -77,7 +84,7 @@ Use the designer only when a ticket changes screens, flows, visual hierarchy, in
 12. Complete the `Ready -> In Progress` handoff gate before Executor starts.
 13. When implementation returns, inspect the changed files and complete `In Progress -> Review` before review.
 
-The Executor must create a scoped ticket commit and record its immutable ID before handoff. Preserve the executor workspace until the integration outcome is captured.
+The Executor must create a scoped ticket commit and return a structured handoff request. The runner validates and records the Executor evidence before moving to `Review`; agent-authored ticket prose is not sufficient. Preserve the executor workspace until the integration outcome is captured.
 
 ## Review A Ticket
 
@@ -89,7 +96,7 @@ The Executor must create a scoped ticket commit and record its immutable ID befo
 6. Require `Second Review` only for security, data-loss, concurrency, migration, public API risk, difficult regressions, unresolved review uncertainty, or an explicit user request. Record the decision in the ticket before testing.
 7. When required, spawn the Second Reviewer with `gpt-5.5` and `high` effort (or the configured equivalent), give it the same ticket commit SHA and clean verification worktree, and record its independent outcome. Do not substitute a review of a newer or different commit.
 8. If either reviewer recommends `Needs Changes`, create a fix ticket or return the same ticket to the executor.
-9. If review is ready for testing and any required second review is complete, complete `Review -> Test` before moving the ticket to `Test`.
+9. If review is ready for testing and any required second review is complete, submit a structured handoff request. The runner requires a passing Reviewer record for the Executor commit and an independent session before moving the ticket to `Test`.
 
 Reviewer must reject a commit mismatch, dirty verification worktree, or moving shared tree as `BLOCKED`.
 
@@ -101,7 +108,7 @@ Reviewer must reject a commit mismatch, dirty verification worktree, or moving s
 4. Require fresh command output or documented manual-check evidence before accepting a pass.
 5. Run work that does not need a shared host resource without a lease where possible. When a selected platform skill requires one, acquire the named lease only around that command; report a timed-out lease with its owner record as `BLOCKED`.
 6. Record every role that ran in the ticket's `Agent Run Summary`, with the actual model, effort, and token usage when available. Use `Unavailable` rather than estimating telemetry the runtime does not expose.
-7. If verification passes, complete `Test -> Done` before moving the ticket to `Done`, then announce the completed `Agent Run Summary` to the user.
+7. If verification passes, submit the runner completion operation. It requires a passing Tester record for the Executor commit and a session independent of Executor and Reviewer before marking the ticket `Done`, then announces the completed `Agent Run Summary` to the user. Do not use generic ticket-state editing for `Done`.
 8. If verification fails, move it back to `In Progress` or create a follow-up ticket.
 
 After focused review and testing, the orchestrator combines reviewed ticket commits into an integration batch and records the resulting integration commit. Resolve conflicts in a new integration commit and rerun focused checks for affected tickets. Run one full integration matrix against that integration commit, link its result to every included ticket, then clean up only named clean ticket worktrees and branches after merge, verification, and artifact capture. Preserve blocked or failed workspaces for diagnosis; remove an unmerged workspace only when it is intentionally abandoned, and revert integrated work with a scoped revert commit rather than resetting shared history.

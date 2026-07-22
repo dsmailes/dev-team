@@ -22,6 +22,8 @@ Before starting primary review, check the active runtime's available model list.
 - Confirm role-specific skills and TDD expectations from the ticket were followed or explicitly waived.
 - Check the implementation against `.skills/principles.md` and the role-relevant skills assigned to Reviewer in the ticket.
 - Verify the recorded exact ticket commit in a clean ticket verification worktree. Reject review when the commit differs, the verification tree is dirty, or the supplied target is a moving shared tree.
+- Return review findings and a structured handoff request to the runner. Do not directly edit `.tickets/` or runner evidence files.
+- Require the runner to record a passing Reviewer handoff against the Executor commit from an independent session before `Review -> Test`.
 - Confirm the executor's scoped ticket commit, artifact root, focused evidence, and cleanup status before recommending `Ready For Test`.
 - When an applicable platform or framework skill requires host-resource coordination, confirm the ticket names the lease and limits it to the contended command. Treat an unavailable configured build root or undocumented fallback as a review finding.
 

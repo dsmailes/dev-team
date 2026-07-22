@@ -1,0 +1,32 @@
+{
+  "schema_fields": [
+    "run_id",
+    "ticket_id",
+    "role",
+    "provider",
+    "model",
+    "effort",
+    "session_id",
+    "commit_sha",
+    "outcome",
+    "started_at",
+    "completed_at"
+  ],
+  "fixtures": [
+    {
+      "name": "accepts-independent-passing-chain",
+      "expected": "accept",
+      "records": [
+        {"run_id": "run-executor", "ticket_id": "APP-100", "role": "executor", "provider": "codex", "model": "terra", "effort": "high", "session_id": "session-executor", "commit_sha": "abc123", "outcome": "pass", "started_at": "2026-01-01T00:00:00Z", "completed_at": "2026-01-01T00:01:00Z"},
+        {"run_id": "run-reviewer", "ticket_id": "APP-100", "role": "reviewer", "provider": "anthropic", "model": "anthropic-sonnet-5", "effort": "high", "session_id": "session-reviewer", "commit_sha": "abc123", "outcome": "pass", "started_at": "2026-01-01T00:02:00Z", "completed_at": "2026-01-01T00:03:00Z"},
+        {"run_id": "run-tester", "ticket_id": "APP-100", "role": "tester", "provider": "codex", "model": "terra", "effort": "high", "session_id": "session-tester", "commit_sha": "abc123", "outcome": "pass", "started_at": "2026-01-01T00:04:00Z", "completed_at": "2026-01-01T00:05:00Z"}
+      ]
+    },
+    {"name": "rejects-architect-self-review", "expected": "reject:self-review", "records": []},
+    {"name": "rejects-missing-executor-evidence", "expected": "reject:missing-executor-evidence", "records": []},
+    {"name": "rejects-model-mismatch", "expected": "reject:model-mismatch", "records": []},
+    {"name": "rejects-reused-session", "expected": "reject:reused-session", "records": []},
+    {"name": "rejects-commit-mismatch", "expected": "reject:commit-mismatch", "records": []},
+    {"name": "rejects-direct-done-move", "expected": "reject:completion-operation-required", "records": []}
+  ]
+}

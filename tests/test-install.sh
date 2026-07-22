@@ -13,6 +13,11 @@ hash_file() {
 "$ROOT/install.sh" --project "$PROJECT" --no-import-skills --no-model-prompt
 
 grep -Fq '## Agent Run Summary' "$PROJECT/.tickets/template.md"
+grep -Fq '## Role Handoff Evidence' "$PROJECT/.tickets/template.md"
+grep -Fq 'runner completion operation' "$PROJECT/.tickets/template.md"
+grep -Fq 'handoff-evidence.md' "$PROJECT/.agents/handoff.md"
+test -f "$PROJECT/.agents/handoff-evidence.md"
+grep -Fq 'orchestration-only' "$PROJECT/.agents/architect.md"
 grep -Fq 'Token usage' "$PROJECT/.tickets/template.md"
 # Fresh installs must include the portable workspace and immutable-verification contract.
 grep -Fq 'Execution mode: `isolated` or `serialized`' "$PROJECT/AGENTS.md"
@@ -35,10 +40,10 @@ grep -Fq 'DEV_TEAM_BUILD_ROOT' "$PROJECT/.skills/registry.md"
 ! grep -Fq 'DEV_TEAM_BUILD_ROOT' "$PROJECT/.agents/runbook.md"
 ! grep -Fq 'DEV_TEAM_BUILD_ROOT' "$PROJECT/.tickets/template.md"
 test -x "$PROJECT/scripts/with-host-resource-lease.sh"
-grep -Fq '| Reviewer | `anthropic-sonnet-5` | `high`' "$PROJECT/.agents/models.md"
-grep -Fq 'otherwise fall back to `terra` with `high` effort' "$PROJECT/.agents/models.md"
-grep -Fq '| Second Reviewer | `gpt-5.5` | `high`' "$PROJECT/.agents/models.md"
-grep -Fq '| Tester | `terra` | `high`' "$PROJECT/.agents/models.md"
+grep -Fq '| Role | Model | Effort | Provider | Fallback Provider | Fallback Model |' "$PROJECT/.agents/models.md"
+grep -Fq '| Reviewer | `anthropic-sonnet-5` | `high` | `anthropic` | `codex` | `terra` |' "$PROJECT/.agents/models.md"
+grep -Fq '| Second Reviewer | `gpt-5.5` | `high` | `codex` | `codex` | `gpt-5.5` |' "$PROJECT/.agents/models.md"
+grep -Fq '| Tester | `terra` | `high` | `codex` | `codex` | `terra` |' "$PROJECT/.agents/models.md"
 grep -Fq '## Second Review' "$PROJECT/.tickets/template.md"
 grep -Fq '## Optional Host Resource Coordination' "$PROJECT/.tickets/template.md"
 test -x "$PROJECT/scripts/with-host-resource-lease.sh"
@@ -143,5 +148,6 @@ grep -Fq '## Second Review' "$PROJECT/.tickets/template.md"
 python3 "$PROJECT/scripts/render-ticket-dashboard.py" --project "$PROJECT" --validate
 python3 "$PROJECT/scripts/render-ticket-dashboard.py" --project "$PROJECT"
 grep -Fq -- '**Design:** 1' "$PROJECT/docs/tickets.md"
+python3 "$ROOT/tests/test-handoff-conformance.py"
 
 echo "Installer update-preservation regression test passed."

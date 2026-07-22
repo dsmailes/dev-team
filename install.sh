@@ -479,38 +479,52 @@ set_model_defaults() {
       MODEL_PROFILE=gpt-5.6-sol-terra-anthropic-sonnet-5-review
       ARCHITECT_MODEL=sol
       ARCHITECT_EFFORT=high
+      ARCHITECT_PROVIDER=codex
       DESIGNER_MODEL=sol
       DESIGNER_EFFORT=high
+      DESIGNER_PROVIDER=codex
       DESIGNER_ESCALATION="sol with high effort for important product decisions, broad workflow design, brand-sensitive UI, major design-system changes, and frontend polish."
       EXECUTOR_MODEL=terra
       EXECUTOR_EFFORT=high
+      EXECUTOR_PROVIDER=codex
       EXECUTOR_ESCALATION="Escalate to sol only when a listed trigger applies: Terra is unavailable, the ticket crosses architecture boundaries, the work is high-risk data/security/concurrency/migration logic, debugging remains blocked after reproduction, or Terra reports NEEDS_CONTEXT / BLOCKED and more reasoning is required. Use luna only for explicitly low-risk documentation, ticket, formatting, or mechanical follow-up work. Do not escalate only because a ticket touches multiple files or ordinary integration code."
       REVIEWER_MODEL=anthropic-sonnet-5
       REVIEWER_EFFORT=high
+      REVIEWER_PROVIDER=anthropic
       REVIEWER_FALLBACK_MODEL=terra
+      REVIEWER_FALLBACK_PROVIDER=codex
       SECOND_REVIEWER_MODEL=gpt-5.5
       SECOND_REVIEWER_EFFORT=high
+      SECOND_REVIEWER_PROVIDER=codex
       TESTER_MODEL=terra
       TESTER_EFFORT=high
+      TESTER_PROVIDER=codex
       ;;
     *)
       MODELS_PROVIDER=$provider_lc
       MODEL_PROFILE=inferred-provider-classes
       ARCHITECT_MODEL="${provider_lc}-best-reasoning"
       ARCHITECT_EFFORT=high
+      ARCHITECT_PROVIDER=$provider_lc
       DESIGNER_MODEL="${provider_lc}-best-design-reasoning"
       DESIGNER_EFFORT=high
+      DESIGNER_PROVIDER=$provider_lc
       DESIGNER_ESCALATION="${provider_lc}-best-reasoning with high effort for important product decisions, broad workflow design, brand-sensitive UI, major design-system changes, and frontend polish."
       EXECUTOR_MODEL="${provider_lc}-balanced-coding"
       EXECUTOR_EFFORT=high
+      EXECUTOR_PROVIDER=$provider_lc
       EXECUTOR_ESCALATION="Escalate only when a listed trigger applies: the balanced coding model is unavailable, the ticket crosses architecture boundaries, the work is high-risk data/security/concurrency/migration logic, debugging remains blocked after reproduction, or the default model reports NEEDS_CONTEXT / BLOCKED and more reasoning is required. Use the provider's most cost-efficient model only for explicitly low-risk documentation, ticket, formatting, or mechanical follow-up work. Do not escalate only because a ticket touches multiple files or ordinary integration code."
-      REVIEWER_MODEL=anthropic-sonnet-5
+      REVIEWER_MODEL="${provider_lc}-best-reasoning"
       REVIEWER_EFFORT=high
+      REVIEWER_PROVIDER=$provider_lc
       REVIEWER_FALLBACK_MODEL="${provider_lc}-balanced-reasoning"
+      REVIEWER_FALLBACK_PROVIDER=$provider_lc
       SECOND_REVIEWER_MODEL="${provider_lc}-best-reasoning"
       SECOND_REVIEWER_EFFORT=high
+      SECOND_REVIEWER_PROVIDER=$provider_lc
       TESTER_MODEL="${provider_lc}-balanced-reasoning"
       TESTER_EFFORT=high
+      TESTER_PROVIDER=$provider_lc
       ;;
   esac
 }
@@ -606,14 +620,16 @@ This file is project-local. Keep it aligned with the provider and model names av
 
 ## Role Assignments
 
-| Role | Default model | Effort | Escalation |
-| --- | --- | --- | --- |
-| Architect | \`$ARCHITECT_MODEL\` | \`$ARCHITECT_EFFORT\` | Use the strongest available reasoning model for ambiguous architecture, migrations, or high-risk planning. |
-| Designer | \`$DESIGNER_MODEL\` | \`$DESIGNER_EFFORT\` | Use $DESIGNER_ESCALATION |
-| Executor | \`$EXECUTOR_MODEL\` | \`$EXECUTOR_EFFORT\` | $EXECUTOR_ESCALATION |
-| Reviewer | \`$REVIEWER_MODEL\` | \`$REVIEWER_EFFORT\` | Use only when the active runtime exposes this model; otherwise fall back to \`$REVIEWER_FALLBACK_MODEL\` with \`high\` effort. Record the actual model selected. Escalate to the strongest available reasoning model for security, data-loss, concurrency, migration, public API risk, difficult regressions, or large-context debugging. |
-| Second Reviewer | \`$SECOND_REVIEWER_MODEL\` | \`$SECOND_REVIEWER_EFFORT\` | Run only when \`Second Review\` is required: use an independent, adversarial review of the same recorded ticket commit SHA. |
-| Tester | \`$TESTER_MODEL\` | \`$TESTER_EFFORT\` | Primary verification. Use a cost-efficient model only for narrow, deterministic, low-context checks; escalate to the strongest available reasoning model for flaky tests, complex async behavior, UI automation, difficult failure triage, or large-context debugging. |
+The table below is machine-readable. Runners select exactly one preferred or fallback assignment; prose in this file does not override its fields.
+
+| Role | Model | Effort | Provider | Fallback Provider | Fallback Model |
+| --- | --- | --- | --- | --- | --- |
+| Architect | \`$ARCHITECT_MODEL\` | \`$ARCHITECT_EFFORT\` | \`$ARCHITECT_PROVIDER\` | \`$ARCHITECT_PROVIDER\` | \`$ARCHITECT_MODEL\` |
+| Designer | \`$DESIGNER_MODEL\` | \`$DESIGNER_EFFORT\` | \`$DESIGNER_PROVIDER\` | \`$DESIGNER_PROVIDER\` | \`$DESIGNER_MODEL\` |
+| Executor | \`$EXECUTOR_MODEL\` | \`$EXECUTOR_EFFORT\` | \`$EXECUTOR_PROVIDER\` | \`$EXECUTOR_PROVIDER\` | \`$EXECUTOR_MODEL\` |
+| Reviewer | \`$REVIEWER_MODEL\` | \`$REVIEWER_EFFORT\` | \`$REVIEWER_PROVIDER\` | \`$REVIEWER_FALLBACK_PROVIDER\` | \`$REVIEWER_FALLBACK_MODEL\` |
+| Second Reviewer | \`$SECOND_REVIEWER_MODEL\` | \`$SECOND_REVIEWER_EFFORT\` | \`$SECOND_REVIEWER_PROVIDER\` | \`$SECOND_REVIEWER_PROVIDER\` | \`$SECOND_REVIEWER_MODEL\` |
+| Tester | \`$TESTER_MODEL\` | \`$TESTER_EFFORT\` | \`$TESTER_PROVIDER\` | \`$TESTER_PROVIDER\` | \`$TESTER_MODEL\` |
 
 ## Provider Mapping Guidance
 
@@ -639,6 +655,7 @@ sync_agents_for_update() {
   replace_file .agents/designer.md .agents/designer.md
   replace_file .agents/executor.md .agents/executor.md
   replace_file .agents/handoff.md .agents/handoff.md
+  replace_file .agents/handoff-evidence.md .agents/handoff-evidence.md
   replace_file .agents/prompts.md .agents/prompts.md
   replace_file .agents/reviewer.md .agents/reviewer.md
   replace_file .agents/runbook.md .agents/runbook.md

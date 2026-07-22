@@ -13,6 +13,7 @@ This directory defines reusable role prompts for coordinating subagents on large
 - `prompts.md`: spawn prompts for each role.
 - `runbook.md`: orchestration flow for the full loop.
 - `handoff.md`: required gates for moving tickets between roles and states.
+- `handoff-evidence.md`: runner-generated evidence schema and protected transition rules.
 - `../.skills/registry.md`: skill routing by language, framework, platform, and task type.
 - `../.skills/principles.md`: reusable engineering and handoff practices.
 - `../.memory/`: durable project knowledge such as verified commands, decisions, and pitfalls.
@@ -59,18 +60,18 @@ If live supervisor contact is available, subagents should use it for blocking qu
 
 ## Model Configuration
 
-Use `.agents/models.md` as the source of truth for model names, effort levels, and provider-specific mappings.
+Use `.agents/models.md` as the machine-readable source of truth for preferred and fallback provider, model, and effort assignments. Use `.agents/handoff-evidence.md` for runner-owned proof of the actual role run.
 
 The packaged default is a Codex profile that uses Sol for architecture and product/design shaping, Terra with high effort for implementation and primary testing, and Anthropic Sonnet 5 with high effort for primary review only when the active runtime exposes it. Terra with high effort is the Reviewer fallback. GPT-5.5 with high effort is an optional second reviewer for independent adversarial review; Luna is reserved for narrow, deterministic, low-context verification. Project installs may replace these with exact local model IDs or inferred provider-class placeholders.
 
 ## Coordination Rules
 
-- Only the orchestrator assigns tickets.
+- Only the orchestrator assigns tickets. In normal mode, the Architect orchestrates only and cannot implement, review, test, or mark its own work `Done`.
 - The orchestrator may not move a ticket to the next state until the relevant handoff gate in `.agents/handoff.md` is complete or explicitly waived in the ticket.
 - Agents should not edit the same files in parallel unless the orchestrator explicitly coordinates the overlap.
 - Agents should use only the role-relevant skills assigned in the ticket's `Skill Context`.
 - Ticket updates should preserve previous notes instead of replacing them.
 - Completed tickets must include an `Agent Run Summary` for every role that ran: agent or task identity, actual model, effort, and token usage when available. Use `Unavailable` rather than estimating unavailable telemetry, and announce the summary in the final handoff.
 - Durable verified learnings should be promoted to `.memory/`; active task notes stay in `.tickets/`.
-- A ticket is not `Done` until review and verification have both been handled or intentionally waived.
+- A ticket is not `Done` until the runner completion operation validates passing Executor, independent Reviewer, and independent Tester evidence for the same executor commit. Generic state editing cannot bypass this gate.
 - A concurrent ticket is not `Done` until its focused ticket-commit evidence and its integration-batch evidence are attached or explicitly waived with a risk-based reason.
