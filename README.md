@@ -30,7 +30,7 @@ The default profile is Codex GPT-5.6:
 - Architect: Sol with high effort.
 - Designer: Sol with high effort for UI/product decisions and frontend polish.
 - Executor: Terra with high effort by default.
-- Reviewer: Terra with high effort by default.
+- Reviewer: Anthropic Sonnet 5 with high effort when available in the active runtime; otherwise Terra with high effort.
 - Second Reviewer: GPT-5.5 with high effort only when an independent adversarial review is required.
 - Tester: Terra with high effort by default. Luna is reserved for narrow, deterministic, low-context checks.
 

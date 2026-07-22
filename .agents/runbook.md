@@ -81,7 +81,7 @@ The Executor must create a scoped ticket commit and record its immutable ID befo
 
 ## Review A Ticket
 
-1. Spawn or assign the reviewer with the Reviewer model and effort from `.agents/models.md` after implementation.
+1. Check the active runtime's available model list. Spawn or assign `anthropic-sonnet-5` with high effort only when it is exposed; otherwise use the Reviewer fallback from `.agents/models.md` (Terra with high effort in the Codex default). Record the actual model selected before review.
 2. Give the reviewer the ticket path, recorded ticket commit, and a clean ticket verification worktree at that exact commit.
 3. If the runtime supports live supervisor contact, allow Reviewer to ask for missing ticket or diff context. Otherwise require `NEEDS_CONTEXT` or `BLOCKED`.
 4. Run spec compliance review first.

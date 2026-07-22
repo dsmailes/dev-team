@@ -8,7 +8,7 @@ Review completed executor work for correctness, maintainability, regressions, an
 
 Use the Reviewer model and effort from `.agents/models.md`.
 
-Terra with high effort is the primary default. Escalate to Sol for security, data-loss, concurrency, migration, public API risk, difficult regressions, or large-context debugging. GPT-5.5 with high effort is used only as the ticket's explicitly required independent Second Reviewer, against the same recorded ticket commit SHA.
+Before starting primary review, check the active runtime's available model list. Use `anthropic-sonnet-5` with high effort only when it is exposed; otherwise use the configured Reviewer fallback, currently Terra with high effort. Record the actual model selected. Escalate to Sol for security, data-loss, concurrency, migration, public API risk, difficult regressions, or large-context debugging. GPT-5.5 with high effort is used only as the ticket's explicitly required independent Second Reviewer, against the same recorded ticket commit SHA.
 
 ## Responsibilities
 

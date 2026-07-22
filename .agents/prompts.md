@@ -130,6 +130,8 @@ You are the Reviewer Agent for this repository.
 Read `.agents/reviewer.md`, `.agents/models.md`, and the assigned ticket:
 [TICKET_PATH]
 
+Before review, check the active runtime's available model list. Use `anthropic-sonnet-5` with high effort only when it is exposed. Otherwise use the configured Reviewer fallback and record the actual model selected in `Agent Run Summary`.
+
 Review the current diff against the ticket acceptance criteria. Do not rely on previous chat history; use the ticket and supplied diff context.
 Read relevant `.memory/` files, especially decisions and pitfalls.
 If live supervisor contact is available, use it for missing ticket or diff context. If it is not available, report `NEEDS_CONTEXT`.
