@@ -9,6 +9,7 @@ This directory defines reusable role prompts for coordinating subagents on large
 - `executor.md`: implements one ready ticket at a time.
 - `reviewer.md`: reviews executor changes against the ticket.
 - `tester.md`: verifies behavior and reports coverage gaps.
+- Optional advisory subagents (`librarian`, `oracle`, `contrarian`, `web-scout`): read-only research and second-opinion helpers the architect may use before ticket creation or the reviewer may use for high-risk findings. See "Optional Advisory Subagents" in `.agents/architect.md`.
 - `models.md`: project-local model/provider choices for each role.
 - `prompts.md`: spawn prompts for each role.
 - `runbook.md`: orchestration flow for the full loop.
@@ -28,6 +29,8 @@ This directory defines reusable role prompts for coordinating subagents on large
 6. The reviewer checks the diff and recommends `Ready For Test` or `Needs Changes`.
 7. The tester verifies the ticket.
 8. The orchestrator moves the ticket to `Done` or creates follow-up tickets.
+
+Steps 5-8 run as one continuous loop for the selected ticket: the orchestrator does not stop to check in with the user between Executor, Reviewer, Second Reviewer, and Tester handoffs, and treats `Needs Changes` or a `Fail` verdict as an in-loop correction rather than a stopping point. See "Continuous Execution Within A Ticket" in `.agents/runbook.md` for the exact stop/continue rules. Ticket completion does not by itself trigger the next `Ready` ticket; the orchestrator reports completion and waits for direction unless project instructions say otherwise.
 
 For concurrent work, the orchestrator records `isolated` or `serialized` execution mode before mutation or builds begin. Isolated mutating/building tickets use separate branch/worktree and artifact roots; serialized mode grants the shared worktree to one mutable ticket at a time. Reviewer and Tester use a clean verification worktree at the executor's recorded ticket commit. The orchestrator runs the full integration matrix once per merged integration batch, then performs non-destructive workspace cleanup after evidence capture.
 
@@ -55,8 +58,9 @@ This pack is portable and does not require a specific subagent runtime. If the a
 - `supervisor-contact`: let a subagent ask the orchestrator a blocking question while work is in progress.
 - `background-subagents`: run long subagent tasks while the orchestrator remains available for decisions.
 - `allowed-agent-list`: restrict delegation to the roles defined by this workflow and project instructions.
+- `concurrent-dispatch`: spawn multiple independent subagents from a single dispatch instead of one call per agent, when tickets have disjoint ownership (see "Parallel Work" in `.agents/runbook.md`).
 
-If live supervisor contact is available, subagents should use it for blocking questions. If it is not available, they must stop and report `NEEDS_CONTEXT` or `BLOCKED` with the smallest missing decision.
+If live supervisor contact is available, subagents should use it for blocking questions. If it is not available, they must stop and report `NEEDS_CONTEXT` or `BLOCKED` with the smallest missing decision. A blocking question answered through live supervisor contact is an escalation within the same run, not a terminal stop; resume the loop once it is answered.
 
 ## Model Configuration
 

@@ -58,6 +58,17 @@ The architect must also fill in `Questioning Notes` before execution starts, inc
 
 Skill selection comes from `.skills/registry.md`, `.skills/principles.md`, project instructions, and user-provided custom skills. Assign skills per role so each subagent reads only what it needs.
 
+## Continuous Execution Within A Ticket
+
+Once a ticket is selected for execution, drive it through Execute -> Review -> (Second Review if required) -> Test -> Done in one continuous run. Do not return control to the user between role handoffs inside this loop.
+
+- Do not pause for user confirmation between Executor, Reviewer, Second Reviewer, and Tester. Move directly from one role's structured handoff into spawning the next.
+- Treat `Needs Changes` as an in-loop correction, not a stopping point: send the ticket back to Executor with the reviewer's findings and continue automatically. The same applies to a `Fail` verdict from Tester.
+- Treat a paused or interrupted subagent dispatch (rate limit, transient failure, context reset, provider hiccup) as a recoverable run to resume, not a reason to stop and ask the user what to do next. Resume the same role against the same ticket context. Only escalate to the user if the interruption repeats or the underlying blocker is not transient.
+- Stop and return control to the user only when: the ticket reaches `Done`; a role reports `BLOCKED` or `NEEDS_CONTEXT` that only the user can resolve; a handoff gate cannot be satisfied or waived; or the ticket's scope needs re-planning.
+- When the runtime supports live supervisor contact, a subagent's blocking question is an escalation within the same run, not a terminal stop: answer it and continue the loop rather than ending the session.
+- Ticket completion does not automatically start the next `Ready` ticket in the queue. Report the completed `Agent Run Summary` and wait for the user's direction before picking up further work. Projects that want auto-advance across tickets should say so explicitly in project instructions; it is not the default.
+
 ## Design A UI Ticket
 
 Use the designer only when a ticket changes screens, flows, visual hierarchy, interaction design, accessibility, or frontend polish.

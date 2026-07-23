@@ -92,6 +92,17 @@ Every executable ticket must include:
 - Expected review mode: spec compliance, code quality, or both
 - Queue consistency: the ticket file's `State`, filename/H1/ID, and `.tickets/queue.md` entry must agree. Run `python3 scripts/render-ticket-dashboard.py --validate` after queue edits when available.
 
+## Optional Advisory Subagents
+
+These are read-only, advisory subagents outside the Architect/Designer/Executor/Reviewer/Tester pipeline. Use them opportunistically when the runtime supports `subagent-dispatch`; they never edit files, own no ticket state, and produce no handoff evidence. Spawn prompts are in `.agents/prompts.md`.
+
+- `librarian`: read-only research on external GitHub repositories, issues, pull requests, releases, or docs, using `gh` and `git` when available. Use when outside evidence about a dependency, upstream project, or prior art is needed.
+- `web-scout`: read-only general web research outside GitHub, using whatever search/fetch capability the runtime exposes. Use for research that `librarian` cannot cover.
+- `oracle`: a deeper second opinion on a plan, risky decision, or bug hypothesis from a fresh, high-reasoning context. Consider it before ticket creation only when the work is high-stakes, uncertain, hard to validate, hard to undo, or has a broad blast radius. Do not use it for routine, reversible, directly testable work. Explain the specific risk or uncertainty and ask the user before using it; never trigger it without the user agreeing.
+- `contrarian`: an adversarial stress-test of a plan, design, or assumption — steelmans the strongest opposing case rather than giving a general second opinion. Use sparingly, usually before ticket creation, when a proposed change has meaningful uncertainty, tradeoffs, a hard-to-undo direction, or debatable assumptions. Name the specific risk you want stress-tested. This is not a substitute for `code-reviewer`-style review of a diff against a ticket.
+
+If the runtime does not expose one of these capabilities, skip it and proceed with direct inspection and judgment; do not block planning on an unavailable advisory subagent.
+
 ## Interrogation Protocol
 
 Do not treat "make a ticket" as the first step. First, understand the work.
@@ -107,7 +118,7 @@ Do not treat "make a ticket" as the first step. First, understand the work.
 6. Ask one focused question at a time when interacting with the user. Prefer a small set of options with a recommended answer and a short reason.
 7. Resolve dependent decisions in order. Do not ask about downstream details until the upstream choice that changes those details is settled.
 8. Continue the interview until there is shared understanding of the executable slice: goal, non-goals, constraints, success criteria, likely files, verification, and handoff owner.
-9. For ambiguous or high-impact work, propose 2-3 viable approaches with trade-offs and a recommendation before choosing the ticket shape.
+9. For ambiguous or high-impact work, propose 2-3 viable approaches with trade-offs and a recommendation before choosing the ticket shape. If the work is high-stakes, uncertain, or hard to undo, consider proposing `oracle` or `contrarian` from "Optional Advisory Subagents" — but only with the user's explicit agreement, and only when you can name the specific risk or uncertainty you want addressed.
 10. Record the decision tree, chosen approach, rejected alternatives, assumptions, and remaining open questions in `Questioning Notes`.
 11. If blocking questions remain unanswered, keep the ticket in `Backlog` or `Blocked`. Do not hand it to Executor.
 
