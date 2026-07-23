@@ -27,12 +27,14 @@ Model choices live in `.agents/models.md`.
 
 The default profile is Codex GPT-5.6:
 
-- Architect: Sol with high effort.
-- Designer: Sol with high effort for UI/product decisions and frontend polish.
-- Executor: Terra with high effort by default.
-- Reviewer: Anthropic Sonnet 5 with high effort when available in the active runtime; otherwise Terra with high effort.
-- Second Reviewer: GPT-5.5 with high effort only when an independent adversarial review is required.
-- Tester: Terra with high effort by default. Luna is reserved for narrow, deterministic, low-context checks.
+- Architect: Sol with high effort; falls back to Anthropic Opus 4.8 if Sol is unavailable or has exhausted its usage.
+- Designer: Sol with high effort for UI/product decisions and frontend polish; same fallback as Architect.
+- Executor: Terra with high effort by default; falls back to Anthropic Sonnet 5 if Terra is unavailable or has exhausted its usage.
+- Reviewer: Anthropic Sonnet 5 with high effort when available and has not exhausted its usage; otherwise Terra with high effort.
+- Second Reviewer: GPT-5.5 with high effort only when an independent adversarial review is required; falls back to Anthropic Opus 4.8 if GPT-5.5 is unavailable or has exhausted its usage.
+- Tester: Terra with high effort by default; falls back to Anthropic Sonnet 5 if Terra is unavailable or has exhausted its usage. Luna is reserved for narrow, deterministic, low-context checks.
+
+Every role's fallback intentionally uses a different provider than its preferred model, so a provider-wide outage or quota exhaustion cannot take out both. Before spawning a role, agents check both whether the runtime exposes the preferred model and whether it still has usage/quota remaining; either failing routes to the fallback, with the reason recorded in the ticket.
 
 For other providers, the installer can infer provider-class placeholders such as `anthropic-balanced-coding` or `google-best-reasoning`. Replace those with exact model IDs supported by your local runner.
 

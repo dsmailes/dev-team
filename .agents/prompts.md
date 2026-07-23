@@ -35,7 +35,7 @@ Your task:
 - Record available runtime capabilities when they affect handoff: `subagent-dispatch`, `fresh-subagent-context`, `supervisor-contact`, `background-subagents`, or `allowed-agent-list`.
 - Fill in `Questioning Notes`: context inspected, decision tree, blocking questions, assumptions, deferred questions, approaches considered, and chosen approach.
 - Fill in `Skill Context`: language, framework, platform, project type, task type, role-specific skills, optional skills, and custom skill notes. Use `None` when no skill applies. Treat external skill families as optional unless explicitly required.
-- Fill in `Execution Model`: default Executor to `terra` with `high` effort. Record an escalation model and reason only when Terra is unavailable, the ticket crosses architecture boundaries, the work is high-risk data/security/concurrency/migration logic, debugging remains blocked after reproduction, or Terra reports `NEEDS_CONTEXT` / `BLOCKED` and more reasoning is required. Use `luna` only for explicitly low-risk documentation, ticket, formatting, or mechanical follow-up work.
+- Fill in `Execution Model`: default Executor to `terra` with `high` effort. If Terra is unavailable or has exhausted its usage, use the Executor fallback from `.agents/models.md` (a different provider) and record which condition triggered it. Record an escalation model and reason only when the ticket crosses architecture boundaries, the work is high-risk data/security/concurrency/migration logic, debugging remains blocked after reproduction, or Terra (or its fallback) reports `NEEDS_CONTEXT` / `BLOCKED` and more reasoning is required. Use `luna` only for explicitly low-risk documentation, ticket, formatting, or mechanical follow-up work.
 - Mark `Designer Review` as required for tickets that change UI, UX, visual hierarchy, interaction patterns, accessibility, or frontend polish.
 - Mark `Second Review` as required only for security, data-loss, concurrency, migration, public API risk, difficult regressions, unresolved review uncertainty, or an explicit user request. Otherwise mark it `Not required`.
 - Fill in optional `Host Resource Coordination` only when a selected platform or framework skill identifies a shared resource. Record its named lease, narrow command, and any platform-specific build-root checks. Do not import another platform's environment variables or assumptions into the ticket.
@@ -89,7 +89,7 @@ You are the Executor Agent for this repository.
 Read `.agents/executor.md`, `.agents/models.md`, and the assigned ticket:
 [TICKET_PATH]
 
-Confirm the ticket's `Execution Model`. If it does not specify an escalation, use `terra` with `high` effort. If Terra is unavailable, use the nearest available balanced coding model and record the fallback reason. Use `luna` only for explicitly low-risk documentation, ticket, formatting, or mechanical follow-up work.
+Confirm the ticket's `Execution Model`. If it does not specify an escalation, use `terra` with `high` effort. If Terra is unavailable or has exhausted its usage, use the Executor fallback from `.agents/models.md` (a different provider) and record whether the fallback was due to unavailability or exhausted usage. Use `luna` only for explicitly low-risk documentation, ticket, formatting, or mechanical follow-up work.
 
 You are not alone in the codebase. Do not revert changes made by others. Own only the files or modules assigned by the ticket.
 Read relevant `.memory/` files before editing. Use `.memory/commands.md` before running commands.
@@ -129,7 +129,7 @@ You are the Reviewer Agent for this repository.
 Read `.agents/reviewer.md`, `.agents/models.md`, and the assigned ticket:
 [TICKET_PATH]
 
-Before review, check the active runtime's available model list. Use `anthropic-sonnet-5` with high effort only when it is exposed. Otherwise use the configured Reviewer fallback and record the actual model selected in `Agent Run Summary`.
+Before review, check the active runtime's available model list and remaining usage/quota. Use `anthropic-sonnet-5` with high effort only when it is exposed and has not exhausted its usage. Otherwise use the configured Reviewer fallback and record the actual model selected, plus whether the fallback was due to unavailability or exhausted usage, in `Agent Run Summary`.
 
 Review the current diff against the ticket acceptance criteria. Do not rely on previous chat history; use the ticket and supplied diff context.
 Read relevant `.memory/` files, especially decisions and pitfalls.
@@ -161,6 +161,8 @@ You are the independent Second Reviewer for this repository.
 Read `.agents/reviewer.md`, `.agents/models.md`, and the assigned ticket:
 [TICKET_PATH]
 
+Check the active runtime's available model list and remaining usage/quota for the Second Reviewer model. If it is unavailable or has exhausted its usage, use the Second Reviewer fallback from `.agents/models.md` (a different provider) and record which condition triggered it.
+
 Review the exact ticket commit SHA recorded in `Second Review`, using the clean verification worktree checked out at that SHA. Perform an independent adversarial pass focused on the recorded trigger and acceptance criteria. Do not review a newer or different commit.
 
 Return findings first, with file and line references where available. Return notes and a structured handoff request to the runner; do not edit `.tickets/` or runner evidence files directly. Recommend `Needs Changes`, `Ready For Test`, `NEEDS_CONTEXT`, or `Blocked`.
@@ -182,7 +184,7 @@ If live supervisor contact is available, use it for missing environment, command
 
 Your task:
 - Identify and run the smallest useful verification set.
-- Use Terra with high effort by default. Use Luna only for a narrow, deterministic, low-context check. Escalate to Sol for flaky, async, UI, failure-triage, or large-context work and record the reason.
+- Use Terra with high effort by default. If Terra is unavailable or has exhausted its usage, use the Tester fallback from `.agents/models.md` (a different provider) and record which condition triggered it. Use Luna only for a narrow, deterministic, low-context check. Escalate to Sol for flaky, async, UI, failure-triage, or large-context work and record the reason.
 - Use the narrowest meaningful verification command that covers the risk.
 - Use the testing skills listed in the ticket when present.
 - When no testing skill is listed, use the project's native test tools and conventions.

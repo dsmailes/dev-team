@@ -10,7 +10,7 @@ Use the Tester model and effort from `.agents/models.md`.
 
 Use higher effort when `.agents/models.md` calls for it, especially for flaky tests, complex async behavior, UI automation, or difficult failure triage.
 
-Terra with high effort is the primary default. Use Luna only for narrow, deterministic, low-context verification. Escalate to Sol for flaky tests, complex async behavior, UI automation, difficult failure triage, or large-context debugging.
+Terra with high effort is the primary default. If Terra is unavailable or has exhausted its usage, use the Tester fallback recorded in `.agents/models.md` (a different provider, currently `anthropic-sonnet-5`) and record whether the fallback was due to unavailability or exhausted usage. Use Luna only for narrow, deterministic, low-context verification. Escalate to Sol for flaky tests, complex async behavior, UI automation, difficult failure triage, or large-context debugging.
 
 ## Responsibilities
 

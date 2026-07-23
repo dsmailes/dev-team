@@ -480,14 +480,20 @@ set_model_defaults() {
       ARCHITECT_MODEL=sol
       ARCHITECT_EFFORT=high
       ARCHITECT_PROVIDER=codex
+      ARCHITECT_FALLBACK_MODEL=anthropic-opus-4-8
+      ARCHITECT_FALLBACK_PROVIDER=anthropic
       DESIGNER_MODEL=sol
       DESIGNER_EFFORT=high
       DESIGNER_PROVIDER=codex
+      DESIGNER_FALLBACK_MODEL=anthropic-opus-4-8
+      DESIGNER_FALLBACK_PROVIDER=anthropic
       DESIGNER_ESCALATION="sol with high effort for important product decisions, broad workflow design, brand-sensitive UI, major design-system changes, and frontend polish."
       EXECUTOR_MODEL=terra
       EXECUTOR_EFFORT=high
       EXECUTOR_PROVIDER=codex
-      EXECUTOR_ESCALATION="Escalate to sol only when a listed trigger applies: Terra is unavailable, the ticket crosses architecture boundaries, the work is high-risk data/security/concurrency/migration logic, debugging remains blocked after reproduction, or Terra reports NEEDS_CONTEXT / BLOCKED and more reasoning is required. Use luna only for explicitly low-risk documentation, ticket, formatting, or mechanical follow-up work. Do not escalate only because a ticket touches multiple files or ordinary integration code."
+      EXECUTOR_FALLBACK_MODEL=anthropic-sonnet-5
+      EXECUTOR_FALLBACK_PROVIDER=anthropic
+      EXECUTOR_ESCALATION="Escalate to sol only when a listed trigger applies: Terra is unavailable or has exhausted its usage, the ticket crosses architecture boundaries, the work is high-risk data/security/concurrency/migration logic, debugging remains blocked after reproduction, or Terra reports NEEDS_CONTEXT / BLOCKED and more reasoning is required. Use luna only for explicitly low-risk documentation, ticket, formatting, or mechanical follow-up work. Do not escalate only because a ticket touches multiple files or ordinary integration code."
       REVIEWER_MODEL=anthropic-sonnet-5
       REVIEWER_EFFORT=high
       REVIEWER_PROVIDER=anthropic
@@ -496,24 +502,43 @@ set_model_defaults() {
       SECOND_REVIEWER_MODEL=gpt-5.5
       SECOND_REVIEWER_EFFORT=high
       SECOND_REVIEWER_PROVIDER=codex
+      SECOND_REVIEWER_FALLBACK_MODEL=anthropic-opus-4-8
+      SECOND_REVIEWER_FALLBACK_PROVIDER=anthropic
       TESTER_MODEL=terra
       TESTER_EFFORT=high
       TESTER_PROVIDER=codex
+      TESTER_FALLBACK_MODEL=anthropic-sonnet-5
+      TESTER_FALLBACK_PROVIDER=anthropic
       ;;
     *)
       MODELS_PROVIDER=$provider_lc
       MODEL_PROFILE=inferred-provider-classes
+      if [ "$provider_lc" = anthropic ]; then
+        CROSS_PROVIDER=codex
+        CROSS_REASONING=sol
+        CROSS_CODING=terra
+      else
+        CROSS_PROVIDER=anthropic
+        CROSS_REASONING=anthropic-opus-4-8
+        CROSS_CODING=anthropic-sonnet-5
+      fi
       ARCHITECT_MODEL="${provider_lc}-best-reasoning"
       ARCHITECT_EFFORT=high
       ARCHITECT_PROVIDER=$provider_lc
+      ARCHITECT_FALLBACK_MODEL=$CROSS_REASONING
+      ARCHITECT_FALLBACK_PROVIDER=$CROSS_PROVIDER
       DESIGNER_MODEL="${provider_lc}-best-design-reasoning"
       DESIGNER_EFFORT=high
       DESIGNER_PROVIDER=$provider_lc
+      DESIGNER_FALLBACK_MODEL=$CROSS_REASONING
+      DESIGNER_FALLBACK_PROVIDER=$CROSS_PROVIDER
       DESIGNER_ESCALATION="${provider_lc}-best-reasoning with high effort for important product decisions, broad workflow design, brand-sensitive UI, major design-system changes, and frontend polish."
       EXECUTOR_MODEL="${provider_lc}-balanced-coding"
       EXECUTOR_EFFORT=high
       EXECUTOR_PROVIDER=$provider_lc
-      EXECUTOR_ESCALATION="Escalate only when a listed trigger applies: the balanced coding model is unavailable, the ticket crosses architecture boundaries, the work is high-risk data/security/concurrency/migration logic, debugging remains blocked after reproduction, or the default model reports NEEDS_CONTEXT / BLOCKED and more reasoning is required. Use the provider's most cost-efficient model only for explicitly low-risk documentation, ticket, formatting, or mechanical follow-up work. Do not escalate only because a ticket touches multiple files or ordinary integration code."
+      EXECUTOR_FALLBACK_MODEL=$CROSS_CODING
+      EXECUTOR_FALLBACK_PROVIDER=$CROSS_PROVIDER
+      EXECUTOR_ESCALATION="Escalate only when a listed trigger applies: the balanced coding model is unavailable or has exhausted its usage, the ticket crosses architecture boundaries, the work is high-risk data/security/concurrency/migration logic, debugging remains blocked after reproduction, or the default model reports NEEDS_CONTEXT / BLOCKED and more reasoning is required. Use the provider's most cost-efficient model only for explicitly low-risk documentation, ticket, formatting, or mechanical follow-up work. Do not escalate only because a ticket touches multiple files or ordinary integration code."
       REVIEWER_MODEL="${provider_lc}-best-reasoning"
       REVIEWER_EFFORT=high
       REVIEWER_PROVIDER=$provider_lc
@@ -522,9 +547,13 @@ set_model_defaults() {
       SECOND_REVIEWER_MODEL="${provider_lc}-best-reasoning"
       SECOND_REVIEWER_EFFORT=high
       SECOND_REVIEWER_PROVIDER=$provider_lc
+      SECOND_REVIEWER_FALLBACK_MODEL=$CROSS_REASONING
+      SECOND_REVIEWER_FALLBACK_PROVIDER=$CROSS_PROVIDER
       TESTER_MODEL="${provider_lc}-balanced-reasoning"
       TESTER_EFFORT=high
       TESTER_PROVIDER=$provider_lc
+      TESTER_FALLBACK_MODEL=$CROSS_CODING
+      TESTER_FALLBACK_PROVIDER=$CROSS_PROVIDER
       ;;
   esac
 }
@@ -616,7 +645,22 @@ This file is project-local. Keep it aligned with the provider and model names av
 
 - Provider: \`$MODELS_PROVIDER\`
 - Profile: \`$MODEL_PROFILE\`
-- Notes: Generated by install.sh. For non-Codex providers, inferred names are provider-class placeholders unless you customized them.
+- Notes: Generated by install.sh. For non-Codex providers, inferred names are provider-class placeholders unless you customized them. Every fallback below intentionally uses a different provider than its preferred assignment where a second provider is known, so a provider-wide outage or quota exhaustion cannot take out both.
+
+## Availability And Usage Checks
+
+Before spawning a role, check both of the following. Either failing means the
+model is not usable and the runner must select the fallback:
+
+1. **Availability**: the active runtime's model list exposes the preferred model.
+2. **Usage**: the preferred model has remaining usage/quota. Treat an exhausted
+   quota, rate-limit rejection, billing/credit failure, or any runtime signal
+   that further calls to that model will be rejected the same as unavailable.
+
+Record which condition failed (\`unavailable\` or \`usage-exhausted\`) and the
+actual model selected in the ticket's \`Agent Run Summary\` and \`Execution Model\`
+fallback reason. Do not retry the same exhausted model; move directly to the
+fallback in the table below.
 
 ## Role Assignments
 
@@ -624,12 +668,12 @@ The table below is machine-readable. Runners select exactly one preferred or fal
 
 | Role | Model | Effort | Provider | Fallback Provider | Fallback Model |
 | --- | --- | --- | --- | --- | --- |
-| Architect | \`$ARCHITECT_MODEL\` | \`$ARCHITECT_EFFORT\` | \`$ARCHITECT_PROVIDER\` | \`$ARCHITECT_PROVIDER\` | \`$ARCHITECT_MODEL\` |
-| Designer | \`$DESIGNER_MODEL\` | \`$DESIGNER_EFFORT\` | \`$DESIGNER_PROVIDER\` | \`$DESIGNER_PROVIDER\` | \`$DESIGNER_MODEL\` |
-| Executor | \`$EXECUTOR_MODEL\` | \`$EXECUTOR_EFFORT\` | \`$EXECUTOR_PROVIDER\` | \`$EXECUTOR_PROVIDER\` | \`$EXECUTOR_MODEL\` |
+| Architect | \`$ARCHITECT_MODEL\` | \`$ARCHITECT_EFFORT\` | \`$ARCHITECT_PROVIDER\` | \`$ARCHITECT_FALLBACK_PROVIDER\` | \`$ARCHITECT_FALLBACK_MODEL\` |
+| Designer | \`$DESIGNER_MODEL\` | \`$DESIGNER_EFFORT\` | \`$DESIGNER_PROVIDER\` | \`$DESIGNER_FALLBACK_PROVIDER\` | \`$DESIGNER_FALLBACK_MODEL\` |
+| Executor | \`$EXECUTOR_MODEL\` | \`$EXECUTOR_EFFORT\` | \`$EXECUTOR_PROVIDER\` | \`$EXECUTOR_FALLBACK_PROVIDER\` | \`$EXECUTOR_FALLBACK_MODEL\` |
 | Reviewer | \`$REVIEWER_MODEL\` | \`$REVIEWER_EFFORT\` | \`$REVIEWER_PROVIDER\` | \`$REVIEWER_FALLBACK_PROVIDER\` | \`$REVIEWER_FALLBACK_MODEL\` |
-| Second Reviewer | \`$SECOND_REVIEWER_MODEL\` | \`$SECOND_REVIEWER_EFFORT\` | \`$SECOND_REVIEWER_PROVIDER\` | \`$SECOND_REVIEWER_PROVIDER\` | \`$SECOND_REVIEWER_MODEL\` |
-| Tester | \`$TESTER_MODEL\` | \`$TESTER_EFFORT\` | \`$TESTER_PROVIDER\` | \`$TESTER_PROVIDER\` | \`$TESTER_MODEL\` |
+| Second Reviewer | \`$SECOND_REVIEWER_MODEL\` | \`$SECOND_REVIEWER_EFFORT\` | \`$SECOND_REVIEWER_PROVIDER\` | \`$SECOND_REVIEWER_FALLBACK_PROVIDER\` | \`$SECOND_REVIEWER_FALLBACK_MODEL\` |
+| Tester | \`$TESTER_MODEL\` | \`$TESTER_EFFORT\` | \`$TESTER_PROVIDER\` | \`$TESTER_FALLBACK_PROVIDER\` | \`$TESTER_FALLBACK_MODEL\` |
 
 ## Provider Mapping Guidance
 
@@ -638,10 +682,15 @@ For non-Codex providers, map roles by capability rather than by exact names:
 - Architect: best reasoning model.
 - Designer: best design/reasoning model for major product or UI decisions.
 - Executor: balanced coding model by default; escalate to the best reasoning model as risk increases.
-- Reviewer: use the configured preferred model with high effort only when the active runtime exposes it; otherwise use the configured fallback with high effort. Record the actual model selected and escalate to the best reasoning model for high-risk or difficult review.
+- Reviewer: use the configured preferred model with high effort only when the active runtime exposes it and has not exhausted its usage; otherwise use the configured fallback with high effort. Record the actual model selected and escalate to the best reasoning model for high-risk or difficult review.
 - Second Reviewer: an independent model used only for explicitly required adversarial review of the same commit.
 - Tester: balanced reasoning model with high effort by default. Use a cost-efficient model only for narrow, deterministic, low-context checks; escalate to the best reasoning model for flaky, async, UI, failure-triage, or large-context work.
 - Low-risk work: use the provider's most cost-efficient model only for explicitly low-risk documentation, ticket, formatting, or mechanical follow-up work.
+
+Choose each role's fallback from a different provider than its preferred
+assignment whenever more than one provider is configured or known to the
+runtime. Fall back within the same provider only when no other configured
+provider offers a comparable capability class.
 
 If exact provider model IDs are not known during installation, use provider-class placeholders such as \`anthropic-balanced-coding\` or \`google-best-reasoning\`, then replace them with the exact IDs supported by your local agent runner.
 EOF

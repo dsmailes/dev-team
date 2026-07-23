@@ -71,10 +71,10 @@ Use the designer only when a ticket changes screens, flows, visual hierarchy, in
 ## Execute A Ticket
 
 1. Spawn the executor with `terra` and `high` effort by default.
-2. Escalate Executor to `sol` only when a recorded trigger applies: Terra is unavailable, the ticket crosses architecture boundaries, the work is high-risk data/security/concurrency/migration logic, debugging remains blocked after reproduction, or Terra reports `NEEDS_CONTEXT` / `BLOCKED` and more reasoning is required.
+2. Escalate Executor to `sol` only when a recorded trigger applies: the ticket crosses architecture boundaries, the work is high-risk data/security/concurrency/migration logic, debugging remains blocked after reproduction, or Terra (or its fallback) reports `NEEDS_CONTEXT` / `BLOCKED` and more reasoning is required.
 3. Do not escalate only because a ticket touches multiple files or ordinary integration code.
 4. Use `luna` only for explicitly low-risk documentation, ticket, formatting, or mechanical follow-up work.
-5. If Terra is unavailable, use the nearest available balanced coding model and record the fallback in `Execution Model`.
+5. If Terra is unavailable or has exhausted its usage, use the Executor fallback recorded in `.agents/models.md` (a different provider) and record which condition triggered it in `Execution Model`.
 6. Assign exactly one ticket unless the tickets share the same files and scope.
 7. Tell the executor which files or modules it owns.
 8. Provide exact context in the prompt: ticket text, relevant files, relevant memory entries, `Skill Context`, `Execution Model`, optional host-resource coordination required by selected platform skills, acceptance criteria, and expected verification.
@@ -88,13 +88,13 @@ The Executor must create a scoped ticket commit and return a structured handoff 
 
 ## Review A Ticket
 
-1. Check the active runtime's available model list. Spawn or assign `anthropic-sonnet-5` with high effort only when it is exposed; otherwise use the Reviewer fallback from `.agents/models.md` (Terra with high effort in the Codex default). Record the actual model selected before review.
+1. Check the active runtime's available model list and remaining usage/quota. Spawn or assign `anthropic-sonnet-5` with high effort only when it is exposed and has not exhausted its usage; otherwise use the Reviewer fallback from `.agents/models.md` (Terra with high effort in the Codex default). Record the actual model selected, and whether any fallback was due to unavailability or exhausted usage, before review.
 2. Give the reviewer the ticket path, recorded ticket commit, and a clean ticket verification worktree at that exact commit.
 3. If the runtime supports live supervisor contact, allow Reviewer to ask for missing ticket or diff context. Otherwise require `NEEDS_CONTEXT` or `BLOCKED`.
 4. Run spec compliance review first.
 5. Run code quality review only after spec compliance is satisfied.
 6. Require `Second Review` only for security, data-loss, concurrency, migration, public API risk, difficult regressions, unresolved review uncertainty, or an explicit user request. Record the decision in the ticket before testing.
-7. When required, spawn the Second Reviewer with `gpt-5.5` and `high` effort (or the configured equivalent), give it the same ticket commit SHA and clean verification worktree, and record its independent outcome. Do not substitute a review of a newer or different commit.
+7. When required, spawn the Second Reviewer with `gpt-5.5` and `high` effort (or the configured equivalent). If it is unavailable or has exhausted its usage, use the Second Reviewer fallback from `.agents/models.md` (a different provider) and record which condition triggered it. Give it the same ticket commit SHA and clean verification worktree, and record its independent outcome. Do not substitute a review of a newer or different commit.
 8. If either reviewer recommends `Needs Changes`, create a fix ticket or return the same ticket to the executor.
 9. If review is ready for testing and any required second review is complete, submit a structured handoff request. The runner requires a passing Reviewer record for the Executor commit and an independent session before moving the ticket to `Test`.
 
@@ -102,7 +102,7 @@ Reviewer must reject a commit mismatch, dirty verification worktree, or moving s
 
 ## Test A Ticket
 
-1. Spawn or assign the tester with the Tester model and effort from `.agents/models.md` after review. Terra with high effort is the primary default; use Luna only for narrow, deterministic, low-context checks, and escalate to Sol for flaky, async, UI, failure-triage, or large-context work.
+1. Spawn or assign the tester with the Tester model and effort from `.agents/models.md` after review. Terra with high effort is the primary default; if it is unavailable or has exhausted its usage, use the Tester fallback from `.agents/models.md` (a different provider) and record which condition triggered it. Use Luna only for narrow, deterministic, low-context checks, and escalate to Sol for flaky, async, UI, failure-triage, or large-context work.
 2. Give the tester the ticket path, recorded ticket commit, clean ticket verification worktree, ticket-scoped artifact root, and expected focused verification scope.
 3. If the runtime supports live supervisor contact, allow Tester to ask for missing environment, command, or verification scope decisions. Otherwise require `NEEDS_CONTEXT` or `BLOCKED`.
 4. Require fresh command output or documented manual-check evidence before accepting a pass.

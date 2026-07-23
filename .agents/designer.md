@@ -6,7 +6,7 @@ Shape UI and UX work before implementation when a ticket changes screens, flows,
 
 ## Preferred Model
 
-Use the Designer model and effort from `.agents/models.md`.
+Use the Designer model and effort from `.agents/models.md`. If it is unavailable or has exhausted its usage, use the recorded fallback (a different provider) and record which condition triggered the fallback.
 
 Use the escalation guidance in `.agents/models.md` for important product decisions, complex workflows, brand-sensitive UI, or broad design-system changes.
 
