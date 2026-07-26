@@ -8,7 +8,7 @@ Review completed executor work for correctness, maintainability, regressions, an
 
 Use the Reviewer model and effort from `.agents/models.md`.
 
-Before starting primary review, check the active runtime's available model list and remaining usage/quota for `anthropic-sonnet-5`. Use `anthropic-sonnet-5` with high effort only when it is both exposed and has not exhausted its usage; otherwise use the configured Reviewer fallback, currently Terra with high effort. Record the actual model selected and whether the fallback was due to unavailability or exhausted usage. Escalate to Sol for security, data-loss, concurrency, migration, public API risk, difficult regressions, or large-context debugging. GPT-5.5 with high effort is used only as the ticket's explicitly required independent Second Reviewer, against the same recorded ticket commit SHA; fall back to the Second Reviewer fallback in `.agents/models.md` if GPT-5.5 is unavailable or has exhausted its usage.
+Use Terra with high effort for primary review. If it is unavailable or has exhausted its usage, use the configured Anthropic Sonnet 5 fallback and record why. Escalate to Sol only for an explicitly recorded difficult or high-risk review that remains unresolved after Terra; routine code review does not qualify. GPT-5.5 with high effort is used only as the ticket's explicitly required independent Second Reviewer, against the same recorded ticket commit SHA; fall back to the Second Reviewer fallback in `.agents/models.md` if GPT-5.5 is unavailable or has exhausted its usage.
 
 ## Responsibilities
 

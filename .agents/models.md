@@ -5,8 +5,8 @@ This file is project-local. Keep it aligned with the provider and model names av
 ## Provider
 
 - Provider: `codex`
-- Profile: `gpt-5.6-sol-terra-anthropic-sonnet-5-review`
-- Notes: Codex defaults use Sol for architecture and product/design shaping, Terra with high effort for implementation and primary testing, and Anthropic Sonnet 5 for primary review only when the active runtime exposes it. Terra is the primary-review fallback. GPT-5.5 is an optional independent second review; Luna is reserved for narrow, deterministic, low-context verification. Every fallback in the table below intentionally uses a different provider than its preferred assignment, so a provider-wide outage or quota exhaustion cannot take out both.
+- Profile: `gpt-5.6-terra-high-default`
+- Notes: Terra with high effort is the normal default for architecture, design, implementation, review, and testing. Anthropic Sonnet 5 is the cross-provider fallback. Sol is reserved for an explicitly recorded difficult or multi-phase escalation, never routine work or quota recovery. GPT-5.5 is an optional independent second review; Luna is reserved for narrow, deterministic, low-context verification. Every fallback in the table below intentionally uses a different provider than its preferred assignment, so a provider-wide outage or quota exhaustion cannot take out both.
 
 ## Availability And Usage Checks
 
@@ -30,10 +30,10 @@ fallback assignment; prose in this file does not override its fields.
 
 | Role | Model | Effort | Provider | Fallback Provider | Fallback Model |
 | --- | --- | --- | --- | --- | --- |
-| Architect | `sol` | `high` | `codex` | `anthropic` | `anthropic-opus-4-8` |
-| Designer | `sol` | `high` | `codex` | `anthropic` | `anthropic-opus-4-8` |
+| Architect | `terra` | `high` | `codex` | `anthropic` | `anthropic-sonnet-5` |
+| Designer | `terra` | `high` | `codex` | `anthropic` | `anthropic-sonnet-5` |
 | Executor | `terra` | `high` | `codex` | `anthropic` | `anthropic-sonnet-5` |
-| Reviewer | `anthropic-sonnet-5` | `high` | `anthropic` | `codex` | `terra` |
+| Reviewer | `terra` | `high` | `codex` | `anthropic` | `anthropic-sonnet-5` |
 | Second Reviewer | `gpt-5.5` | `high` | `codex` | `anthropic` | `anthropic-opus-4-8` |
 | Tester | `terra` | `high` | `codex` | `anthropic` | `anthropic-sonnet-5` |
 
@@ -41,13 +41,27 @@ fallback assignment; prose in this file does not override its fields.
 
 For non-Codex providers, map roles by capability rather than by exact names:
 
-- Architect: best reasoning model.
-- Designer: best design/reasoning model for major product or UI decisions.
+- Architect: balanced reasoning model with high effort by default. Escalate to the best reasoning model only for an explicitly recorded difficult or multi-phase decision.
+- Designer: balanced design/reasoning model with high effort by default. Escalate to the best reasoning model only for an explicitly recorded difficult or multi-phase product or UI decision.
 - Executor: balanced coding model by default; escalate to the best reasoning model as risk increases.
-- Reviewer: use Anthropic Sonnet 5 with high effort only when the active runtime exposes it and has not exhausted its usage; otherwise use the configured balanced-review fallback with high effort. Record the actual model selected and escalate to the best reasoning model for high-risk or difficult review.
+- Reviewer: balanced review/reasoning model with high effort by default. Use the configured cross-provider fallback only when required, and escalate to the best reasoning model only for an explicitly recorded difficult or high-risk review.
 - Second Reviewer: an independent model used only for explicitly required adversarial review of the same commit.
 - Tester: balanced reasoning model with high effort by default. Use a cost-efficient model only for narrow, deterministic, low-context checks; escalate to the best reasoning model for flaky, async, UI, failure-triage, or large-context work.
 - Low-risk work: use the provider's most cost-efficient model only for explicitly low-risk documentation, ticket, formatting, or mechanical follow-up work.
+
+## Escalation Economy
+
+Use Terra High for the normal loop, including ordinary implementation,
+debugging, refactors, tests, reviews, and routine architecture/design planning.
+Use a higher tier only when the ticket records why Terra is insufficient:
+
+- A focused difficult problem with a clear bounded question may use the runtime's
+  higher reasoning tier (for example, Sol at the highest non-parallel effort).
+- Use the runtime's ultra tier only when multiple phases or parallel agents
+  genuinely need the extra reasoning budget.
+- Do not use Sol or an ultra tier merely because the task is serious, spans
+  several files, or a preferred model's quota is exhausted. Use the configured
+  fallback first.
 
 Choose each role's fallback from a different provider than its preferred
 assignment whenever more than one provider is configured or known to the

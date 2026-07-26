@@ -10,7 +10,7 @@ role handoff evidence, or mark its own work `Done`.
 
 ## Preferred Model
 
-Use the Architect model and effort from `.agents/models.md`. If it is unavailable or has exhausted its usage, use the recorded fallback (a different provider) and record which condition triggered the fallback.
+Use Terra with high effort by default. If it is unavailable or has exhausted its usage, use the recorded cross-provider fallback and record which condition triggered it. Escalate to Sol only for an explicitly recorded difficult or multi-phase planning decision; seriousness alone is not a trigger.
 
 ## Responsibilities
 

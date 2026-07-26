@@ -50,7 +50,7 @@ For multi-step implementation work, the architect should also create or link an 
 
 The architect must fill in `Skill Context` before execution starts, including role-specific skills or `None` where no skill applies. External skill families are optional unless the ticket, user, imported registry, or project instructions require them.
 
-The architect must fill in `Execution Model` before execution starts. Executor defaults to `terra` with `high` effort. Escalation requires a specific recorded reason.
+The architect must fill in `Execution Model` before execution starts. Architect, Designer, Executor, Reviewer, and Tester default to `terra` with `high` effort. Escalation to Sol requires a specific recorded reason; use it for focused difficult work, and reserve ultra tiers for genuinely multi-phase or parallel work.
 
 The architect must also mark `Second Review` as required or not required before execution starts. Require it only for security, data-loss, concurrency, migration, public API risk, difficult regressions, unresolved review uncertainty, or an explicit user request.
 
@@ -74,7 +74,7 @@ Once a ticket is selected for execution, drive it through Execute -> Review -> (
 Use the designer only when a ticket changes screens, flows, visual hierarchy, interaction design, accessibility, or frontend polish.
 
 1. Spawn the designer with the Designer model and effort from `.agents/models.md`.
-2. Escalate according to `.agents/models.md` when the ticket involves important product decisions, broad workflow design, brand-sensitive UI, or major design-system changes.
+2. Keep Terra High for normal product/design work. Escalate only when the ticket records why a focused difficult or multi-phase decision needs more reasoning.
 3. Give the designer the ticket, relevant existing UI files, design-system context, target platform, and constraints.
 4. Ask the designer to update the ticket's `Designer Review` and `Design Brief` sections.
 5. Move the ticket to execution only after the `Design -> Ready` handoff gate is complete.
@@ -82,7 +82,7 @@ Use the designer only when a ticket changes screens, flows, visual hierarchy, in
 ## Execute A Ticket
 
 1. Spawn the executor with `terra` and `high` effort by default.
-2. Escalate Executor to `sol` only when a recorded trigger applies: the ticket crosses architecture boundaries, the work is high-risk data/security/concurrency/migration logic, debugging remains blocked after reproduction, or Terra (or its fallback) reports `NEEDS_CONTEXT` / `BLOCKED` and more reasoning is required.
+2. Escalate Executor to `sol` only when a recorded focused difficult problem remains blocked after Terra and its fallback, architecture risk remains unresolved, or a genuinely multi-phase/parallel effort needs it.
 3. Do not escalate only because a ticket touches multiple files or ordinary integration code.
 4. Use `luna` only for explicitly low-risk documentation, ticket, formatting, or mechanical follow-up work.
 5. If Terra is unavailable or has exhausted its usage, use the Executor fallback recorded in `.agents/models.md` (a different provider) and record which condition triggered it in `Execution Model`.
@@ -99,7 +99,7 @@ The Executor must create a scoped ticket commit and return a structured handoff 
 
 ## Review A Ticket
 
-1. Check the active runtime's available model list and remaining usage/quota. Spawn or assign `anthropic-sonnet-5` with high effort only when it is exposed and has not exhausted its usage; otherwise use the Reviewer fallback from `.agents/models.md` (Terra with high effort in the Codex default). Record the actual model selected, and whether any fallback was due to unavailability or exhausted usage, before review.
+1. Spawn or assign Terra with high effort for primary review. Check availability and remaining usage/quota; if Terra is unavailable or exhausted, use the Reviewer fallback from `.agents/models.md` (Anthropic Sonnet 5 in the Codex default) and record why. Escalate to Sol only for an explicitly recorded difficult or high-risk review.
 2. Give the reviewer the ticket path, recorded ticket commit, and a clean ticket verification worktree at that exact commit.
 3. If the runtime supports live supervisor contact, allow Reviewer to ask for missing ticket or diff context. Otherwise require `NEEDS_CONTEXT` or `BLOCKED`.
 4. Run spec compliance review first.
@@ -113,7 +113,7 @@ Reviewer must reject a commit mismatch, dirty verification worktree, or moving s
 
 ## Test A Ticket
 
-1. Spawn or assign the tester with the Tester model and effort from `.agents/models.md` after review. Terra with high effort is the primary default; if it is unavailable or has exhausted its usage, use the Tester fallback from `.agents/models.md` (a different provider) and record which condition triggered it. Use Luna only for narrow, deterministic, low-context checks, and escalate to Sol for flaky, async, UI, failure-triage, or large-context work.
+1. Spawn or assign the tester with the Tester model and effort from `.agents/models.md` after review. Terra with high effort is the primary default; if it is unavailable or has exhausted its usage, use the Tester fallback from `.agents/models.md` and record why. Use Luna only for narrow, deterministic, low-context checks, and escalate to Sol only for a difficult test problem unresolved after Terra and its fallback or a genuinely multi-phase/parallel effort.
 2. Give the tester the ticket path, recorded ticket commit, clean ticket verification worktree, ticket-scoped artifact root, and expected focused verification scope.
 3. If the runtime supports live supervisor contact, allow Tester to ask for missing environment, command, or verification scope decisions. Otherwise require `NEEDS_CONTEXT` or `BLOCKED`.
 4. Require fresh command output or documented manual-check evidence before accepting a pass.

@@ -27,10 +27,10 @@ Model choices live in `.agents/models.md`.
 
 The default profile is Codex GPT-5.6:
 
-- Architect: Sol with high effort; falls back to Anthropic Opus 4.8 if Sol is unavailable or has exhausted its usage.
-- Designer: Sol with high effort for UI/product decisions and frontend polish; same fallback as Architect.
+- Architect: Terra with high effort by default; falls back to Anthropic Sonnet 5 if Terra is unavailable or has exhausted its usage.
+- Designer: Terra with high effort by default; falls back to Anthropic Sonnet 5 if Terra is unavailable or has exhausted its usage.
 - Executor: Terra with high effort by default; falls back to Anthropic Sonnet 5 if Terra is unavailable or has exhausted its usage.
-- Reviewer: Anthropic Sonnet 5 with high effort when available and has not exhausted its usage; otherwise Terra with high effort.
+- Reviewer: Terra with high effort by default; falls back to Anthropic Sonnet 5 if Terra is unavailable or has exhausted its usage.
 - Second Reviewer: GPT-5.5 with high effort only when an independent adversarial review is required; falls back to Anthropic Opus 4.8 if GPT-5.5 is unavailable or has exhausted its usage.
 - Tester: Terra with high effort by default; falls back to Anthropic Sonnet 5 if Terra is unavailable or has exhausted its usage. Luna is reserved for narrow, deterministic, low-context checks.
 
@@ -38,9 +38,9 @@ Every role's fallback intentionally uses a different provider than its preferred
 
 For other providers, the installer can infer provider-class placeholders such as `anthropic-balanced-coding` or `google-best-reasoning`. Replace those with exact model IDs supported by your local runner.
 
-Executor tickets include an `Execution Model` section. Codex installs default Executor to `terra` with `high` effort. Escalation to `sol` must be recorded in the ticket; ordinary multi-file or integration work is not enough by itself.
+Tickets include an `Execution Model` section. Codex installs Architect, Designer, Executor, Reviewer, and Tester with `terra` at `high` effort. Escalation to `sol` must be recorded; use it for a focused difficult problem that remains blocked after Terra and its fallback, and reserve ultra tiers for genuinely multi-phase or parallel work. Ordinary multi-file or integration work is not enough by itself.
 
-Tickets also include a `Second Review` decision. Require it for high-risk changes, unresolved review uncertainty, or when the user asks for an independent pass; GPT-5.5 then reviews the exact same ticket commit after the primary Terra review. Escalate primary review or testing to Sol for high-risk or difficult work.
+Tickets also include a `Second Review` decision. Require it for high-risk changes, unresolved review uncertainty, or when the user asks for an independent pass; GPT-5.5 then reviews the exact same ticket commit after the primary Terra review. Use Sol only when the recorded review or test problem remains difficult after Terra and its fallback.
 
 Concurrent implementation tickets use dedicated worktrees, ticket-scoped artifacts, immutable verification commits, and one post-merge integration matrix per batch. Preserve blocked or failed workspaces for diagnosis; clean up only named, merged, verified workspaces after artifact capture.
 

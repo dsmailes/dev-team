@@ -10,7 +10,7 @@ Use `terra` with `high` effort by default.
 
 If Terra is unavailable or has exhausted its usage, use the Executor fallback recorded in `.agents/models.md` (a different provider, currently `anthropic-sonnet-5`) rather than escalating to `sol`. Record whether the fallback was due to unavailability or exhausted usage.
 
-Escalate to `sol` only when the ticket's `Execution Model` records a specific trigger. Valid triggers: the ticket crosses architecture boundaries, the work is high-risk data/security/concurrency/migration logic, debugging remains blocked after reproduction, or Terra (or its fallback) reports `NEEDS_CONTEXT` / `BLOCKED` and more reasoning is required.
+Escalate to `sol` only when the ticket's `Execution Model` records a specific trigger: a focused difficult problem remains blocked after Terra and its fallback, the work crosses architecture boundaries with unresolved risk, or the runtime needs a genuinely multi-phase/parallel reasoning effort. Use the runtime's highest non-parallel tier for focused difficult work; reserve its ultra tier for the latter case.
 
 Use `luna` only for explicitly low-risk documentation, ticket, formatting, or mechanical follow-up work.
 

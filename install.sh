@@ -476,29 +476,29 @@ set_model_defaults() {
   case "$provider_lc" in
     ""|codex|openai)
       MODELS_PROVIDER=codex
-      MODEL_PROFILE=gpt-5.6-sol-terra-anthropic-sonnet-5-review
-      ARCHITECT_MODEL=sol
+      MODEL_PROFILE=gpt-5.6-terra-high-default
+      ARCHITECT_MODEL=terra
       ARCHITECT_EFFORT=high
       ARCHITECT_PROVIDER=codex
-      ARCHITECT_FALLBACK_MODEL=anthropic-opus-4-8
+      ARCHITECT_FALLBACK_MODEL=anthropic-sonnet-5
       ARCHITECT_FALLBACK_PROVIDER=anthropic
-      DESIGNER_MODEL=sol
+      DESIGNER_MODEL=terra
       DESIGNER_EFFORT=high
       DESIGNER_PROVIDER=codex
-      DESIGNER_FALLBACK_MODEL=anthropic-opus-4-8
+      DESIGNER_FALLBACK_MODEL=anthropic-sonnet-5
       DESIGNER_FALLBACK_PROVIDER=anthropic
-      DESIGNER_ESCALATION="sol with high effort for important product decisions, broad workflow design, brand-sensitive UI, major design-system changes, and frontend polish."
+      DESIGNER_ESCALATION="Escalate to sol only for an explicitly recorded difficult or multi-phase product/design decision. Do not escalate for ordinary UI work, routine polish, or quota recovery."
       EXECUTOR_MODEL=terra
       EXECUTOR_EFFORT=high
       EXECUTOR_PROVIDER=codex
       EXECUTOR_FALLBACK_MODEL=anthropic-sonnet-5
       EXECUTOR_FALLBACK_PROVIDER=anthropic
       EXECUTOR_ESCALATION="Escalate to sol only when a listed trigger applies: Terra is unavailable or has exhausted its usage, the ticket crosses architecture boundaries, the work is high-risk data/security/concurrency/migration logic, debugging remains blocked after reproduction, or Terra reports NEEDS_CONTEXT / BLOCKED and more reasoning is required. Use luna only for explicitly low-risk documentation, ticket, formatting, or mechanical follow-up work. Do not escalate only because a ticket touches multiple files or ordinary integration code."
-      REVIEWER_MODEL=anthropic-sonnet-5
+      REVIEWER_MODEL=terra
       REVIEWER_EFFORT=high
-      REVIEWER_PROVIDER=anthropic
-      REVIEWER_FALLBACK_MODEL=terra
-      REVIEWER_FALLBACK_PROVIDER=codex
+      REVIEWER_PROVIDER=codex
+      REVIEWER_FALLBACK_MODEL=anthropic-sonnet-5
+      REVIEWER_FALLBACK_PROVIDER=anthropic
       SECOND_REVIEWER_MODEL=gpt-5.5
       SECOND_REVIEWER_EFFORT=high
       SECOND_REVIEWER_PROVIDER=codex
@@ -522,24 +522,24 @@ set_model_defaults() {
         CROSS_REASONING=anthropic-opus-4-8
         CROSS_CODING=anthropic-sonnet-5
       fi
-      ARCHITECT_MODEL="${provider_lc}-best-reasoning"
+      ARCHITECT_MODEL="${provider_lc}-balanced-reasoning"
       ARCHITECT_EFFORT=high
       ARCHITECT_PROVIDER=$provider_lc
       ARCHITECT_FALLBACK_MODEL=$CROSS_REASONING
       ARCHITECT_FALLBACK_PROVIDER=$CROSS_PROVIDER
-      DESIGNER_MODEL="${provider_lc}-best-design-reasoning"
+      DESIGNER_MODEL="${provider_lc}-balanced-design-reasoning"
       DESIGNER_EFFORT=high
       DESIGNER_PROVIDER=$provider_lc
       DESIGNER_FALLBACK_MODEL=$CROSS_REASONING
       DESIGNER_FALLBACK_PROVIDER=$CROSS_PROVIDER
-      DESIGNER_ESCALATION="${provider_lc}-best-reasoning with high effort for important product decisions, broad workflow design, brand-sensitive UI, major design-system changes, and frontend polish."
+      DESIGNER_ESCALATION="Escalate to ${provider_lc}-best-reasoning only for an explicitly recorded difficult or multi-phase product/design decision."
       EXECUTOR_MODEL="${provider_lc}-balanced-coding"
       EXECUTOR_EFFORT=high
       EXECUTOR_PROVIDER=$provider_lc
       EXECUTOR_FALLBACK_MODEL=$CROSS_CODING
       EXECUTOR_FALLBACK_PROVIDER=$CROSS_PROVIDER
       EXECUTOR_ESCALATION="Escalate only when a listed trigger applies: the balanced coding model is unavailable or has exhausted its usage, the ticket crosses architecture boundaries, the work is high-risk data/security/concurrency/migration logic, debugging remains blocked after reproduction, or the default model reports NEEDS_CONTEXT / BLOCKED and more reasoning is required. Use the provider's most cost-efficient model only for explicitly low-risk documentation, ticket, formatting, or mechanical follow-up work. Do not escalate only because a ticket touches multiple files or ordinary integration code."
-      REVIEWER_MODEL="${provider_lc}-best-reasoning"
+      REVIEWER_MODEL="${provider_lc}-balanced-reasoning"
       REVIEWER_EFFORT=high
       REVIEWER_PROVIDER=$provider_lc
       REVIEWER_FALLBACK_MODEL="${provider_lc}-balanced-reasoning"
@@ -679,10 +679,10 @@ The table below is machine-readable. Runners select exactly one preferred or fal
 
 For non-Codex providers, map roles by capability rather than by exact names:
 
-- Architect: best reasoning model.
-- Designer: best design/reasoning model for major product or UI decisions.
+- Architect: balanced reasoning model with high effort by default; escalate to the best reasoning model only for an explicitly recorded difficult or multi-phase decision.
+- Designer: balanced design/reasoning model with high effort by default; escalate to the best reasoning model only for an explicitly recorded difficult or multi-phase product or UI decision.
 - Executor: balanced coding model by default; escalate to the best reasoning model as risk increases.
-- Reviewer: use the configured preferred model with high effort only when the active runtime exposes it and has not exhausted its usage; otherwise use the configured fallback with high effort. Record the actual model selected and escalate to the best reasoning model for high-risk or difficult review.
+- Reviewer: balanced review/reasoning model with high effort by default. Use the configured fallback only when required, and escalate to the best reasoning model only for an explicitly recorded difficult or high-risk review.
 - Second Reviewer: an independent model used only for explicitly required adversarial review of the same commit.
 - Tester: balanced reasoning model with high effort by default. Use a cost-efficient model only for narrow, deterministic, low-context checks; escalate to the best reasoning model for flaky, async, UI, failure-triage, or large-context work.
 - Low-risk work: use the provider's most cost-efficient model only for explicitly low-risk documentation, ticket, formatting, or mechanical follow-up work.
