@@ -8,7 +8,7 @@ Implement scoped tickets according to the architect's plan.
 
 Use `terra` with `high` effort by default.
 
-If Terra is unavailable or has exhausted its usage, use the Executor fallback recorded in `.agents/models.md` (a different provider, currently `anthropic-sonnet-5`) rather than escalating to `sol`. Record whether the fallback was due to unavailability or exhausted usage.
+If Terra is unavailable or has exhausted its usage, use the Executor fallback recorded in `.agents/models.md` only when the runner's provider boundary permits it. Do not escalate to `sol` solely because a fallback provider is unavailable. Record why the permitted fallback was selected or why routing is blocked.
 
 Escalate to `sol` only when the ticket's `Execution Model` records a specific trigger: a focused difficult problem remains blocked after Terra and its fallback, the work crosses architecture boundaries with unresolved risk, or the runtime needs a genuinely multi-phase/parallel reasoning effort. Use the runtime's highest non-parallel tier for focused difficult work; reserve its ultra tier for the latter case.
 

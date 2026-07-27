@@ -12,6 +12,11 @@ The orchestrator may not move a ticket to the next state until that transition's
 
 Use `.agents/models.md` as the source of truth for model names and effort levels when spawning each role.
 
+Before selecting a model, the runner must provide the runtime provider boundary
+defined in `.agents/models.md`. Official ChatGPT/Codex and Claude harnesses use
+only their native provider. A custom runner may use a cross-provider fallback
+only when it explicitly declares both providers as allowed.
+
 Use runtime capabilities opportunistically. When available, prefer fresh-context subagents, live supervisor contact for blocking questions, background execution for long-running tasks, and an allowed-agent list that matches this workflow. When unavailable, use ticket status and explicit handoff reports instead.
 
 ## Read Project Memory
@@ -85,7 +90,7 @@ Use the designer only when a ticket changes screens, flows, visual hierarchy, in
 2. Escalate Executor to `sol` only when a recorded focused difficult problem remains blocked after Terra and its fallback, architecture risk remains unresolved, or a genuinely multi-phase/parallel effort needs it.
 3. Do not escalate only because a ticket touches multiple files or ordinary integration code.
 4. Use `luna` only for explicitly low-risk documentation, ticket, formatting, or mechanical follow-up work.
-5. If Terra is unavailable or has exhausted its usage, use the Executor fallback recorded in `.agents/models.md` (a different provider) and record which condition triggered it in `Execution Model`.
+5. If Terra is unavailable or has exhausted its usage, use the Executor fallback only when the runner's provider boundary permits it; otherwise report routing as blocked. Record why in `Execution Model`.
 6. Assign exactly one ticket unless the tickets share the same files and scope.
 7. Tell the executor which files or modules it owns.
 8. Provide exact context in the prompt: ticket text, relevant files, relevant memory entries, `Skill Context`, `Execution Model`, optional host-resource coordination required by selected platform skills, acceptance criteria, and expected verification.
@@ -99,13 +104,13 @@ The Executor must create a scoped ticket commit and return a structured handoff 
 
 ## Review A Ticket
 
-1. Spawn or assign Terra with high effort for primary review. Check availability and remaining usage/quota; if Terra is unavailable or exhausted, use the Reviewer fallback from `.agents/models.md` (Anthropic Sonnet 5 in the Codex default) and record why. Escalate to Sol only for an explicitly recorded difficult or high-risk review.
+1. Prefer Anthropic Sonnet 5 with high effort for primary review only when the runner permits Anthropic and exposes it. Otherwise use the permitted Reviewer fallback from `.agents/models.md` (Terra in a Codex harness) and record why. Do not attempt a model outside the active harness provider boundary. Escalate to Sol only for an explicitly recorded difficult or high-risk review.
 2. Give the reviewer the ticket path, recorded ticket commit, and a clean ticket verification worktree at that exact commit.
 3. If the runtime supports live supervisor contact, allow Reviewer to ask for missing ticket or diff context. Otherwise require `NEEDS_CONTEXT` or `BLOCKED`.
 4. Run spec compliance review first.
 5. Run code quality review only after spec compliance is satisfied.
 6. Require `Second Review` only for security, data-loss, concurrency, migration, public API risk, difficult regressions, unresolved review uncertainty, or an explicit user request. Record the decision in the ticket before testing.
-7. When required, spawn the Second Reviewer with `gpt-5.5` and `high` effort (or the configured equivalent). If it is unavailable or has exhausted its usage, use the Second Reviewer fallback from `.agents/models.md` (a different provider) and record which condition triggered it. Give it the same ticket commit SHA and clean verification worktree, and record its independent outcome. Do not substitute a review of a newer or different commit.
+7. When required, spawn the Second Reviewer with `gpt-5.5` and `high` effort (or the configured equivalent). If it is unavailable or exhausted, use its fallback only when the runner's provider boundary permits it, and record why. Give it the same ticket commit SHA and clean verification worktree, and record its independent outcome. Do not substitute a review of a newer or different commit.
 8. If either reviewer recommends `Needs Changes`, create a fix ticket or return the same ticket to the executor.
 9. If review is ready for testing and any required second review is complete, submit a structured handoff request. The runner requires a passing Reviewer record for the Executor commit and an independent session before moving the ticket to `Test`.
 

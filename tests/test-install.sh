@@ -12,6 +12,11 @@ hash_file() {
 
 "$ROOT/install.sh" --project "$PROJECT" --no-import-skills --no-model-prompt
 
+GENERATED=$TMPDIR/generated-models
+"$ROOT/install.sh" --project "$GENERATED" --models-provider codex --no-import-skills --no-model-prompt
+grep -Fq '## Runtime Provider Boundary' "$GENERATED/.agents/models.md"
+grep -Fq '| Reviewer | `anthropic-sonnet-5` | `high` | `anthropic` | `codex` | `terra` |' "$GENERATED/.agents/models.md"
+
 grep -Fq '## Agent Run Summary' "$PROJECT/.tickets/template.md"
 grep -Fq '## Role Handoff Evidence' "$PROJECT/.tickets/template.md"
 grep -Fq 'runner completion operation' "$PROJECT/.tickets/template.md"
@@ -42,11 +47,13 @@ grep -Fq 'DEV_TEAM_BUILD_ROOT' "$PROJECT/.skills/registry.md"
 test -x "$PROJECT/scripts/with-host-resource-lease.sh"
 grep -Fq '| Role | Model | Effort | Provider | Fallback Provider | Fallback Model |' "$PROJECT/.agents/models.md"
 grep -Fq '## Availability And Usage Checks' "$PROJECT/.agents/models.md"
+grep -Fq '## Runtime Provider Boundary' "$PROJECT/.agents/models.md"
+grep -Fq 'official-chatgpt' "$PROJECT/.agents/models.md"
 grep -Fq 'usage-exhausted' "$PROJECT/.agents/models.md"
 grep -Fq '| Architect | `terra` | `high` | `codex` | `anthropic` | `anthropic-sonnet-5` |' "$PROJECT/.agents/models.md"
 grep -Fq '| Designer | `terra` | `high` | `codex` | `anthropic` | `anthropic-sonnet-5` |' "$PROJECT/.agents/models.md"
 grep -Fq '| Executor | `terra` | `high` | `codex` | `anthropic` | `anthropic-sonnet-5` |' "$PROJECT/.agents/models.md"
-grep -Fq '| Reviewer | `terra` | `high` | `codex` | `anthropic` | `anthropic-sonnet-5` |' "$PROJECT/.agents/models.md"
+grep -Fq '| Reviewer | `anthropic-sonnet-5` | `high` | `anthropic` | `codex` | `terra` |' "$PROJECT/.agents/models.md"
 grep -Fq '| Second Reviewer | `gpt-5.5` | `high` | `codex` | `anthropic` | `anthropic-opus-4-8` |' "$PROJECT/.agents/models.md"
 grep -Fq '| Tester | `terra` | `high` | `codex` | `anthropic` | `anthropic-sonnet-5` |' "$PROJECT/.agents/models.md"
 grep -Fq '## Second Review' "$PROJECT/.tickets/template.md"

@@ -17,6 +17,7 @@ No tickets.
 - `HOST-001`: Coordinate shared host resources and route Apple guidance. See `HOST-001.md`.
 - `MODEL-001`: Prefer Sonnet 5 for review when available. See `MODEL-001.md`.
 - `MODEL-002`: Default the normal role loop to Terra High. See `MODEL-002.md`.
+- `MODEL-003`: Route role models within the active harness provider boundary. See `MODEL-003.md`.
 - `POLICY-001`: Define portable runtime handoff evidence contract. See `POLICY-001.md`.
 
 ## Review

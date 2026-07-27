@@ -66,7 +66,7 @@ If live supervisor contact is available, subagents should use it for blocking qu
 
 Use `.agents/models.md` as the machine-readable source of truth for preferred and fallback provider, model, and effort assignments. Use `.agents/handoff-evidence.md` for runner-owned proof of the actual role run.
 
-The packaged default is a Codex profile that uses Terra with high effort for architecture, product/design shaping, implementation, primary review, and primary testing. Anthropic Sonnet 5 is the cross-provider fallback. Sol is an explicit escalation for focused difficult work, with ultra tiers reserved for genuinely multi-phase or parallel work. GPT-5.5 with high effort is an optional second reviewer for independent adversarial review; Luna is reserved for narrow, deterministic, low-context verification. Project installs may replace these with exact local model IDs or inferred provider-class placeholders.
+The packaged default uses Terra with high effort for architecture, product/design shaping, implementation, and primary testing. Primary review prefers Anthropic Sonnet 5 only when the runner permits Anthropic and exposes it; otherwise it uses Terra in a Codex harness. Cross-provider fallbacks are available only in custom runners that explicitly permit both providers. Sol is an explicit escalation for focused difficult work, with ultra tiers reserved for genuinely multi-phase or parallel work. GPT-5.5 with high effort is an optional second reviewer for independent adversarial review; Luna is reserved for narrow, deterministic, low-context verification. Project installs may replace these with exact local model IDs or inferred provider-class placeholders.
 
 ## Coordination Rules
 

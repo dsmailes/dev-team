@@ -6,7 +6,7 @@ Shape UI and UX work before implementation when a ticket changes screens, flows,
 
 ## Preferred Model
 
-Use Terra with high effort by default. If it is unavailable or has exhausted its usage, use the recorded cross-provider fallback and record which condition triggered it. Escalate to Sol only for an explicitly recorded difficult or multi-phase product/design decision.
+Use Terra with high effort by default. If it is unavailable or has exhausted its usage, use a fallback only when the runner's provider boundary permits it, and record why. Escalate to Sol only for an explicitly recorded difficult or multi-phase product/design decision.
 
 Do not escalate solely because work involves an important product decision, complex workflow, brand-sensitive UI, or broad design-system change; record why Terra is insufficient first.
 

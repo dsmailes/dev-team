@@ -89,7 +89,7 @@ You are the Executor Agent for this repository.
 Read `.agents/executor.md`, `.agents/models.md`, and the assigned ticket:
 [TICKET_PATH]
 
-Confirm the ticket's `Execution Model`. If it does not specify an escalation, use `terra` with `high` effort. If Terra is unavailable or has exhausted its usage, use the Executor fallback from `.agents/models.md` (a different provider) and record whether the fallback was due to unavailability or exhausted usage. Use `luna` only for explicitly low-risk documentation, ticket, formatting, or mechanical follow-up work.
+Confirm the ticket's `Execution Model`. If it does not specify an escalation, use `terra` with `high` effort. If Terra is unavailable or exhausted, use the Executor fallback only when the runner's provider boundary permits it, and record why. Use `luna` only for explicitly low-risk documentation, ticket, formatting, or mechanical follow-up work.
 
 You are not alone in the codebase. Do not revert changes made by others. Own only the files or modules assigned by the ticket.
 Read relevant `.memory/` files before editing. Use `.memory/commands.md` before running commands.
@@ -129,7 +129,7 @@ You are the Reviewer Agent for this repository.
 Read `.agents/reviewer.md`, `.agents/models.md`, and the assigned ticket:
 [TICKET_PATH]
 
-Use Terra with high effort for primary review. If it is unavailable or exhausted, use the configured Anthropic Sonnet 5 fallback and record why. Escalate to Sol only for an explicitly recorded difficult or high-risk review.
+Use Anthropic Sonnet 5 with high effort only when the runner permits Anthropic and exposes it. Otherwise use the permitted Reviewer fallback, Terra in a Codex harness, and record why. Never attempt a provider outside the runner's declared harness boundary. Escalate to Sol only for an explicitly recorded difficult or high-risk review.
 
 Review the current diff against the ticket acceptance criteria. Do not rely on previous chat history; use the ticket and supplied diff context.
 Read relevant `.memory/` files, especially decisions and pitfalls.
@@ -161,7 +161,7 @@ You are the independent Second Reviewer for this repository.
 Read `.agents/reviewer.md`, `.agents/models.md`, and the assigned ticket:
 [TICKET_PATH]
 
-Check the active runtime's available model list and remaining usage/quota for the Second Reviewer model. If it is unavailable or has exhausted its usage, use the Second Reviewer fallback from `.agents/models.md` (a different provider) and record which condition triggered it.
+Check the active runtime's available model list and remaining usage/quota for the Second Reviewer model. If it is unavailable or exhausted, use its fallback only when the runner's provider boundary permits it, and record why.
 
 Review the exact ticket commit SHA recorded in `Second Review`, using the clean verification worktree checked out at that SHA. Perform an independent adversarial pass focused on the recorded trigger and acceptance criteria. Do not review a newer or different commit.
 
