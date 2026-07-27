@@ -522,6 +522,7 @@ def render_dashboard(project: Path, output: Path, markdown_output: Path | None =
     <aside>
       <p class="brand">Ticket Dashboard</p>
       <p class="timestamp">Generated {html.escape(generated_at)}</p>
+      <p class="timestamp">Generated projection only. Live state is in .tickets/.</p>
       <div class="metric"><span>Total tickets</span><strong>{total_tickets}</strong></div>
       <div class="metric"><span>Active</span><strong>{active_count}</strong></div>
       <div class="metric"><span>Blocked</span><strong>{blocked_count}</strong></div>
@@ -639,6 +640,8 @@ def render_markdown_dashboard(
     return f"""# Ticket Dashboard
 
 Generated {generated_at}.
+
+> Generated projection only. The authoritative live board is `.tickets/*.md` plus `.tickets/queue.md`. Regenerate this file after every board mutation.
 
 ## Summary
 

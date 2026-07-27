@@ -282,7 +282,9 @@ State changes are guarded by `Handoff Gates` in each ticket. The orchestrator sh
 
 The Architect should inspect project context first, then record `Questioning Notes` before execution: decision tree, blocking questions, assumptions, deferred questions, approaches considered, and the chosen approach. Tickets with unresolved blocking questions stay in `Backlog` or `Blocked`.
 
-Ticket IDs are allocated by scanning `.tickets/*.md` and choosing the next unused numeric suffix for the selected prefix. Keep the filename, H1, `## ID`, ticket `State`, and `.tickets/queue.md` entry aligned. The packaged `ARCH-001` ticket is a bootstrap placeholder; once real project tickets exist, mark it `Done`, move it to `Blocked`, or replace it with project-specific planning work.
+The individual `.tickets/*.md` files plus `.tickets/queue.md` are the only authoritative live board. Runtime records under `.dev-team/` are execution history and evidence; generated `docs/tickets.*` files are snapshots. Neither is a second source of ticket state.
+
+Ticket IDs are allocated by scanning `.tickets/*.md` and choosing the next unused numeric suffix for the selected prefix. Keep the filename, H1, `## ID`, ticket `State`, and `.tickets/queue.md` entry aligned. The value under `## State` must be one exact lifecycle token; put closure or blocker prose in a separate section. The packaged `ARCH-001` ticket is a bootstrap placeholder; once real project tickets exist, mark it `Done`, move it to `Blocked`, or replace it with project-specific planning work.
 
 Use `.memory/` for durable knowledge only: verified commands, architectural decisions, project orientation, and pitfalls. Keep active task notes in `.tickets/`.
 
@@ -313,7 +315,7 @@ docs/tickets.html
 docs/tickets.md
 ```
 
-Open the HTML file in a browser to scan ticket counts, current states, queue mismatches, handoff gate progress, risks, and verification notes. Use the Markdown file when working in Codex remote or another ChatGPT surface that can display Markdown inline. Re-run the command whenever ticket files or `.tickets/queue.md` change.
+Open the HTML file in a browser to scan ticket counts, current states, queue mismatches, handoff gate progress, risks, and verification notes. Use the Markdown file when working in Codex remote or another ChatGPT surface that can display Markdown inline. These files are generated projections, not live state: regenerate both after every ticket or queue mutation and never use an older copy to answer a status question.
 
 Validate ticket and queue consistency:
 
@@ -323,23 +325,7 @@ python3 scripts/render-ticket-dashboard.py --validate
 
 ![Example ticket dashboard](docs/ticket-dashboard-example.svg)
 
-## Ticket Dashboard In Action
-
-When the Architect creates or updates tickets, it should offer to render the dashboard. A typical handoff looks like this:
-
-```text
-Architect:
-I created APP-012 and BUG-018, updated .tickets/queue.md, and can render the ticket dashboard if you want a quick visual scan.
-
-Command:
-python3 scripts/render-ticket-dashboard.py
-
-Output:
-docs/tickets.html
-docs/tickets.md
-```
-
-The generated views are intentionally simple: the HTML page gives a searchable browser dashboard, and the Markdown file gives a compact ChatGPT-friendly summary. Both highlight state counts, ticket status, handoff progress, and warnings when `.tickets/queue.md` disagrees with a ticket file's `State`. Once the user starts using the dashboard, the Architect should refresh it after later ticket or queue updates so both files stay current.
+The HTML page gives a searchable browser projection, and the Markdown file gives a compact ChatGPT-friendly projection. Both highlight state counts, ticket status, handoff progress, and warnings when `.tickets/queue.md` disagrees with a ticket file's `State`. The Architect refreshes both immediately after every board mutation. For ordinary status, all harnesses read the live queue and ticket files directly.
 
 A completed ticket's handoff also announces a compact run summary, for example:
 

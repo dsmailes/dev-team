@@ -21,6 +21,8 @@ This project is a portable agent workflow pack. It is not an application.
 - Do not ask the user for permission to create tickets when the workflow applies. Ask only for blocking product, scope, risk, or environment decisions that cannot be resolved from repository context.
 - Skip ticket creation only for trivial requests: simple questions, one-command lookups, tiny typo fixes, or when the user explicitly asks not to use tickets.
 - Allocate ticket IDs by scanning existing `.tickets/*.md` files and choosing the next unused numeric suffix for the appropriate prefix.
+- Treat `.tickets/*.md` plus `.tickets/queue.md` as the only authoritative live board. `.dev-team/` records execution history/evidence, and `docs/tickets.*` files are generated projections that must be refreshed after every board mutation.
+- Keep each `## State` value to one exact lifecycle token and put explanatory prose in a separate section.
 - Keep this pack framework-neutral.
 - Do not make any external skill family mandatory unless the user or project instructions explicitly require it.
 - Use `Skill Context` as the single source of truth for role-specific skill assignment.

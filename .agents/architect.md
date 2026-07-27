@@ -26,8 +26,10 @@ Use Terra with high effort by default. If it is unavailable or has exhausted its
 - Identify host-wide resources separately from source/build isolation only when the selected platform or framework skill requires one. Record the resource name and narrow command that will hold its lease.
 - Apply platform-specific build-root guidance only when its platform skill is selected; do not import another platform's environment variables or filesystem conventions into the ticket.
 - Keep the ticket queue current as decisions change.
-- After creating or updating tickets, offer to render the ticket dashboard with `python3 scripts/render-ticket-dashboard.py` and show or point the user to `docs/tickets.html` when the runtime can display local files. In Codex remote or ChatGPT surfaces, show or summarize `docs/tickets.md`.
-- If the user accepts, asks for, or appears to be using the dashboard, refresh it after each later ticket or queue update in the same workflow turn sequence before reporting status, so `docs/tickets.html` and `docs/tickets.md` stay current without repeated prompts.
+- Treat `.tickets/*.md` and `.tickets/queue.md` as the only authoritative live board. Worker logs and `docs/tickets.html` / `docs/tickets.md` are history or generated projections, never independent ticket state.
+- Read the live ticket files before reporting status. Never report current state from a previously generated dashboard or from worker history.
+- After creating or updating tickets, always render both dashboard projections with `python3 scripts/render-ticket-dashboard.py` before showing or summarizing them.
+- Keep the `## State` value to one exact lifecycle token. Put blockers, closure reasons, and supersession notes in their own ticket sections.
 - For multi-step implementation work, create or link a plan in `docs/agent-plans/` and break it into ticket-sized tasks.
 - Identify which skills apply before assigning work. Select them from the ticket, project instructions, and skill registry instead of hardcoding by language.
 - Record the Architect entry in `Agent Run Summary`: agent or task identity, actual model, effort, and token usage when exposed by the runtime; otherwise `Unavailable`. This is not role handoff proof.
@@ -51,15 +53,13 @@ Allocate ticket IDs by scanning `.tickets/*.md`, finding the highest existing nu
 
 The packaged `ARCH-001` ticket is a bootstrap placeholder for capturing the first real project request. When real tickets exist, either mark `ARCH-001` `Done` with verification notes, move it to `Blocked` with a reason, or replace it with project-specific planning work so it does not stay as ambiguous backlog.
 
-When the ticket queue changes, the Architect should offer the user a dashboard view. If accepted, run:
+When the ticket queue changes, refresh its generated projections:
 
 ```sh
 python3 scripts/render-ticket-dashboard.py
 ```
 
-Then display or link `docs/tickets.html` using the local runtime's safest available file or browser capability. In Codex remote or ChatGPT surfaces, display or summarize `docs/tickets.md`. If local display is unavailable, report the generated paths and summarize the dashboard contents.
-
-After the user has accepted, requested, or started using the dashboard, treat it as an active workflow artifact. Refresh both generated files after each subsequent ticket or queue update before handing control back to the user, and mention the refreshed paths only when useful.
+Only after that command succeeds may the Architect display or summarize `docs/tickets.html` or `docs/tickets.md`. For ordinary status questions, read `.tickets/queue.md` and the referenced ticket files directly.
 
 Ticket IDs use this format:
 
@@ -91,6 +91,7 @@ Every executable ticket must include:
 - TDD plan for behavior changes, or an explicit reason TDD does not apply
 - Expected review mode: spec compliance, code quality, or both
 - Queue consistency: the ticket file's `State`, filename/H1/ID, and `.tickets/queue.md` entry must agree. Run `python3 scripts/render-ticket-dashboard.py --validate` after queue edits when available.
+- Exact state syntax: the first non-empty value under `## State` is only one lifecycle token such as `` `Blocked` ``. Explanations belong under `Closure Note`, `Blocker`, or `Notes`.
 
 ## Optional Advisory Subagents
 

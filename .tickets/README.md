@@ -4,10 +4,12 @@ This directory is a lightweight local ticketing system for agent-coordinated wor
 
 ## Files
 
-- `queue.md`: status board for all active tickets.
+- `queue.md` plus the individual ticket files are the authoritative live board.
 - `template.md`: template for new tickets.
 - `ARCH-001.md`: example ticket showing the expected level of detail.
-- `../scripts/render-ticket-dashboard.py`: generates `docs/tickets.html` and `docs/tickets.md` from the local ticket files.
+- `../scripts/render-ticket-dashboard.py`: generates non-authoritative `docs/tickets.html` and `docs/tickets.md` projections from the live board.
+
+Runner records under `.dev-team/` are execution history and evidence, not a second ticket board. Generated dashboard files are snapshots and must be regenerated after every ticket or queue mutation before they are displayed or summarized.
 
 ## State Definitions
 
@@ -27,6 +29,7 @@ This directory is a lightweight local ticketing system for agent-coordinated wor
 - Create tickets for feature work, bug fixes, installer/setup changes, persistent configuration, UI or UX changes, test changes, multi-step debugging, data/security/concurrency/migration work, or anything that needs review and verification.
 - Allocate ticket IDs by scanning `.tickets/*.md` and choosing the next unused numeric suffix for the selected prefix.
 - Keep each ticket filename, H1, `## ID`, ticket `State`, and `.tickets/queue.md` entry aligned.
+- Write only one exact lifecycle token under `## State`; put explanations in a separate `Closure Note`, `Blocker`, or `Notes` section.
 - One ticket should describe one coherent outcome.
 - Each ticket needs acceptance criteria before execution.
 - Each implementation ticket should include a verification plan.
@@ -63,7 +66,7 @@ Render a static webpage for the current ticket state:
 python3 scripts/render-ticket-dashboard.py
 ```
 
-The generated `docs/tickets.html` and `docs/tickets.md` highlight state counts, queue mismatches, handoff gate progress, risks, and verification notes. Use the Markdown file for Codex remote or ChatGPT surfaces that cannot display local HTML.
+The generated `docs/tickets.html` and `docs/tickets.md` highlight state counts, queue mismatches, handoff gate progress, risks, and verification notes. They are snapshots, not authoritative state. Regenerate them after every mutation before using the Markdown file in Codex remote or ChatGPT surfaces.
 
 Validate ticket and queue consistency:
 

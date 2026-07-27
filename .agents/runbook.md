@@ -148,13 +148,16 @@ Avoid parallel splits when:
 
 ## Queue Hygiene
 
+- `.tickets/*.md` and `.tickets/queue.md` are the only authoritative live board.
+- `.dev-team/` is runner history and evidence. `docs/tickets.html` and `docs/tickets.md` are generated projections. Neither may override or substitute for live ticket state.
 - Keep `.tickets/queue.md` aligned with each ticket file's `State`.
 - Allocate ticket IDs by scanning existing `.tickets/*.md` files and choosing the next unused numeric suffix for the selected prefix.
 - Keep each ticket filename, H1, `## ID`, ticket `State`, and `.tickets/queue.md` entry aligned.
+- Keep the first non-empty value under `## State` to one exact lifecycle token. Record closure, blocker, or supersession prose in a separate section.
 - Treat packaged `ARCH-001` as a bootstrap placeholder. Once real project tickets exist, mark it `Done`, move it to `Blocked`, or replace it with project-specific planning work.
 - Run `python3 scripts/render-ticket-dashboard.py --validate` after queue edits when available, and fix mismatches before handoff.
-- After ticket creation or queue changes, offer to run `python3 scripts/render-ticket-dashboard.py` and display or link `docs/tickets.html` when local display is available. In Codex remote or ChatGPT surfaces, display or summarize `docs/tickets.md`.
-- Once the user accepts, requests, or appears to be using the dashboard, refresh both generated files after every later ticket or queue update in that workflow before reporting status.
+- After every ticket or queue mutation, run `python3 scripts/render-ticket-dashboard.py` so both generated projections match the live board.
+- Before answering a status question, read the live queue and ticket files. Use a generated dashboard only when it was refreshed after the latest mutation.
 - Keep old notes; append new dated or role-labeled entries.
 - Move blocked work to `Blocked` with the exact blocker.
 - Prefer creating follow-up tickets over expanding a ticket after execution starts.
