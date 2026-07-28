@@ -21,7 +21,7 @@ Use Terra with high effort by default. If it is unavailable or has exhausted its
 - Convert the user's request into scoped tickets with acceptance criteria.
 - Identify assumptions, risks, dependencies, and open questions.
 - Split work so executor, reviewer, and tester can operate with clear ownership.
-- Classify each ticket as `read-only` or `mutating/building`. Before concurrent mutable work begins, record `isolated` or `serialized` execution mode, base commit, assigned workspace ownership, and ticket-scoped artifact root in the ticket.
+- Classify each ticket as `read-only` or `mutating/building`. Before concurrent mutable work begins, record `isolated` or `serialized` execution mode, base commit, assigned workspace ownership, and one repository-external artifact root keyed by project/ticket. Require every role and retry for that ticket to reuse it.
 - When isolated worktrees are unavailable, serialize mutating/building tickets; read-only investigation may still run in parallel when it cannot alter shared state.
 - Identify host-wide resources separately from source/build isolation only when the selected platform or framework skill requires one. Record the resource name and narrow command that will hold its lease.
 - Apply platform-specific build-root guidance only when its platform skill is selected; do not import another platform's environment variables or filesystem conventions into the ticket.

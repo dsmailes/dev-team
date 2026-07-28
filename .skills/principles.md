@@ -19,7 +19,7 @@ These practices are reusable across frameworks and should inform every agent rol
 - Prefer deterministic tests with precise diffs over broad assertions that hide the meaningful change.
 - Assert against complete relevant state where practical; avoid transforming away the signal under test.
 - Use snapshot tests deliberately for stable rendered output, and record/update snapshots through the project-approved workflow rather than hand-editing them.
-- For concurrent mutating/building tickets, use a ticket-scoped artifact root so builds, test outputs, caches, and logs do not collide. Prefer project-native output controls; for example, Xcode may set `-derivedDataPath` beneath that root, but the workflow does not require Xcode or any specific runtime.
+- For mutating/building tickets, use one repository-external artifact root per project/ticket so builds, test outputs, caches, and logs do not collide with source or other tickets. Reuse that exact root across Executor, Reviewer, Tester, retries, and verification variants; never allocate one root per attempt. Prefer project-native output controls; for example, Xcode may set `-derivedDataPath` to the root's `DerivedData` child, but the workflow does not require Xcode or any specific runtime.
 - Source and artifact isolation do not isolate every host-wide service. When a selected platform or framework skill identifies a contended resource, use `scripts/with-host-resource-lease.sh RESOURCE -- COMMAND` only for that narrow command. The helper records ownership and never deletes an existing lease automatically.
 - Review and focused verification target the recorded immutable ticket commit from a clean verification worktree. The full integration matrix targets the later integration commit once per merge batch.
 
@@ -59,4 +59,4 @@ These practices are reusable across frameworks and should inform every agent rol
 - Document undo or rollback paths for persistent changes.
 - Before handoff, inspect `git status --short --untracked-files=all`, confirm required new files are tracked, and check for accidental artifacts.
 - For installer, packaging, or workflow-pack changes, run a fresh smoke test against a temporary target before claiming success.
-- Preserve failing or blocked ticket workspaces until evidence is captured. After merge and verification, clean up only named clean worktrees and branches; abandon unmerged work deliberately and revert integrated work with a scoped revert commit instead of resetting shared history.
+- Preserve failing or blocked ticket workspaces and artifacts until diagnosis evidence is captured. After acceptance, retain concise evidence and intentional source assets, then remove disposable contents only from an ownership-verified ticket artifact root. Clean up only named clean worktrees and branches; abandon unmerged work deliberately and revert integrated work with a scoped revert commit instead of resetting shared history.

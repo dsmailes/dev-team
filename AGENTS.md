@@ -31,8 +31,8 @@ This project is a portable agent workflow pack. It is not an application.
 - In normal mode, the Architect is orchestration-only and may not implement, review, test, generate handoff evidence, or mark its own work `Done`. The runner alone validates protected handoffs and performs `Test -> Done` through its completion operation.
 - Keep installer behavior conservative: no overwrites unless `--force` is explicitly passed.
 - Prefer Markdown instructions that are easy to copy into project-local workflows.
-- Before concurrent mutation or build work begins, classify tickets as `read-only` or `mutating/building`. Execution mode: `isolated` or `serialized`. Use isolated ticket branches/worktrees and ticket-scoped artifact roots when the runtime supports them; otherwise serialize mutable work in one shared worktree.
-- Treat a recorded scoped ticket commit as the immutable target for review and focused testing. Merge reviewed ticket commits into an integration batch, run one full integration matrix against its integration commit, and clean up named worktrees only after evidence is captured.
+- Before concurrent mutation or build work begins, classify tickets as `read-only` or `mutating/building`. Execution mode: `isolated` or `serialized`. Use isolated ticket branches/worktrees and one repository-external artifact root per project/ticket when the runtime supports them; otherwise serialize mutable work in one shared worktree. Executor, Reviewer, Tester, and every retry reuse that same ticket root.
+- Treat a recorded scoped ticket commit as the immutable target for review and focused testing. Merge reviewed ticket commits into an integration batch, run one full integration matrix against its integration commit, and clean up named worktrees and disposable ticket artifacts only after evidence is captured. Preserve failed or blocked artifacts for diagnosis.
 - Treat host-wide resources as optional platform-specific concerns. Use a named lease only when the selected platform or framework skill requires one, and hold it only around the contended command. Keep unrelated work parallel.
 
 ## Verification

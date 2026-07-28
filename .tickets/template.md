@@ -69,6 +69,8 @@ What should not be changed?
 - Verification worktree:
 - Verification commit:
 - Ticket-scoped artifact root:
+- Artifact ownership marker:
+- Artifact reuse: `Executor`, `Reviewer`, `Tester`, and retries use the same root.
 - Cleanup status:
 - Integration batch:
 - Included ticket commits:
@@ -77,7 +79,7 @@ What should not be changed?
 - Focused verification evidence:
 - Post-merge integration matrix command/result:
 
-In `isolated` mode, each concurrent mutating/building ticket owns a unique branch, worktree, and artifact root. In `serialized` mode, only one mutating/building ticket owns the shared worktree at a time. Reviewer and Tester verify the immutable ticket commit from a clean verification worktree. The orchestrator runs one full integration matrix for each merged integration batch. Preserve failed workspaces until diagnosis evidence is captured; clean up only after merge, verification, and artifact capture.
+In `isolated` mode, each concurrent mutating/building ticket owns a unique branch, worktree, and one repository-external artifact root keyed by project/ticket. In `serialized` mode, only one mutating/building ticket owns the shared worktree at a time. Every role and retry reuses the same ticket root. Reviewer and Tester verify the immutable ticket commit from a clean verification worktree. The orchestrator runs one full integration matrix for each merged integration batch. Preserve failed workspaces and artifacts until diagnosis evidence is captured. After acceptance, retain concise evidence and intentional source assets, then remove disposable contents only from the ownership-verified ticket root.
 
 ## Optional Host Resource Coordination
 
@@ -240,7 +242,7 @@ Record every role that actually ran for this ticket. Do not estimate token usage
 - [ ] Acceptance criteria are restated or referenced.
 - [ ] Expected executor output is stated.
 - [ ] Verification command or manual check is stated.
-- [ ] Ticket classification, execution mode, base commit, workspace ownership, and ticket-scoped artifact root are recorded.
+- [ ] Ticket classification, execution mode, base commit, workspace ownership, repository-external ticket artifact root, ownership marker, and cross-role reuse are recorded.
 - [ ] Optional Host Resource Coordination is complete when an applicable platform or framework skill requires it.
 - Waiver:
 
@@ -278,7 +280,7 @@ Record every role that actually ran for this ticket. Do not estimate token usage
 - [ ] Host-resource lease evidence is recorded when applicable.
 - [ ] Integration batch membership, integration commit, and one post-merge integration matrix result are recorded.
 - [ ] Merge conflicts and affected focused reruns are recorded or explicitly marked `None`.
-- [ ] Cleanup status for ticket worktrees, branches, and artifacts is recorded.
+- [ ] Cleanup status confirms disposable ticket artifacts were removed after acceptance, or records why failed/blocked artifacts were retained.
 - [ ] Failures or coverage gaps are recorded or explicitly marked `None`.
 - [ ] Durable memory updates are promoted to `.memory/` or explicitly marked `None`.
 - [ ] Follow-up tickets are created or explicitly marked `None`.

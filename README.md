@@ -58,13 +58,13 @@ The helper uses a host-wide local lease root and records the holder in an `owner
 
 Only Apple-platform tickets that use Xcode/CoreSimulator should apply the following build-root convention:
 
-To keep Xcode products off the internal drive, optionally configure a user-owned external build root before running agents:
+To keep Xcode products off the source volume, optionally configure a user-owned external build root before running agents:
 
 ```sh
 export DEV_TEAM_BUILD_ROOT=/Volumes/ExternalSSD/builds
 ```
 
-Verify that the volume is mounted, local, writable, and has sufficient space before each build. Derive a distinct path such as `$DEV_TEAM_BUILD_ROOT/<project>/<ticket>/DerivedData`, pass it with `-derivedDataPath`, and do not share or clean that path while another ticket may use it. A missing configured build root is a blocker: do not silently fall back to Xcode's default DerivedData location.
+Verify that the volume is mounted, local, writable, outside the project repository, and has sufficient space before each build. Derive one stable path such as `$DEV_TEAM_BUILD_ROOT/<project>/<ticket>`, use its `DerivedData` child with `-derivedDataPath`, and reuse it for Executor, Reviewer, Tester, and every retry of that ticket. Never create a new artifact root per role or attempt. Do not clean an active ticket root. A missing configured build root is a blocker: do not silently fall back to Xcode's default DerivedData location.
 
 ## Install Into A Project
 
@@ -296,9 +296,9 @@ Runtime support is optional. When available, the workflow can use fresh-context 
 
 Classify each ticket as `read-only` or `mutating/building` before concurrent work starts. Record an execution mode in the ticket: `isolated` when the runtime can safely provide separate ticket branches/worktrees, or `serialized` when it cannot. Read-only investigation can remain parallel when it does not alter shared state.
 
-In isolated mode, every concurrent mutating/building ticket gets a unique branch, worktree, scoped ticket commit, and ticket-scoped artifact root. Executors hand off the immutable commit ID; Reviewer and Tester verify that exact commit in clean ticket verification worktrees, never a moving shared tree. Use project-native output controls. For example, an Xcode project can use `-derivedDataPath` under its ticket-scoped artifact root, but no particular build tool or runtime is required.
+In isolated mode, every concurrent mutating/building ticket gets a unique branch, worktree, scoped ticket commit, and one repository-external artifact root. The root is keyed by project and ticket, not role, session, retry, test variant, or model. Executors hand off the immutable commit ID; Reviewer and Tester verify that exact commit in clean ticket verification worktrees while reusing the same ticket artifact root, never a moving shared tree. Use project-native output controls. For example, an Xcode project can use the `DerivedData` child under its ticket-scoped artifact root, but no particular build tool or runtime is required.
 
-After focused review and verification, the orchestrator combines the reviewed commits into an integration batch and records its integration commit. Run one full integration matrix for that merged batch, then link its result to each included ticket. Preserve blocked or failing workspaces for diagnosis. After merge, verification, and artifact capture, clean up only the named clean ticket worktrees and branches; remove unmerged work only when intentionally abandoned, and revert integrated work with a new scoped revert commit rather than resetting shared history.
+After focused review and verification, the orchestrator combines the reviewed commits into an integration batch and records its integration commit. Run one full integration matrix for that merged batch, then link its result to each included ticket. Preserve blocked or failing workspaces and their ticket artifacts for diagnosis. After a ticket is accepted and concise durable evidence is recorded, remove disposable build products, intermediates, caches, package checkouts, logs, and redundant result bundles from its owned artifact root. Accepted source assets remain in source control; evidence summaries remain in runner history. Clean up only named, ownership-verified roots and clean ticket worktrees/branches. Remove unmerged work only when intentionally abandoned, and revert integrated work with a new scoped revert commit rather than resetting shared history.
 
 ## Render The Ticket Dashboard
 

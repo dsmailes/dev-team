@@ -68,7 +68,7 @@ Required before Executor starts:
 - Expected executor output is stated.
 - Verification command or manual check is stated.
 - Runtime support for live supervisor contact is noted, or fallback status reporting is required.
-- Ticket classification, execution mode, base commit, workspace ownership, and ticket-scoped artifact root are recorded.
+- Ticket classification, execution mode, base commit, workspace ownership, and one repository-external project/ticket artifact root are recorded; all roles and retries reused it.
 - Optional Host Resource Coordination is complete when an applicable platform or framework skill requires it: resource, lease command scope, and platform-specific build-root checks are recorded.
 
 ### In Progress -> Review
@@ -112,7 +112,7 @@ Required before completion:
 - Integration batch membership and resulting integration commit are recorded.
 - One post-merge integration matrix result is linked for the batch.
 - Merge conflicts and affected focused reruns are recorded or explicitly marked `None`.
-- Clean up ticket worktrees and branches only after merge, verification, and artifact capture; blocked or failed workspaces remain preserved for diagnosis.
+- After acceptance and concise evidence capture, clean disposable contents only from the named ownership-verified ticket artifact root, then clean ticket worktrees and branches; blocked or failed workspaces and artifacts remain preserved for diagnosis.
 - Failures or coverage gaps are recorded or explicitly marked `None`.
 - Durable memory updates are promoted to `.memory/` or explicitly marked `None`.
 - Follow-up tickets are created or explicitly marked `None`.
