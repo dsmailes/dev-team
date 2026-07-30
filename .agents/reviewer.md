@@ -8,7 +8,7 @@ Review completed executor work for correctness, maintainability, regressions, an
 
 Use the Reviewer model and effort from `.agents/models.md`.
 
-Use Anthropic Sonnet 5 with high effort for primary review only when the runner's runtime provider boundary permits Anthropic and exposes it. Otherwise use the permitted fallback, Terra with high effort in a Codex harness, and record why. Never attempt a provider outside the active harness boundary. Escalate to Sol only for an explicitly recorded difficult or high-risk review that remains unresolved after the permitted default; routine code review does not qualify. GPT-5.5 with high effort is used only as the ticket's explicitly required independent Second Reviewer, against the same recorded ticket commit SHA; fall back only to a provider permitted by `.agents/models.md` runtime context.
+Use Anthropic Sonnet 5 with medium effort for primary review only when the runner's runtime provider boundary permits Anthropic and exposes it. Otherwise use the permitted fallback, Terra with medium effort in a Codex harness, and record why. Never attempt a provider outside the active harness boundary. Escalate to Sol only for an explicitly recorded difficult or high-risk review that remains unresolved after the permitted default; routine code review does not qualify. GPT-5.5 with high effort is used only as the ticket's explicitly required independent Second Reviewer, against the same recorded ticket commit SHA; fall back only to a provider permitted by `.agents/models.md` runtime context.
 
 ## Responsibilities
 

@@ -55,7 +55,7 @@ For multi-step implementation work, the architect should also create or link an 
 
 The architect must fill in `Skill Context` before execution starts, including role-specific skills or `None` where no skill applies. External skill families are optional unless the ticket, user, imported registry, or project instructions require them.
 
-The architect must fill in `Execution Model` before execution starts. Architect, Designer, Executor, Reviewer, and Tester default to `terra` with `high` effort. Escalation to Sol requires a specific recorded reason; use it for focused difficult work, and reserve ultra tiers for genuinely multi-phase or parallel work.
+The architect must fill in `Execution Model` before execution starts. Architect, Designer, Executor, and Tester default to `terra` with `high` effort; Reviewer uses `medium` effort. Escalation to Sol requires a specific recorded reason; use it for focused difficult work, and reserve ultra tiers for genuinely multi-phase or parallel work.
 
 The architect must also mark `Second Review` as required or not required before execution starts. Require it only for security, data-loss, concurrency, migration, public API risk, difficult regressions, unresolved review uncertainty, or an explicit user request.
 
@@ -104,7 +104,7 @@ The Executor must create a scoped ticket commit and return a structured handoff 
 
 ## Review A Ticket
 
-1. Prefer Anthropic Sonnet 5 with high effort for primary review only when the runner permits Anthropic and exposes it. Otherwise use the permitted Reviewer fallback from `.agents/models.md` (Terra in a Codex harness) and record why. Do not attempt a model outside the active harness provider boundary. Escalate to Sol only for an explicitly recorded difficult or high-risk review.
+1. Prefer Anthropic Sonnet 5 with medium effort for primary review only when the runner permits Anthropic and exposes it. Otherwise use the permitted Reviewer fallback from `.agents/models.md` (Terra with medium effort in a Codex harness) and record why. Do not attempt a model outside the active harness provider boundary. Escalate to Sol only for an explicitly recorded difficult or high-risk review.
 2. Give the reviewer the ticket path, recorded ticket commit, and a clean ticket verification worktree at that exact commit.
 3. If the runtime supports live supervisor contact, allow Reviewer to ask for missing ticket or diff context. Otherwise require `NEEDS_CONTEXT` or `BLOCKED`.
 4. Run spec compliance review first.

@@ -30,7 +30,7 @@ The default profile is Codex GPT-5.6:
 - Architect: Terra with high effort by default; falls back to Anthropic Sonnet 5 if Terra is unavailable or has exhausted its usage.
 - Designer: Terra with high effort by default; falls back to Anthropic Sonnet 5 if Terra is unavailable or has exhausted its usage.
 - Executor: Terra with high effort by default; falls back to Anthropic Sonnet 5 if Terra is unavailable or has exhausted its usage.
-- Reviewer: Anthropic Sonnet 5 with high effort when the runner permits Anthropic and exposes it; otherwise Terra with high effort in a Codex harness.
+- Reviewer: Anthropic Sonnet 5 with medium effort when the runner permits Anthropic and exposes it; otherwise Terra with medium effort in a Codex harness.
 - Second Reviewer: GPT-5.5 with high effort only when an independent adversarial review is required; falls back to Anthropic Opus 4.8 if GPT-5.5 is unavailable or has exhausted its usage.
 - Tester: Terra with high effort by default; falls back to Anthropic Sonnet 5 if Terra is unavailable or has exhausted its usage. Luna is reserved for narrow, deterministic, low-context checks.
 

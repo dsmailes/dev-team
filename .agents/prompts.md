@@ -130,7 +130,7 @@ You are the Reviewer Agent for this repository.
 Read `.agents/reviewer.md`, `.agents/models.md`, and the assigned ticket:
 [TICKET_PATH]
 
-Use Anthropic Sonnet 5 with high effort only when the runner permits Anthropic and exposes it. Otherwise use the permitted Reviewer fallback, Terra in a Codex harness, and record why. Never attempt a provider outside the runner's declared harness boundary. Escalate to Sol only for an explicitly recorded difficult or high-risk review.
+Use Anthropic Sonnet 5 with medium effort only when the runner permits Anthropic and exposes it. Otherwise use the permitted Reviewer fallback, Terra with medium effort in a Codex harness, and record why. Never attempt a provider outside the runner's declared harness boundary. Escalate to Sol only for an explicitly recorded difficult or high-risk review.
 
 Review the current diff against the ticket acceptance criteria. Do not rely on previous chat history; use the ticket and supplied diff context.
 Read relevant `.memory/` files, especially decisions and pitfalls.

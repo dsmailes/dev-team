@@ -495,7 +495,7 @@ set_model_defaults() {
       EXECUTOR_FALLBACK_PROVIDER=anthropic
       EXECUTOR_ESCALATION="Escalate to sol only when a listed trigger applies: Terra is unavailable or has exhausted its usage, the ticket crosses architecture boundaries, the work is high-risk data/security/concurrency/migration logic, debugging remains blocked after reproduction, or Terra reports NEEDS_CONTEXT / BLOCKED and more reasoning is required. Use luna only for explicitly low-risk documentation, ticket, formatting, or mechanical follow-up work. Do not escalate only because a ticket touches multiple files or ordinary integration code."
       REVIEWER_MODEL=anthropic-sonnet-5
-      REVIEWER_EFFORT=high
+      REVIEWER_EFFORT=medium
       REVIEWER_PROVIDER=anthropic
       REVIEWER_FALLBACK_MODEL=terra
       REVIEWER_FALLBACK_PROVIDER=codex
@@ -540,7 +540,7 @@ set_model_defaults() {
       EXECUTOR_FALLBACK_PROVIDER=$CROSS_PROVIDER
       EXECUTOR_ESCALATION="Escalate only when a listed trigger applies: the balanced coding model is unavailable or has exhausted its usage, the ticket crosses architecture boundaries, the work is high-risk data/security/concurrency/migration logic, debugging remains blocked after reproduction, or the default model reports NEEDS_CONTEXT / BLOCKED and more reasoning is required. Use the provider's most cost-efficient model only for explicitly low-risk documentation, ticket, formatting, or mechanical follow-up work. Do not escalate only because a ticket touches multiple files or ordinary integration code."
       REVIEWER_MODEL="${provider_lc}-balanced-reasoning"
-      REVIEWER_EFFORT=high
+      REVIEWER_EFFORT=medium
       REVIEWER_PROVIDER=$provider_lc
       REVIEWER_FALLBACK_MODEL="${provider_lc}-balanced-reasoning"
       REVIEWER_FALLBACK_PROVIDER=$provider_lc
@@ -700,7 +700,7 @@ For non-Codex providers, map roles by capability rather than by exact names:
 - Architect: balanced reasoning model with high effort by default; escalate to the best reasoning model only for an explicitly recorded difficult or multi-phase decision.
 - Designer: balanced design/reasoning model with high effort by default; escalate to the best reasoning model only for an explicitly recorded difficult or multi-phase product or UI decision.
 - Executor: balanced coding model by default; escalate to the best reasoning model as risk increases.
-- Reviewer: balanced review/reasoning model with high effort by default. Use the configured fallback only when required, and escalate to the best reasoning model only for an explicitly recorded difficult or high-risk review.
+- Reviewer: balanced review/reasoning model with medium effort by default. Use the configured fallback only when required, and escalate to the best reasoning model only for an explicitly recorded difficult or high-risk review.
 - Second Reviewer: an independent model used only for explicitly required adversarial review of the same commit.
 - Tester: balanced reasoning model with high effort by default. Use a cost-efficient model only for narrow, deterministic, low-context checks; escalate to the best reasoning model for flaky, async, UI, failure-triage, or large-context work.
 - Low-risk work: use the provider's most cost-efficient model only for explicitly low-risk documentation, ticket, formatting, or mechanical follow-up work.

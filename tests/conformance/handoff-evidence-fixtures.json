@@ -18,7 +18,7 @@
       "expected": "accept",
       "records": [
         {"run_id": "run-executor", "ticket_id": "APP-100", "role": "executor", "provider": "codex", "model": "terra", "effort": "high", "session_id": "session-executor", "commit_sha": "abc123", "outcome": "pass", "started_at": "2026-01-01T00:00:00Z", "completed_at": "2026-01-01T00:01:00Z"},
-        {"run_id": "run-reviewer", "ticket_id": "APP-100", "role": "reviewer", "provider": "anthropic", "model": "anthropic-sonnet-5", "effort": "high", "session_id": "session-reviewer", "commit_sha": "abc123", "outcome": "pass", "started_at": "2026-01-01T00:02:00Z", "completed_at": "2026-01-01T00:03:00Z"},
+        {"run_id": "run-reviewer", "ticket_id": "APP-100", "role": "reviewer", "provider": "anthropic", "model": "anthropic-sonnet-5", "effort": "medium", "session_id": "session-reviewer", "commit_sha": "abc123", "outcome": "pass", "started_at": "2026-01-01T00:02:00Z", "completed_at": "2026-01-01T00:03:00Z"},
         {"run_id": "run-tester", "ticket_id": "APP-100", "role": "tester", "provider": "codex", "model": "terra", "effort": "high", "session_id": "session-tester", "commit_sha": "abc123", "outcome": "pass", "started_at": "2026-01-01T00:04:00Z", "completed_at": "2026-01-01T00:05:00Z"}
       ]
     },

@@ -6,7 +6,7 @@ This file is project-local. Keep it aligned with the provider and model names av
 
 - Provider: `codex`
 - Profile: `gpt-5.6-terra-high-sonnet-review`
-- Notes: Terra with high effort is the normal default for architecture, design, implementation, and testing. Reviewer prefers Anthropic Sonnet 5 only when the active harness permits and exposes it, otherwise it uses Terra in Codex contexts. Sol is reserved for an explicitly recorded difficult or multi-phase escalation, never routine work or quota recovery. GPT-5.5 is an optional independent second review; Luna is reserved for narrow, deterministic, low-context verification.
+- Notes: Terra with high effort is the normal default for architecture, design, implementation, and testing. Reviewer uses medium effort and prefers Anthropic Sonnet 5 only when the active harness permits and exposes it, otherwise it uses Terra in Codex contexts. Sol is reserved for an explicitly recorded difficult or multi-phase escalation, never routine work or quota recovery. GPT-5.5 is an optional independent second review; Luna is reserved for narrow, deterministic, low-context verification.
 
 ## Runtime Provider Boundary
 
@@ -53,7 +53,7 @@ fallback assignment; prose in this file does not override its fields.
 | Architect | `terra` | `high` | `codex` | `anthropic` | `anthropic-sonnet-5` |
 | Designer | `terra` | `high` | `codex` | `anthropic` | `anthropic-sonnet-5` |
 | Executor | `terra` | `high` | `codex` | `anthropic` | `anthropic-sonnet-5` |
-| Reviewer | `anthropic-sonnet-5` | `high` | `anthropic` | `codex` | `terra` |
+| Reviewer | `anthropic-sonnet-5` | `medium` | `anthropic` | `codex` | `terra` |
 | Second Reviewer | `gpt-5.5` | `high` | `codex` | `anthropic` | `anthropic-opus-4-8` |
 | Tester | `terra` | `high` | `codex` | `anthropic` | `anthropic-sonnet-5` |
 
@@ -64,7 +64,7 @@ For non-Codex providers, map roles by capability rather than by exact names:
 - Architect: balanced reasoning model with high effort by default. Escalate to the best reasoning model only for an explicitly recorded difficult or multi-phase decision.
 - Designer: balanced design/reasoning model with high effort by default. Escalate to the best reasoning model only for an explicitly recorded difficult or multi-phase product or UI decision.
 - Executor: balanced coding model by default; escalate to the best reasoning model as risk increases.
-- Reviewer: use Anthropic Sonnet 5 with high effort only when the runner permits Anthropic and the model is exposed. Otherwise use the configured permitted fallback, which is Terra with high effort in a Codex harness. Escalate to the best reasoning model only for an explicitly recorded difficult or high-risk review.
+- Reviewer: use Anthropic Sonnet 5 with medium effort only when the runner permits Anthropic and the model is exposed. Otherwise use the configured permitted fallback, which is Terra with medium effort in a Codex harness. Escalate to the best reasoning model only for an explicitly recorded difficult or high-risk review.
 - Second Reviewer: an independent model used only for explicitly required adversarial review of the same commit.
 - Tester: balanced reasoning model with high effort by default. Use a cost-efficient model only for narrow, deterministic, low-context checks; escalate to the best reasoning model for flaky, async, UI, failure-triage, or large-context work.
 - Low-risk work: use the provider's most cost-efficient model only for explicitly low-risk documentation, ticket, formatting, or mechanical follow-up work.
