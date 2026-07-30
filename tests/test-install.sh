@@ -43,6 +43,10 @@ grep -Fq 'ownership-verified ticket artifact root' "$PROJECT/.agents/runbook.md"
 grep -Fq 'failed or blocked artifacts for diagnosis' "$PROJECT/.agents/tester.md"
 grep -Fq 'integration batch' "$PROJECT/.agents/runbook.md"
 grep -Fq 'one full integration matrix' "$PROJECT/.agents/runbook.md"
+grep -Fq 'Assign verification proportionally' "$PROJECT/.agents/runbook.md"
+grep -Fq 'evidence-only retry on an unchanged product tree' "$PROJECT/.agents/executor.md"
+grep -Fq 'Do not rebuild the' "$PROJECT/.agents/reviewer.md"
+grep -Fq 'smallest fresh risk-linked matrix' "$PROJECT/.agents/handoff.md"
 grep -Fq 'After acceptance and concise evidence capture' "$PROJECT/.agents/handoff.md"
 grep -Fq '## Workspace And Integration Contract' "$PROJECT/.tickets/template.md"
 grep -Fq 'Ticket commit:' "$PROJECT/.tickets/template.md"
@@ -90,6 +94,15 @@ if "$PROJECT/scripts/with-host-resource-lease.sh" --root "$LEASE_ROOT" --timeout
 fi
 [ -d "$LEASE_ROOT/stale.lease" ]
 rm -rf "$LEASE_ROOT/stale.lease"
+
+mkdir "$LEASE_ROOT/dead.lease"
+{
+  printf '%s\n' 'resource=dead'
+  printf '%s\n' 'pid=99999999'
+  printf '%s\n' 'command=stale-test'
+} > "$LEASE_ROOT/dead.lease/owner"
+"$PROJECT/scripts/with-host-resource-lease.sh" --root "$LEASE_ROOT" --timeout 0 dead -- sh -c ':'
+[ ! -e "$LEASE_ROOT/dead.lease" ]
 
 cat > "$PROJECT/.tickets/SAFE-900.md" <<'EOF'
 # SAFE-900

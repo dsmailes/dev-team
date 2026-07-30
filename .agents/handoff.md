@@ -81,6 +81,9 @@ Required before Reviewer starts:
 - Executor record provider, model, and effort match a preferred or fallback assignment in `.agents/models.md`.
 - Red/green evidence is recorded, or TDD waiver is referenced.
 - Commands run are recorded.
+- Executor verification is focused on the ticket change. Any full repository,
+  release, device, or application UI matrix is required only when this ticket
+  owns the recorded integration/release gate.
 - `git status --short --untracked-files=all` or equivalent artifact check is recorded when relevant.
 - Known gaps are recorded or explicitly marked `None`.
 - Scoped ticket commit and clean executor status are recorded.
@@ -99,12 +102,17 @@ Required before Tester starts:
 - Test scope is identified.
 - Missing context is resolved through supervisor contact, or reported as `NEEDS_CONTEXT` / `BLOCKED`.
 - Reviewer clean-worktree and commit-identity checks are recorded.
+- Reviewer inspected the exact diff and retained evidence; any repeated build or
+  test has a concrete finding or missing-evidence reason.
 
 ### Test -> Done
 
 Required before completion:
 
 - Fresh verification evidence is recorded.
+- Tester verification is the smallest fresh risk-linked matrix that covers the
+  change. A full matrix is linked once from the integration/release gate rather
+  than repeated by Executor, Reviewer, and Tester.
 - The runner completion operation has recorded one passing Tester evidence record that references the Executor commit and has a session ID independent of Executor and Reviewer.
 - Tester record provider, model, and effort match a preferred or fallback assignment in `.agents/models.md`.
 - Tester clean-worktree, commit-identity, and artifact-root checks are recorded.

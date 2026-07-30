@@ -94,11 +94,15 @@ Use the designer only when a ticket changes screens, flows, visual hierarchy, in
 6. Assign exactly one ticket unless the tickets share the same files and scope.
 7. Tell the executor which files or modules it owns.
 8. Provide exact context in the prompt: ticket text, relevant files, relevant memory entries, `Skill Context`, `Execution Model`, optional host-resource coordination required by selected platform skills, acceptance criteria, and expected verification.
-9. If the runtime supports fresh subagent context, use it. Do not rely on inherited conversation history.
-10. If the runtime supports live supervisor contact, allow Executor to ask the orchestrator blocking questions. Otherwise require `NEEDS_CONTEXT` or `BLOCKED` in the completion report.
-11. For behavior changes, require red/green TDD evidence unless TDD is explicitly waived in the ticket.
-12. Complete the `Ready -> In Progress` handoff gate before Executor starts.
-13. When implementation returns, inspect the changed files and complete `In Progress -> Review` before review.
+9. Assign verification proportionally: Executor proves the changed behavior with
+   focused checks. Reserve a full repository, device, release, or application UI
+   matrix for one recorded integration/release gate, and reuse immutable passing
+   evidence for an unchanged product tree.
+10. If the runtime supports fresh subagent context, use it. Do not rely on inherited conversation history.
+11. If the runtime supports live supervisor contact, allow Executor to ask the orchestrator blocking questions. Otherwise require `NEEDS_CONTEXT` or `BLOCKED` in the completion report.
+12. For behavior changes, require red/green TDD evidence unless TDD is explicitly waived in the ticket.
+13. Complete the `Ready -> In Progress` handoff gate before Executor starts.
+14. When implementation returns, inspect the changed files and complete `In Progress -> Review` before review.
 
 The Executor must create a scoped ticket commit and return a structured handoff request. The runner validates and records the Executor evidence before moving to `Review`; agent-authored ticket prose is not sufficient. Preserve the executor workspace until the integration outcome is captured.
 
@@ -106,13 +110,16 @@ The Executor must create a scoped ticket commit and return a structured handoff 
 
 1. Prefer Anthropic Sonnet 5 with medium effort for primary review only when the runner permits Anthropic and exposes it. Otherwise use the permitted Reviewer fallback from `.agents/models.md` (Terra with medium effort in a Codex harness) and record why. Do not attempt a model outside the active harness provider boundary. Escalate to Sol only for an explicitly recorded difficult or high-risk review.
 2. Give the reviewer the ticket path, recorded ticket commit, and a clean ticket verification worktree at that exact commit.
-3. If the runtime supports live supervisor contact, allow Reviewer to ask for missing ticket or diff context. Otherwise require `NEEDS_CONTEXT` or `BLOCKED`.
-4. Run spec compliance review first.
-5. Run code quality review only after spec compliance is satisfied.
-6. Require `Second Review` only for security, data-loss, concurrency, migration, public API risk, difficult regressions, unresolved review uncertainty, or an explicit user request. Record the decision in the ticket before testing.
-7. When required, spawn the Second Reviewer with `gpt-5.5` and `high` effort (or the configured equivalent). If it is unavailable or exhausted, use its fallback only when the runner's provider boundary permits it, and record why. Give it the same ticket commit SHA and clean verification worktree, and record its independent outcome. Do not substitute a review of a newer or different commit.
-8. If either reviewer recommends `Needs Changes`, create a fix ticket or return the same ticket to the executor.
-9. If review is ready for testing and any required second review is complete, submit a structured handoff request. The runner requires a passing Reviewer record for the Executor commit and an independent session before moving the ticket to `Test`.
+3. Inspect the exact diff and focused evidence without rebuilding or repeating
+   passing Executor tests by default. Run only a narrow reproduction needed for
+   a concrete finding.
+4. If the runtime supports live supervisor contact, allow Reviewer to ask for missing ticket or diff context. Otherwise require `NEEDS_CONTEXT` or `BLOCKED`.
+5. Run spec compliance review first.
+6. Run code quality review only after spec compliance is satisfied.
+7. Require `Second Review` only for security, data-loss, concurrency, migration, public API risk, difficult regressions, unresolved review uncertainty, or an explicit user request. Record the decision in the ticket before testing.
+8. When required, spawn the Second Reviewer with `gpt-5.5` and `high` effort (or the configured equivalent). If it is unavailable or exhausted, use its fallback only when the runner's provider boundary permits it, and record why. Give it the same ticket commit SHA and clean verification worktree, and record its independent outcome. Do not substitute a review of a newer or different commit.
+9. If either reviewer recommends `Needs Changes`, create a fix ticket or return the same ticket to the executor.
+10. If review is ready for testing and any required second review is complete, submit a structured handoff request. The runner requires a passing Reviewer record for the Executor commit and an independent session before moving the ticket to `Test`.
 
 Reviewer must reject a commit mismatch, dirty verification worktree, or moving shared tree as `BLOCKED`.
 
@@ -120,12 +127,15 @@ Reviewer must reject a commit mismatch, dirty verification worktree, or moving s
 
 1. Spawn or assign the tester with the Tester model and effort from `.agents/models.md` after review. Terra with high effort is the primary default; if it is unavailable or has exhausted its usage, use the Tester fallback from `.agents/models.md` and record why. Use Luna only for narrow, deterministic, low-context checks, and escalate to Sol only for a difficult test problem unresolved after Terra and its fallback or a genuinely multi-phase/parallel effort.
 2. Give the tester the ticket path, recorded ticket commit, clean ticket verification worktree, ticket-scoped artifact root, and expected focused verification scope.
-3. If the runtime supports live supervisor contact, allow Tester to ask for missing environment, command, or verification scope decisions. Otherwise require `NEEDS_CONTEXT` or `BLOCKED`.
-4. Require fresh command output or documented manual-check evidence before accepting a pass.
-5. Run work that does not need a shared host resource without a lease where possible. When a selected platform skill requires one, acquire the named lease only around that command; report a timed-out lease with its owner record as `BLOCKED`.
-6. Record every role that ran in the ticket's `Agent Run Summary`, with the actual model, effort, and token usage when available. Use `Unavailable` rather than estimating telemetry the runtime does not expose.
-7. If verification passes, submit the runner completion operation. It requires a passing Tester record for the Executor commit and a session independent of Executor and Reviewer before marking the ticket `Done`, then announces the completed `Agent Run Summary` to the user. Do not use generic ticket-state editing for `Done`.
-8. If verification fails, move it back to `In Progress` or create a follow-up ticket.
+3. Run the smallest fresh risk-linked matrix that covers the changed behavior.
+   Do not expand to the full repository or application UI inventory unless this
+   is the recorded integration/release gate or a focused result requires it.
+4. If the runtime supports live supervisor contact, allow Tester to ask for missing environment, command, or verification scope decisions. Otherwise require `NEEDS_CONTEXT` or `BLOCKED`.
+5. Require fresh command output or documented manual-check evidence before accepting a pass.
+6. Run work that does not need a shared host resource without a lease where possible. When a selected platform skill requires one, acquire the named lease only around that command; report a timed-out lease with its owner record as `BLOCKED`.
+7. Record every role that ran in the ticket's `Agent Run Summary`, with the actual model, effort, and token usage when available. Use `Unavailable` rather than estimating telemetry the runtime does not expose.
+8. If verification passes, submit the runner completion operation. It requires a passing Tester record for the Executor commit and a session independent of Executor and Reviewer before marking the ticket `Done`, then announces the completed `Agent Run Summary` to the user. Do not use generic ticket-state editing for `Done`.
+9. If verification fails, move it back to `In Progress` or create a follow-up ticket.
 
 After focused review and testing, the orchestrator combines reviewed ticket commits into an integration batch and records the resulting integration commit. Resolve conflicts in a new integration commit and rerun focused checks for affected tickets. Run one full integration matrix against that integration commit and link its result to every included ticket. After acceptance and concise evidence capture, the orchestrator removes disposable contents from only the named ownership-verified ticket artifact root, then cleans named clean ticket worktrees and branches. Preserve blocked or failed workspaces and artifacts for diagnosis; remove an unmerged workspace only when intentionally abandoned, and revert integrated work with a scoped revert commit rather than resetting shared history.
 

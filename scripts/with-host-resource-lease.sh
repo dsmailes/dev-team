@@ -8,8 +8,9 @@ Usage: with-host-resource-lease.sh [--root PATH] [--timeout SECONDS] RESOURCE --
 
 Acquire a host-wide lease using an atomic directory, run COMMAND, then release it.
 The default root is ${DEV_TEAM_HOST_RESOURCE_ROOT:-${TMPDIR:-/tmp}/dev-team-host-resources}.
-Use a local path shared by the apps that need to coordinate. The script never
-removes an existing lease automatically; inspect its owner file before cleanup.
+Use a local path shared by the apps that need to coordinate. A lease with a
+numeric owner PID that is no longer alive is reclaimed automatically. Malformed
+or unverifiable owner records remain unavailable for manual inspection.
 EOF
 }
 
@@ -71,7 +72,27 @@ describe_owner() {
   fi
 }
 
+reclaim_dead_owner() {
+  [ -f "$owner_file" ] || return 1
+  recorded_pid=$(sed -n 's/^pid=//p' "$owner_file" | sed -n '1p')
+  case "$recorded_pid" in
+    *[!0-9]*|'') return 1 ;;
+  esac
+  kill -0 "$recorded_pid" 2>/dev/null && return 1
+
+  stale_dir=$lease_dir.stale.$$
+  if mv "$lease_dir" "$stale_dir" 2>/dev/null; then
+    echo "warning: reclaimed stale host resource '$resource' from dead pid $recorded_pid" >&2
+    rm -rf "$stale_dir"
+    return 0
+  fi
+  return 1
+}
+
 while ! mkdir "$lease_dir" 2>/dev/null; do
+  if reclaim_dead_owner; then
+    continue
+  fi
   now=$(date +%s)
   elapsed=$((now - started_at))
   if [ "$elapsed" -ge "$timeout" ]; then

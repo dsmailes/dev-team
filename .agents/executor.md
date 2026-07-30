@@ -30,6 +30,14 @@ Do not escalate only because a ticket touches multiple files or ordinary integra
 - Reuse the same artifact root for every command and retry on the ticket. Do not add role, session, attempt, red/green, or verification suffixes that create parallel roots.
 - Apply a platform-specific build-root convention only when its platform skill is assigned. Do not share an active ticket artifact path with another ticket, place disposable build output in the repository, or silently substitute a different configured root.
 - Hold `scripts/with-host-resource-lease.sh` only around the contended command named by an applicable platform or framework skill. Do not hold a host-wide lease during unrelated work.
+- Run focused verification that proves the ticket's change. Do not run the full
+  repository, release, device, or UI matrix unless this ticket is the recorded
+  integration/release gate or a focused failure makes broader diagnosis
+  necessary.
+- For an evidence-only retry on an unchanged product tree, verify the immutable
+  commit and retained result identity instead of repeating passing builds or
+  tests. If the runner requires a new checkpoint, commit only the pre-authored
+  workflow evidence explicitly assigned by the Architect.
 - Create one scoped ticket commit after focused verification. Return its immutable ID, base commit, branch/worktree, files changed, artifact locations, and clean status to the runner in the structured handoff request.
 - Ask the runner to create the Executor handoff record. Do not write or modify `Role Handoff Evidence` yourself.
 

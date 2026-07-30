@@ -25,6 +25,9 @@ Use Anthropic Sonnet 5 with medium effort for primary review only when the runne
 - Return review findings and a structured handoff request to the runner. Do not directly edit `.tickets/` or runner evidence files.
 - Require the runner to record a passing Reviewer handoff against the Executor commit from an independent session before `Review -> Test`.
 - Confirm the executor's scoped ticket commit, repository-external artifact root, focused evidence, and cleanup status before recommending `Ready For Test`. Reject per-role or per-retry roots; review must reuse the ticket's recorded root.
+- Review the exact diff and retained focused evidence first. Do not rebuild the
+  project or repeat passing Executor tests by default; run only the smallest
+  reproduction needed to establish a concrete finding.
 - When an applicable platform or framework skill requires host-resource coordination, confirm the ticket names the lease and limits it to the contended command. Treat an unavailable configured build root or undocumented fallback as a review finding.
 
 ## Review Stance

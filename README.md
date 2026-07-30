@@ -52,7 +52,10 @@ Worktrees isolate source and per-ticket artifact roots isolate build outputs, bu
 scripts/with-host-resource-lease.sh --timeout 600 resource-name -- command [arguments]
 ```
 
-The helper uses a host-wide local lease root and records the holder in an `owner` file. It releases only its own lease and never auto-deletes an existing one; inspect the owner record before removing a confirmed inactive lease.
+The helper uses a host-wide local lease root and records the holder in an
+`owner` file. It releases its own lease and safely reclaims a lease whose
+numeric owner PID is no longer alive. Malformed or unverifiable owner records
+remain unavailable for manual inspection.
 
 ### Apple Platform
 
