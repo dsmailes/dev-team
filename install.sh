@@ -476,7 +476,7 @@ set_model_defaults() {
   case "$provider_lc" in
     ""|codex|openai)
       MODELS_PROVIDER=codex
-      MODEL_PROFILE=gpt-5.6-terra-medium-sonnet-review
+      MODEL_PROFILE=gpt-5.6-terra-medium-sonnet-4-6-review
       ARCHITECT_MODEL=terra
       ARCHITECT_EFFORT=medium
       ARCHITECT_PROVIDER=codex
@@ -494,7 +494,7 @@ set_model_defaults() {
       EXECUTOR_FALLBACK_MODEL=anthropic-sonnet-5
       EXECUTOR_FALLBACK_PROVIDER=anthropic
       EXECUTOR_ESCALATION="Escalate to sol only when a listed trigger applies: Terra is unavailable or has exhausted its usage, the ticket crosses architecture boundaries, the work is high-risk data/security/concurrency/migration logic, debugging remains blocked after reproduction, or Terra reports NEEDS_CONTEXT / BLOCKED and more reasoning is required. Use luna only for explicitly low-risk documentation, ticket, formatting, or mechanical follow-up work. Do not escalate only because a ticket touches multiple files or ordinary integration code."
-      REVIEWER_MODEL=anthropic-sonnet-5
+      REVIEWER_MODEL=anthropic-sonnet-4-6
       REVIEWER_EFFORT=medium
       REVIEWER_PROVIDER=anthropic
       REVIEWER_FALLBACK_MODEL=terra

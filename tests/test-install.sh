@@ -15,7 +15,7 @@ hash_file() {
 GENERATED=$TMPDIR/generated-models
 "$ROOT/install.sh" --project "$GENERATED" --models-provider codex --no-import-skills --no-model-prompt
 grep -Fq '## Runtime Provider Boundary' "$GENERATED/.agents/models.md"
-grep -Fq '| Reviewer | `anthropic-sonnet-5` | `medium` | `anthropic` | `codex` | `terra` |' "$GENERATED/.agents/models.md"
+grep -Fq '| Reviewer | `anthropic-sonnet-4-6` | `medium` | `anthropic` | `codex` | `terra` |' "$GENERATED/.agents/models.md"
 
 grep -Fq '## Agent Run Summary' "$PROJECT/.tickets/template.md"
 grep -Fq '## Role Handoff Evidence' "$PROJECT/.tickets/template.md"
@@ -66,7 +66,7 @@ grep -Fq 'usage-exhausted' "$PROJECT/.agents/models.md"
 grep -Fq '| Architect | `terra` | `medium` | `codex` | `anthropic` | `anthropic-sonnet-5` |' "$PROJECT/.agents/models.md"
 grep -Fq '| Designer | `terra` | `medium` | `codex` | `anthropic` | `anthropic-sonnet-5` |' "$PROJECT/.agents/models.md"
 grep -Fq '| Executor | `terra` | `medium` | `codex` | `anthropic` | `anthropic-sonnet-5` |' "$PROJECT/.agents/models.md"
-grep -Fq '| Reviewer | `anthropic-sonnet-5` | `medium` | `anthropic` | `codex` | `terra` |' "$PROJECT/.agents/models.md"
+grep -Fq '| Reviewer | `anthropic-sonnet-4-6` | `medium` | `anthropic` | `codex` | `terra` |' "$PROJECT/.agents/models.md"
 grep -Fq '| Second Reviewer | `gpt-5.5` | `high` | `codex` | `anthropic` | `anthropic-opus-4-8` |' "$PROJECT/.agents/models.md"
 grep -Fq '| Tester | `terra` | `medium` | `codex` | `anthropic` | `anthropic-sonnet-5` |' "$PROJECT/.agents/models.md"
 grep -Fq '## Second Review' "$PROJECT/.tickets/template.md"
