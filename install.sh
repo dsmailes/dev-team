@@ -476,20 +476,20 @@ set_model_defaults() {
   case "$provider_lc" in
     ""|codex|openai)
       MODELS_PROVIDER=codex
-      MODEL_PROFILE=gpt-5.6-terra-high-sonnet-review
+      MODEL_PROFILE=gpt-5.6-terra-medium-sonnet-review
       ARCHITECT_MODEL=terra
-      ARCHITECT_EFFORT=high
+      ARCHITECT_EFFORT=medium
       ARCHITECT_PROVIDER=codex
       ARCHITECT_FALLBACK_MODEL=anthropic-sonnet-5
       ARCHITECT_FALLBACK_PROVIDER=anthropic
       DESIGNER_MODEL=terra
-      DESIGNER_EFFORT=high
+      DESIGNER_EFFORT=medium
       DESIGNER_PROVIDER=codex
       DESIGNER_FALLBACK_MODEL=anthropic-sonnet-5
       DESIGNER_FALLBACK_PROVIDER=anthropic
       DESIGNER_ESCALATION="Escalate to sol only for an explicitly recorded difficult or multi-phase product/design decision. Do not escalate for ordinary UI work, routine polish, or quota recovery."
       EXECUTOR_MODEL=terra
-      EXECUTOR_EFFORT=high
+      EXECUTOR_EFFORT=medium
       EXECUTOR_PROVIDER=codex
       EXECUTOR_FALLBACK_MODEL=anthropic-sonnet-5
       EXECUTOR_FALLBACK_PROVIDER=anthropic
@@ -505,7 +505,7 @@ set_model_defaults() {
       SECOND_REVIEWER_FALLBACK_MODEL=anthropic-opus-4-8
       SECOND_REVIEWER_FALLBACK_PROVIDER=anthropic
       TESTER_MODEL=terra
-      TESTER_EFFORT=high
+      TESTER_EFFORT=medium
       TESTER_PROVIDER=codex
       TESTER_FALLBACK_MODEL=anthropic-sonnet-5
       TESTER_FALLBACK_PROVIDER=anthropic
@@ -523,18 +523,18 @@ set_model_defaults() {
         CROSS_CODING=anthropic-sonnet-5
       fi
       ARCHITECT_MODEL="${provider_lc}-balanced-reasoning"
-      ARCHITECT_EFFORT=high
+      ARCHITECT_EFFORT=medium
       ARCHITECT_PROVIDER=$provider_lc
       ARCHITECT_FALLBACK_MODEL=$CROSS_REASONING
       ARCHITECT_FALLBACK_PROVIDER=$CROSS_PROVIDER
       DESIGNER_MODEL="${provider_lc}-balanced-design-reasoning"
-      DESIGNER_EFFORT=high
+      DESIGNER_EFFORT=medium
       DESIGNER_PROVIDER=$provider_lc
       DESIGNER_FALLBACK_MODEL=$CROSS_REASONING
       DESIGNER_FALLBACK_PROVIDER=$CROSS_PROVIDER
       DESIGNER_ESCALATION="Escalate to ${provider_lc}-best-reasoning only for an explicitly recorded difficult or multi-phase product/design decision."
       EXECUTOR_MODEL="${provider_lc}-balanced-coding"
-      EXECUTOR_EFFORT=high
+      EXECUTOR_EFFORT=medium
       EXECUTOR_PROVIDER=$provider_lc
       EXECUTOR_FALLBACK_MODEL=$CROSS_CODING
       EXECUTOR_FALLBACK_PROVIDER=$CROSS_PROVIDER
@@ -550,7 +550,7 @@ set_model_defaults() {
       SECOND_REVIEWER_FALLBACK_MODEL=$CROSS_REASONING
       SECOND_REVIEWER_FALLBACK_PROVIDER=$CROSS_PROVIDER
       TESTER_MODEL="${provider_lc}-balanced-reasoning"
-      TESTER_EFFORT=high
+      TESTER_EFFORT=medium
       TESTER_PROVIDER=$provider_lc
       TESTER_FALLBACK_MODEL=$CROSS_CODING
       TESTER_FALLBACK_PROVIDER=$CROSS_PROVIDER
@@ -697,12 +697,12 @@ The table below is machine-readable. Runners select exactly one preferred or fal
 
 For non-Codex providers, map roles by capability rather than by exact names:
 
-- Architect: balanced reasoning model with high effort by default; escalate to the best reasoning model only for an explicitly recorded difficult or multi-phase decision.
-- Designer: balanced design/reasoning model with high effort by default; escalate to the best reasoning model only for an explicitly recorded difficult or multi-phase product or UI decision.
+- Architect: balanced reasoning model with medium effort by default; escalate to the best reasoning model only for an explicitly recorded difficult or multi-phase decision.
+- Designer: balanced design/reasoning model with medium effort by default; escalate to the best reasoning model only for an explicitly recorded difficult or multi-phase product or UI decision.
 - Executor: balanced coding model by default; escalate to the best reasoning model as risk increases.
 - Reviewer: balanced review/reasoning model with medium effort by default. Use the configured fallback only when required, and escalate to the best reasoning model only for an explicitly recorded difficult or high-risk review.
 - Second Reviewer: an independent model used only for explicitly required adversarial review of the same commit.
-- Tester: balanced reasoning model with high effort by default. Use a cost-efficient model only for narrow, deterministic, low-context checks; escalate to the best reasoning model for flaky, async, UI, failure-triage, or large-context work.
+- Tester: balanced reasoning model with medium effort by default. Use a cost-efficient model only for narrow, deterministic, low-context checks; escalate to the best reasoning model for flaky, async, UI, failure-triage, or large-context work.
 - Low-risk work: use the provider's most cost-efficient model only for explicitly low-risk documentation, ticket, formatting, or mechanical follow-up work.
 
 Use a cross-provider fallback only when the runner explicitly permits both

@@ -27,18 +27,18 @@ Model choices live in `.agents/models.md`.
 
 The default profile is Codex GPT-5.6:
 
-- Architect: Terra with high effort by default; falls back to Anthropic Sonnet 5 if Terra is unavailable or has exhausted its usage.
-- Designer: Terra with high effort by default; falls back to Anthropic Sonnet 5 if Terra is unavailable or has exhausted its usage.
-- Executor: Terra with high effort by default; falls back to Anthropic Sonnet 5 if Terra is unavailable or has exhausted its usage.
+- Architect: Terra with medium effort by default; falls back to Anthropic Sonnet 5 if Terra is unavailable or has exhausted its usage.
+- Designer: Terra with medium effort by default; falls back to Anthropic Sonnet 5 if Terra is unavailable or has exhausted its usage.
+- Executor: Terra with medium effort by default; falls back to Anthropic Sonnet 5 if Terra is unavailable or has exhausted its usage.
 - Reviewer: Anthropic Sonnet 5 with medium effort when the runner permits Anthropic and exposes it; otherwise Terra with medium effort in a Codex harness.
 - Second Reviewer: GPT-5.5 with high effort only when an independent adversarial review is required; falls back to Anthropic Opus 4.8 if GPT-5.5 is unavailable or has exhausted its usage.
-- Tester: Terra with high effort by default; falls back to Anthropic Sonnet 5 if Terra is unavailable or has exhausted its usage. Luna is reserved for narrow, deterministic, low-context checks.
+- Tester: Terra with medium effort by default; falls back to Anthropic Sonnet 5 if Terra is unavailable or has exhausted its usage. Luna is reserved for narrow, deterministic, low-context checks.
 
 Before spawning a role, the runner declares a provider boundary. Official ChatGPT/Codex harnesses permit only Codex models; official Claude harnesses permit only Anthropic models. Custom runners may declare multiple allowed providers and then use cross-provider fallbacks. Agents never infer that boundary from model names, tools, paths, or conversation content. Within the permitted set, the runner checks both model availability and remaining usage/quota, recording why it used a fallback.
 
 For other providers, the installer can infer provider-class placeholders such as `anthropic-balanced-coding` or `google-best-reasoning`. Replace those with exact model IDs supported by your local runner.
 
-Tickets include an `Execution Model` section. Codex installs Architect, Designer, Executor, and Tester with `terra` at `high` effort. Reviewer prefers Sonnet 5 only when the runner permits Anthropic and exposes it, otherwise it uses `terra` in a Codex harness. Escalation to `sol` must be recorded; use it for a focused difficult problem that remains blocked after the permitted default and fallback, and reserve ultra tiers for genuinely multi-phase or parallel work. Ordinary multi-file or integration work is not enough by itself.
+Tickets include an `Execution Model` section. Codex installs Architect, Designer, Executor, Reviewer, and Tester at `medium` effort. Reviewer prefers Sonnet 5 only when the runner permits Anthropic and exposes it, otherwise it uses `terra` in a Codex harness. Escalation to `high` effort or `sol` must be recorded; use it for a focused difficult problem that remains blocked after the permitted default and fallback, and reserve ultra tiers for genuinely multi-phase or parallel work. Ordinary multi-file or integration work is not enough by itself.
 
 Tickets also include a `Second Review` decision. Require it for high-risk changes, unresolved review uncertainty, or when the user asks for an independent pass; GPT-5.5 then reviews the exact same ticket commit after the primary Terra review. Use Sol only when the recorded review or test problem remains difficult after Terra and its fallback.
 
@@ -334,9 +334,9 @@ A completed ticket's handoff also announces a compact run summary, for example:
 
 ```text
 Agent Run Summary
-- Executor: task `executor-01`; model `terra`; effort `high`; tokens `Unavailable`.
-- Reviewer: task `reviewer-01`; model `terra`; effort `high`; tokens `12,450`.
-- Tester: task `tester-01`; model `terra`; effort `high`; tokens `Unavailable`.
+- Executor: task `executor-01`; model `terra`; effort `medium`; tokens `Unavailable`.
+- Reviewer: task `reviewer-01`; model `terra`; effort `medium`; tokens `12,450`.
+- Tester: task `tester-01`; model `terra`; effort `medium`; tokens `Unavailable`.
 ```
 
 ## License
