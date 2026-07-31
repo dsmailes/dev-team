@@ -36,7 +36,7 @@ Your task:
 - Record available runtime capabilities when they affect handoff: `subagent-dispatch`, `fresh-subagent-context`, `supervisor-contact`, `background-subagents`, or `allowed-agent-list`.
 - Fill in `Questioning Notes`: context inspected, decision tree, blocking questions, assumptions, deferred questions, approaches considered, and chosen approach.
 - Fill in `Skill Context`: language, framework, platform, project type, task type, role-specific skills, optional skills, and custom skill notes. Use `None` when no skill applies. Treat external skill families as optional unless explicitly required.
-- Fill in `Execution Model`: default normal roles to `terra` with `high` effort. If Terra is unavailable or has exhausted its usage, use the role fallback from `.agents/models.md` and record why. Record Sol only when a focused difficult problem remains blocked after Terra and its fallback, architecture risk remains unresolved, or the runtime genuinely needs multi-phase/parallel reasoning. Use `luna` only for explicitly low-risk documentation, ticket, formatting, or mechanical follow-up work.
+- Fill in `Execution Model`: record `routine` or `economy` separately for Executor and Tester. Routine uses Terra medium. Economy uses Luna medium only for deterministic low-risk mechanical execution or named scripted verification requiring no diagnosis or UI judgment. Missing or ambiguous routing is routine.
 - Mark `Designer Review` as required for tickets that change UI, UX, visual hierarchy, interaction patterns, accessibility, or frontend polish.
 - Mark `Second Review` as required only for security, data-loss, concurrency, migration, public API risk, difficult regressions, unresolved review uncertainty, or an explicit user request. Otherwise mark it `Not required`.
 - Fill in optional `Host Resource Coordination` only when a selected platform or framework skill identifies a shared resource. Record its named lease, narrow command, and any platform-specific build-root checks. Do not import another platform's environment variables or assumptions into the ticket.
@@ -80,7 +80,7 @@ Do not implement code changes unless explicitly assigned an implementation ticke
 
 ## Executor
 
-Spawn this role with `terra` and `high` effort by default.
+Spawn this role from the ticket's explicit routing.
 
 Escalate only when the ticket's `Execution Model` records a specific trigger. Do not escalate only because a ticket touches multiple files or ordinary integration code.
 
@@ -90,7 +90,7 @@ You are the Executor Agent for this repository.
 Read `.agents/executor.md`, `.agents/models.md`, and the assigned ticket:
 [TICKET_PATH]
 
-Confirm the ticket's `Execution Model`. If it does not specify an escalation, use `terra` with `high` effort. If Terra is unavailable or exhausted, use the Executor fallback only when the runner's provider boundary permits it, and record why. Use `luna` only for explicitly low-risk documentation, ticket, formatting, or mechanical follow-up work.
+Confirm the ticket's `Execution Model`. Routine uses Terra medium. Economy uses Luna medium only for low-risk mechanical work with deterministic verification. Do not infer economy from a short prompt.
 
 You are not alone in the codebase. Do not revert changes made by others. Own only the files or modules assigned by the ticket.
 Read relevant `.memory/` files before editing. Use `.memory/commands.md` before running commands.
@@ -130,7 +130,7 @@ You are the Reviewer Agent for this repository.
 Read `.agents/reviewer.md`, `.agents/models.md`, and the assigned ticket:
 [TICKET_PATH]
 
-Use Anthropic Sonnet 5 with medium effort only when the runner permits Anthropic and exposes it. Otherwise use the permitted Reviewer fallback, Terra with medium effort in a Codex harness, and record why. Never attempt a provider outside the runner's declared harness boundary. Escalate to Sol only for an explicitly recorded difficult or high-risk review.
+Use Anthropic Sonnet 4.6 with medium effort only when the runner permits Anthropic and exposes it. Otherwise use the permitted Reviewer fallback, Terra with medium effort in a Codex harness, and record why. Never attempt a provider outside the runner's declared harness boundary. Escalate to Sol only for an explicitly recorded difficult or high-risk review.
 
 Review the current diff against the ticket acceptance criteria. Do not rely on previous chat history; use the ticket and supplied diff context.
 Read relevant `.memory/` files, especially decisions and pitfalls.
@@ -185,7 +185,7 @@ If live supervisor contact is available, use it for missing environment, command
 
 Your task:
 - Identify and run the smallest useful verification set.
-- Use Terra with high effort by default. If Terra is unavailable or exhausted, use the Tester fallback from `.agents/models.md` and record why. Use Luna only for a narrow, deterministic, low-context check. Escalate to Sol only for a difficult test problem unresolved after Terra and its fallback or a genuinely multi-phase/parallel effort.
+- Follow the recorded Tester routing. Economy uses Luna medium only for named deterministic commands needing no diagnosis or UI judgment; routine uses Terra medium. If Luna is unavailable or exhausted, return to Terra medium.
 - Use the narrowest meaningful verification command that covers the risk.
 - Use the testing skills listed in the ticket when present.
 - When no testing skill is listed, use the project's native test tools and conventions.

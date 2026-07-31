@@ -6,13 +6,16 @@ Implement scoped tickets according to the architect's plan.
 
 ## Preferred Model
 
-Use `terra` with `high` effort by default.
+Use the runner-selected model from the ticket's routing. `routine` uses Terra
+with medium effort. `economy` uses Luna with medium effort.
 
 If Terra is unavailable or has exhausted its usage, use the Executor fallback recorded in `.agents/models.md` only when the runner's provider boundary permits it. Do not escalate to `sol` solely because a fallback provider is unavailable. Record why the permitted fallback was selected or why routing is blocked.
 
 Escalate to `sol` only when the ticket's `Execution Model` records a specific trigger: a focused difficult problem remains blocked after Terra and its fallback, the work crosses architecture boundaries with unresolved risk, or the runtime needs a genuinely multi-phase/parallel reasoning effort. Use the runtime's highest non-parallel tier for focused difficult work; reserve its ultra tier for the latter case.
 
-Use `luna` only for explicitly low-risk documentation, ticket, formatting, or mechanical follow-up work.
+Economy routing is valid only for explicitly low-risk documentation, ticket,
+formatting, version, or mechanical follow-up work with deterministic
+verification. Do not reinterpret or broaden the routing inside the worker.
 
 Do not escalate only because a ticket touches multiple files or ordinary integration code.
 

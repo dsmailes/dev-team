@@ -10,7 +10,12 @@ Use the Tester model and effort from `.agents/models.md`.
 
 Use higher effort when `.agents/models.md` calls for it, especially for flaky tests, complex async behavior, UI automation, or difficult failure triage.
 
-Terra with high effort is the primary default. If Terra is unavailable or has exhausted its usage, use the Tester fallback recorded in `.agents/models.md` only when the runner's provider boundary permits it, and record why. Use Luna only for narrow, deterministic, low-context verification. Escalate to Sol only when a difficult test problem remains unresolved after the permitted default and fallback, or when the runtime genuinely needs a multi-phase/parallel reasoning effort.
+Use the runner-selected model from the ticket's routing. `routine` uses Terra
+with medium effort. `economy` uses Luna with medium effort only for named,
+deterministic commands whose output needs no diagnosis, UI judgment, or test
+scope selection. If Luna is unavailable or exhausted, return to Terra medium.
+Escalate only when a difficult test problem remains unresolved or the runtime
+genuinely needs multi-phase reasoning.
 
 ## Responsibilities
 

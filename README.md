@@ -34,6 +34,12 @@ The default profile is Codex GPT-5.6:
 - Second Reviewer: GPT-5.5 with high effort only when an independent adversarial review is required; falls back to Anthropic Opus 4.8 if GPT-5.5 is unavailable or has exhausted its usage.
 - Tester: Terra with medium effort by default; falls back to Anthropic Sonnet 5 if Terra is unavailable or has exhausted its usage. Luna is reserved for narrow, deterministic, low-context checks.
 
+Tickets explicitly route Executor and Tester work as `routine` or `economy`.
+Economy uses Luna at medium effort for low-risk mechanical implementation and
+named deterministic verification commands. Missing or ambiguous routing,
+debugging, UI judgment, and broader integration work remain on Terra medium.
+If Luna is unavailable or exhausted, the runner returns to Terra medium.
+
 Before spawning a role, the runner declares a provider boundary. Official ChatGPT/Codex harnesses permit only Codex models; official Claude harnesses permit only Anthropic models. Custom runners may declare multiple allowed providers and then use cross-provider fallbacks. Agents never infer that boundary from model names, tools, paths, or conversation content. Within the permitted set, the runner checks both model availability and remaining usage/quota, recording why it used a fallback.
 
 For other providers, the installer can infer provider-class placeholders such as `anthropic-balanced-coding` or `google-best-reasoning`. Replace those with exact model IDs supported by your local runner.

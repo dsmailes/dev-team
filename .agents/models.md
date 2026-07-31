@@ -48,14 +48,14 @@ fallback in the table below.
 The table below is machine-readable. Runners select exactly one preferred or
 fallback assignment; prose in this file does not override its fields.
 
-| Role | Model | Effort | Provider | Fallback Provider | Fallback Model |
-| --- | --- | --- | --- | --- | --- |
-| Architect | `terra` | `medium` | `codex` | `anthropic` | `anthropic-sonnet-5` |
-| Designer | `terra` | `medium` | `codex` | `anthropic` | `anthropic-sonnet-5` |
-| Executor | `terra` | `medium` | `codex` | `anthropic` | `anthropic-sonnet-5` |
-| Reviewer | `anthropic-sonnet-4-6` | `medium` | `anthropic` | `codex` | `terra` |
-| Second Reviewer | `gpt-5.5` | `high` | `codex` | `anthropic` | `anthropic-opus-4-8` |
-| Tester | `terra` | `medium` | `codex` | `anthropic` | `anthropic-sonnet-5` |
+| Role | Model | Effort | Provider | Fallback Provider | Fallback Model | Economy Provider | Economy Model | Economy Effort |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Architect | `terra` | `medium` | `codex` | `anthropic` | `anthropic-sonnet-5` | - | - | - |
+| Designer | `terra` | `medium` | `codex` | `anthropic` | `anthropic-sonnet-5` | - | - | - |
+| Executor | `terra` | `medium` | `codex` | `anthropic` | `anthropic-sonnet-5` | `codex` | `luna` | `medium` |
+| Reviewer | `anthropic-sonnet-4-6` | `medium` | `anthropic` | `codex` | `terra` | - | - | - |
+| Second Reviewer | `gpt-5.5` | `high` | `codex` | `anthropic` | `anthropic-opus-4-8` | - | - | - |
+| Tester | `terra` | `medium` | `codex` | `anthropic` | `anthropic-sonnet-5` | `codex` | `luna` | `medium` |
 
 ## Provider Mapping Guidance
 
@@ -68,6 +68,14 @@ For non-Codex providers, map roles by capability rather than by exact names:
 - Second Reviewer: an independent model used only for explicitly required adversarial review of the same commit.
 - Tester: balanced reasoning model with medium effort by default. Use a cost-efficient model only for narrow, deterministic, low-context checks; escalate to the best reasoning model for flaky, async, UI, failure-triage, or large-context work.
 - Low-risk work: use the provider's most cost-efficient model only for explicitly low-risk documentation, ticket, formatting, or mechanical follow-up work.
+
+Economy routing is explicit ticket metadata, never a guess. `Executor routing:
+economy` is valid only for low-risk documentation, ticket, formatting, version,
+or mechanical edits with deterministic verification. `Tester routing: economy`
+is valid only for one or more named, deterministic commands whose result needs
+no diagnosis or UI judgment. Missing or ambiguous routing remains `routine`.
+When Luna is unavailable or exhausted, the runner returns to the role's routine
+Terra assignment before considering its provider fallback.
 
 ## Escalation Economy
 

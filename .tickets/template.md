@@ -116,8 +116,11 @@ Add this section only when a selected platform or framework skill identifies a h
 
 ## Execution Model
 
+- Executor routing: `routine`
 - Executor model: `terra`
-- Executor effort: `high`
+- Executor effort: `medium`
+- Tester routing: `routine`
+- Economy routing reason:
 - Escalation needed: `No`
 - Escalation model:
 - Escalation reason:
@@ -209,7 +212,8 @@ Record every role that actually ran for this ticket. Do not estimate token usage
 - [ ] Risks are listed.
 - [ ] Rollback and persistence impact is documented, or explicitly marked `None`.
 - [ ] `Skill Context` is filled, including role-specific skills or `None`.
-- [ ] `Execution Model` is filled, defaulting Executor to `terra` unless escalation is justified.
+- [ ] `Execution Model` is filled with explicit Executor and Tester routing.
+- [ ] Economy routing is used only for deterministic, low-risk work and records a reason.
 - [ ] Verification plan exists.
 - [ ] `Designer Review` is marked `Yes` or `No`.
 - [ ] `Second Review` is marked `Required` or `Not required`.

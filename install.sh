@@ -493,6 +493,9 @@ set_model_defaults() {
       EXECUTOR_PROVIDER=codex
       EXECUTOR_FALLBACK_MODEL=anthropic-sonnet-5
       EXECUTOR_FALLBACK_PROVIDER=anthropic
+      EXECUTOR_ECONOMY_MODEL=luna
+      EXECUTOR_ECONOMY_PROVIDER=codex
+      EXECUTOR_ECONOMY_EFFORT=medium
       EXECUTOR_ESCALATION="Escalate to sol only when a listed trigger applies: Terra is unavailable or has exhausted its usage, the ticket crosses architecture boundaries, the work is high-risk data/security/concurrency/migration logic, debugging remains blocked after reproduction, or Terra reports NEEDS_CONTEXT / BLOCKED and more reasoning is required. Use luna only for explicitly low-risk documentation, ticket, formatting, or mechanical follow-up work. Do not escalate only because a ticket touches multiple files or ordinary integration code."
       REVIEWER_MODEL=anthropic-sonnet-4-6
       REVIEWER_EFFORT=medium
@@ -509,6 +512,9 @@ set_model_defaults() {
       TESTER_PROVIDER=codex
       TESTER_FALLBACK_MODEL=anthropic-sonnet-5
       TESTER_FALLBACK_PROVIDER=anthropic
+      TESTER_ECONOMY_MODEL=luna
+      TESTER_ECONOMY_PROVIDER=codex
+      TESTER_ECONOMY_EFFORT=medium
       ;;
     *)
       MODELS_PROVIDER=$provider_lc
@@ -538,6 +544,9 @@ set_model_defaults() {
       EXECUTOR_PROVIDER=$provider_lc
       EXECUTOR_FALLBACK_MODEL=$CROSS_CODING
       EXECUTOR_FALLBACK_PROVIDER=$CROSS_PROVIDER
+      EXECUTOR_ECONOMY_MODEL="${provider_lc}-cost-efficient"
+      EXECUTOR_ECONOMY_PROVIDER=$provider_lc
+      EXECUTOR_ECONOMY_EFFORT=medium
       EXECUTOR_ESCALATION="Escalate only when a listed trigger applies: the balanced coding model is unavailable or has exhausted its usage, the ticket crosses architecture boundaries, the work is high-risk data/security/concurrency/migration logic, debugging remains blocked after reproduction, or the default model reports NEEDS_CONTEXT / BLOCKED and more reasoning is required. Use the provider's most cost-efficient model only for explicitly low-risk documentation, ticket, formatting, or mechanical follow-up work. Do not escalate only because a ticket touches multiple files or ordinary integration code."
       REVIEWER_MODEL="${provider_lc}-balanced-reasoning"
       REVIEWER_EFFORT=medium
@@ -554,6 +563,9 @@ set_model_defaults() {
       TESTER_PROVIDER=$provider_lc
       TESTER_FALLBACK_MODEL=$CROSS_CODING
       TESTER_FALLBACK_PROVIDER=$CROSS_PROVIDER
+      TESTER_ECONOMY_MODEL="${provider_lc}-cost-efficient"
+      TESTER_ECONOMY_PROVIDER=$provider_lc
+      TESTER_ECONOMY_EFFORT=medium
       ;;
   esac
 }
@@ -684,14 +696,14 @@ fallback in the table below.
 
 The table below is machine-readable. Runners select exactly one preferred or fallback assignment; prose in this file does not override its fields.
 
-| Role | Model | Effort | Provider | Fallback Provider | Fallback Model |
-| --- | --- | --- | --- | --- | --- |
-| Architect | \`$ARCHITECT_MODEL\` | \`$ARCHITECT_EFFORT\` | \`$ARCHITECT_PROVIDER\` | \`$ARCHITECT_FALLBACK_PROVIDER\` | \`$ARCHITECT_FALLBACK_MODEL\` |
-| Designer | \`$DESIGNER_MODEL\` | \`$DESIGNER_EFFORT\` | \`$DESIGNER_PROVIDER\` | \`$DESIGNER_FALLBACK_PROVIDER\` | \`$DESIGNER_FALLBACK_MODEL\` |
-| Executor | \`$EXECUTOR_MODEL\` | \`$EXECUTOR_EFFORT\` | \`$EXECUTOR_PROVIDER\` | \`$EXECUTOR_FALLBACK_PROVIDER\` | \`$EXECUTOR_FALLBACK_MODEL\` |
-| Reviewer | \`$REVIEWER_MODEL\` | \`$REVIEWER_EFFORT\` | \`$REVIEWER_PROVIDER\` | \`$REVIEWER_FALLBACK_PROVIDER\` | \`$REVIEWER_FALLBACK_MODEL\` |
-| Second Reviewer | \`$SECOND_REVIEWER_MODEL\` | \`$SECOND_REVIEWER_EFFORT\` | \`$SECOND_REVIEWER_PROVIDER\` | \`$SECOND_REVIEWER_FALLBACK_PROVIDER\` | \`$SECOND_REVIEWER_FALLBACK_MODEL\` |
-| Tester | \`$TESTER_MODEL\` | \`$TESTER_EFFORT\` | \`$TESTER_PROVIDER\` | \`$TESTER_FALLBACK_PROVIDER\` | \`$TESTER_FALLBACK_MODEL\` |
+| Role | Model | Effort | Provider | Fallback Provider | Fallback Model | Economy Provider | Economy Model | Economy Effort |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Architect | \`$ARCHITECT_MODEL\` | \`$ARCHITECT_EFFORT\` | \`$ARCHITECT_PROVIDER\` | \`$ARCHITECT_FALLBACK_PROVIDER\` | \`$ARCHITECT_FALLBACK_MODEL\` | - | - | - |
+| Designer | \`$DESIGNER_MODEL\` | \`$DESIGNER_EFFORT\` | \`$DESIGNER_PROVIDER\` | \`$DESIGNER_FALLBACK_PROVIDER\` | \`$DESIGNER_FALLBACK_MODEL\` | - | - | - |
+| Executor | \`$EXECUTOR_MODEL\` | \`$EXECUTOR_EFFORT\` | \`$EXECUTOR_PROVIDER\` | \`$EXECUTOR_FALLBACK_PROVIDER\` | \`$EXECUTOR_FALLBACK_MODEL\` | \`$EXECUTOR_ECONOMY_PROVIDER\` | \`$EXECUTOR_ECONOMY_MODEL\` | \`$EXECUTOR_ECONOMY_EFFORT\` |
+| Reviewer | \`$REVIEWER_MODEL\` | \`$REVIEWER_EFFORT\` | \`$REVIEWER_PROVIDER\` | \`$REVIEWER_FALLBACK_PROVIDER\` | \`$REVIEWER_FALLBACK_MODEL\` | - | - | - |
+| Second Reviewer | \`$SECOND_REVIEWER_MODEL\` | \`$SECOND_REVIEWER_EFFORT\` | \`$SECOND_REVIEWER_PROVIDER\` | \`$SECOND_REVIEWER_FALLBACK_PROVIDER\` | \`$SECOND_REVIEWER_FALLBACK_MODEL\` | - | - | - |
+| Tester | \`$TESTER_MODEL\` | \`$TESTER_EFFORT\` | \`$TESTER_PROVIDER\` | \`$TESTER_FALLBACK_PROVIDER\` | \`$TESTER_FALLBACK_MODEL\` | \`$TESTER_ECONOMY_PROVIDER\` | \`$TESTER_ECONOMY_MODEL\` | \`$TESTER_ECONOMY_EFFORT\` |
 
 ## Provider Mapping Guidance
 

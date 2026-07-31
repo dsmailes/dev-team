@@ -31,7 +31,7 @@ Required before implementation can be assigned:
 - Risks are listed.
 - Rollback and persistence impact is documented, or explicitly marked `None`.
 - `Skill Context` is filled, including role-specific skills or `None`.
-- `Execution Model` is filled, defaulting Executor to `terra` unless escalation is justified.
+- `Execution Model` records `routine` or `economy` routing for Executor and Tester, with a reason for every economy selection.
 - Verification plan exists.
 - `Designer Review` is marked `Yes` or `No`.
 - `Second Review` is marked `Required` or `Not required`.

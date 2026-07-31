@@ -55,7 +55,12 @@ For multi-step implementation work, the architect should also create or link an 
 
 The architect must fill in `Skill Context` before execution starts, including role-specific skills or `None` where no skill applies. External skill families are optional unless the ticket, user, imported registry, or project instructions require them.
 
-The architect must fill in `Execution Model` before execution starts. Architect, Designer, Executor, and Tester default to `terra` with `high` effort; Reviewer uses `medium` effort. Escalation to Sol requires a specific recorded reason; use it for focused difficult work, and reserve ultra tiers for genuinely multi-phase or parallel work.
+The architect must fill in `Execution Model` before execution starts. Architect,
+Designer, Executor, and Tester use Terra with medium effort for routine work;
+Reviewer uses Sonnet 4.6 with medium effort when permitted. Mark Executor or
+Tester routing as `economy` only for the bounded cases below and record why.
+Missing, ambiguous, UI-dependent, diagnostic, or judgment-heavy routing remains
+`routine`. Escalation to Sol requires a specific recorded reason.
 
 The architect must also mark `Second Review` as required or not required before execution starts. Require it only for security, data-loss, concurrency, migration, public API risk, difficult regressions, unresolved review uncertainty, or an explicit user request.
 
@@ -86,10 +91,10 @@ Use the designer only when a ticket changes screens, flows, visual hierarchy, in
 
 ## Execute A Ticket
 
-1. Spawn the executor with `terra` and `high` effort by default.
+1. Spawn the executor from its recorded routing: Terra medium for `routine`, or Luna medium for `economy`.
 2. Escalate Executor to `sol` only when a recorded focused difficult problem remains blocked after Terra and its fallback, architecture risk remains unresolved, or a genuinely multi-phase/parallel effort needs it.
 3. Do not escalate only because a ticket touches multiple files or ordinary integration code.
-4. Use `luna` only for explicitly low-risk documentation, ticket, formatting, or mechanical follow-up work.
+4. Mark `Executor routing: economy` only for low-risk documentation, ticket, formatting, version, or mechanical edits with deterministic verification. Otherwise use `routine`.
 5. If Terra is unavailable or has exhausted its usage, use the Executor fallback only when the runner's provider boundary permits it; otherwise report routing as blocked. Record why in `Execution Model`.
 6. Assign exactly one ticket unless the tickets share the same files and scope.
 7. Tell the executor which files or modules it owns.
@@ -108,7 +113,7 @@ The Executor must create a scoped ticket commit and return a structured handoff 
 
 ## Review A Ticket
 
-1. Prefer Anthropic Sonnet 5 with medium effort for primary review only when the runner permits Anthropic and exposes it. Otherwise use the permitted Reviewer fallback from `.agents/models.md` (Terra with medium effort in a Codex harness) and record why. Do not attempt a model outside the active harness provider boundary. Escalate to Sol only for an explicitly recorded difficult or high-risk review.
+1. Prefer Anthropic Sonnet 4.6 with medium effort for primary review only when the runner permits Anthropic and exposes it. Otherwise use the permitted Reviewer fallback from `.agents/models.md` (Terra with medium effort in a Codex harness) and record why. Do not attempt a model outside the active harness provider boundary. Escalate to Sol only for an explicitly recorded difficult or high-risk review.
 2. Give the reviewer the ticket path, recorded ticket commit, and a clean ticket verification worktree at that exact commit.
 3. Inspect the exact diff and focused evidence without rebuilding or repeating
    passing Executor tests by default. Run only a narrow reproduction needed for
@@ -125,7 +130,7 @@ Reviewer must reject a commit mismatch, dirty verification worktree, or moving s
 
 ## Test A Ticket
 
-1. Spawn or assign the tester with the Tester model and effort from `.agents/models.md` after review. Terra with high effort is the primary default; if it is unavailable or has exhausted its usage, use the Tester fallback from `.agents/models.md` and record why. Use Luna only for narrow, deterministic, low-context checks, and escalate to Sol only for a difficult test problem unresolved after Terra and its fallback or a genuinely multi-phase/parallel effort.
+1. Spawn the tester from its recorded routing after review: Luna medium for `economy`, or Terra medium for `routine`. Economy is valid only for named deterministic commands whose results need no diagnosis, UI judgment, or scope selection. If Luna is unavailable or exhausted, return to Terra medium. Escalate only for a difficult test problem or genuinely multi-phase effort.
 2. Give the tester the ticket path, recorded ticket commit, clean ticket verification worktree, ticket-scoped artifact root, and expected focused verification scope.
 3. Run the smallest fresh risk-linked matrix that covers the changed behavior.
    Do not expand to the full repository or application UI inventory unless this
