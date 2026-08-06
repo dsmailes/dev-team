@@ -5,8 +5,8 @@ This file is project-local. Keep it aligned with the provider and model names av
 ## Provider
 
 - Provider: `codex`
-- Profile: `gpt-5.6-terra-medium-sonnet-4-6-review`
-- Notes: Terra with medium effort is the normal default for architecture, design, implementation, and testing. Reviewer uses medium effort and prefers Anthropic Sonnet 4.6 only when the active harness permits and exposes it, otherwise it uses Terra in Codex contexts. Sol is reserved for an explicitly recorded difficult or multi-phase escalation, never routine work or quota recovery. GPT-5.5 is an optional independent second review; Luna is reserved for narrow, deterministic, low-context verification.
+- Profile: `gpt-5.6-luna-xhigh-architect-terra-medium-sonnet-4-6-review`
+- Notes: Luna with extra-high (`xhigh`) effort is the default for architecture. Terra with medium effort remains the normal default for design, implementation, and testing. Reviewer uses medium effort and prefers Anthropic Sonnet 4.6 only when the active harness permits and exposes it, otherwise it uses Terra in Codex contexts. Sol is reserved for an explicitly recorded difficult or multi-phase escalation, never routine work or quota recovery. GPT-5.5 is an optional independent second review; Luna medium remains available for narrow, deterministic, low-context execution and verification.
 
 ## Runtime Provider Boundary
 
@@ -50,7 +50,7 @@ fallback assignment; prose in this file does not override its fields.
 
 | Role | Model | Effort | Provider | Fallback Provider | Fallback Model | Economy Provider | Economy Model | Economy Effort |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Architect | `terra` | `medium` | `codex` | `anthropic` | `anthropic-sonnet-5` | - | - | - |
+| Architect | `luna` | `xhigh` | `codex` | `anthropic` | `anthropic-sonnet-5` | - | - | - |
 | Designer | `terra` | `medium` | `codex` | `anthropic` | `anthropic-sonnet-5` | - | - | - |
 | Executor | `terra` | `medium` | `codex` | `anthropic` | `anthropic-sonnet-5` | `codex` | `luna` | `medium` |
 | Reviewer | `anthropic-sonnet-4-6` | `medium` | `anthropic` | `codex` | `terra` | - | - | - |
@@ -61,7 +61,7 @@ fallback assignment; prose in this file does not override its fields.
 
 For non-Codex providers, map roles by capability rather than by exact names:
 
-- Architect: balanced reasoning model with medium effort by default. Escalate to the best reasoning model only for an explicitly recorded difficult or multi-phase decision.
+- Architect: Luna with extra-high (`xhigh`) effort by default. Use the recorded fallback only when Luna is unavailable or usage-exhausted.
 - Designer: balanced design/reasoning model with medium effort by default. Escalate to the best reasoning model only for an explicitly recorded difficult or multi-phase product or UI decision.
 - Executor: balanced coding model by default; escalate to the best reasoning model as risk increases.
 - Reviewer: use Anthropic Sonnet 4.6 with medium effort only when the runner permits Anthropic and the model is exposed. Otherwise use the configured permitted fallback, which is Terra with medium effort in a Codex harness. Escalate to the best reasoning model only for an explicitly recorded difficult or high-risk review.
@@ -79,8 +79,9 @@ Terra assignment before considering its provider fallback.
 
 ## Escalation Economy
 
-Use Terra Medium for the normal loop, including ordinary implementation,
-debugging, refactors, tests, reviews, and routine architecture/design planning.
+Use Luna Extra High for architecture. Use Terra Medium for the rest of the
+normal loop, including ordinary implementation, debugging, refactors, tests,
+reviews, and routine design work.
 Use a higher tier only when the ticket records why Terra is insufficient:
 
 - A focused difficult problem with a clear bounded question may use the runtime's

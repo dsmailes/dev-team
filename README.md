@@ -27,7 +27,7 @@ Model choices live in `.agents/models.md`.
 
 The default profile is Codex GPT-5.6:
 
-- Architect: Terra with medium effort by default; falls back to Anthropic Sonnet 5 if Terra is unavailable or has exhausted its usage.
+- Architect: Luna with extra-high (`xhigh`) effort by default; falls back to Anthropic Sonnet 5 if Luna is unavailable or has exhausted its usage.
 - Designer: Terra with medium effort by default; falls back to Anthropic Sonnet 5 if Terra is unavailable or has exhausted its usage.
 - Executor: Terra with medium effort by default; falls back to Anthropic Sonnet 5 if Terra is unavailable or has exhausted its usage.
 - Reviewer: Anthropic Sonnet 4.6 with medium effort when the runner permits Anthropic and exposes it; otherwise Terra with medium effort in a Codex harness.
@@ -44,7 +44,7 @@ Before spawning a role, the runner declares a provider boundary. Official ChatGP
 
 For other providers, the installer can infer provider-class placeholders such as `anthropic-balanced-coding` or `google-best-reasoning`. Replace those with exact model IDs supported by your local runner.
 
-Tickets include an `Execution Model` section. Codex installs Architect, Designer, Executor, Reviewer, and Tester at `medium` effort. Reviewer prefers Sonnet 4.6 only when the runner permits Anthropic and exposes it, otherwise it uses `terra` in a Codex harness. Escalation to `high` effort or `sol` must be recorded; use it for a focused difficult problem that remains blocked after the permitted default and fallback, and reserve ultra tiers for genuinely multi-phase or parallel work. Ordinary multi-file or integration work is not enough by itself.
+Tickets include an `Execution Model` section. Codex installs Architect on Luna at extra-high (`xhigh`) effort; Designer, Executor, Reviewer, and Tester remain at `medium` effort. Reviewer prefers Sonnet 4.6 only when the runner permits Anthropic and exposes it, otherwise it uses `terra` in a Codex harness. Escalation to `high` effort or `sol` must be recorded; use it for a focused difficult problem that remains blocked after the permitted default and fallback, and reserve ultra tiers for genuinely multi-phase or parallel work. Ordinary multi-file or integration work is not enough by itself.
 
 Tickets also include a `Second Review` decision. Require it for high-risk changes, unresolved review uncertainty, or when the user asks for an independent pass; GPT-5.5 then reviews the exact same ticket commit after the primary Terra review. Use Sol only when the recorded review or test problem remains difficult after Terra and its fallback.
 

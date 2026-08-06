@@ -55,9 +55,10 @@ For multi-step implementation work, the architect should also create or link an 
 
 The architect must fill in `Skill Context` before execution starts, including role-specific skills or `None` where no skill applies. External skill families are optional unless the ticket, user, imported registry, or project instructions require them.
 
-The architect must fill in `Execution Model` before execution starts. Architect,
-Designer, Executor, and Tester use Terra with medium effort for routine work;
-Reviewer uses Sonnet 4.6 with medium effort when permitted. Mark Executor or
+The architect must fill in `Execution Model` before execution starts. Architect
+uses Luna with extra-high (`xhigh`) effort. Designer, Executor, and Tester use
+Terra with medium effort for routine work; Reviewer uses Sonnet 4.6 with medium
+effort when permitted. Mark Executor or
 Tester routing as `economy` only for the bounded cases below and record why.
 Missing, ambiguous, UI-dependent, diagnostic, or judgment-heavy routing remains
 `routine`. Escalation to Sol requires a specific recorded reason.

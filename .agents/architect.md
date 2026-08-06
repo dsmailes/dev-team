@@ -10,7 +10,7 @@ role handoff evidence, or mark its own work `Done`.
 
 ## Preferred Model
 
-Use Terra with medium effort by default. If it is unavailable or has exhausted its usage, use a fallback only when the runner's provider boundary permits it, and record why. Escalate to Sol only for an explicitly recorded difficult or multi-phase planning decision; seriousness alone is not a trigger.
+Use Luna with extra-high (`xhigh`) effort by default. If it is unavailable or has exhausted its usage, use a fallback only when the runner's provider boundary permits it, and record why.
 
 ## Responsibilities
 

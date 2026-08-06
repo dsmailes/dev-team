@@ -476,9 +476,9 @@ set_model_defaults() {
   case "$provider_lc" in
     ""|codex|openai)
       MODELS_PROVIDER=codex
-      MODEL_PROFILE=gpt-5.6-terra-medium-sonnet-4-6-review
-      ARCHITECT_MODEL=terra
-      ARCHITECT_EFFORT=medium
+      MODEL_PROFILE=gpt-5.6-luna-xhigh-architect-terra-medium-sonnet-4-6-review
+      ARCHITECT_MODEL=luna
+      ARCHITECT_EFFORT=xhigh
       ARCHITECT_PROVIDER=codex
       ARCHITECT_FALLBACK_MODEL=anthropic-sonnet-5
       ARCHITECT_FALLBACK_PROVIDER=anthropic
@@ -709,7 +709,7 @@ The table below is machine-readable. Runners select exactly one preferred or fal
 
 For non-Codex providers, map roles by capability rather than by exact names:
 
-- Architect: balanced reasoning model with medium effort by default; escalate to the best reasoning model only for an explicitly recorded difficult or multi-phase decision.
+- Architect: use the configured architecture model with extra-high (\`xhigh\`) effort by default; use the recorded fallback only when the preferred model is unavailable or usage-exhausted.
 - Designer: balanced design/reasoning model with medium effort by default; escalate to the best reasoning model only for an explicitly recorded difficult or multi-phase product or UI decision.
 - Executor: balanced coding model by default; escalate to the best reasoning model as risk increases.
 - Reviewer: balanced review/reasoning model with medium effort by default. Use the configured fallback only when required, and escalate to the best reasoning model only for an explicitly recorded difficult or high-risk review.

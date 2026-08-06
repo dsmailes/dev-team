@@ -66,8 +66,9 @@ If live supervisor contact is available, subagents should use it for blocking qu
 
 Use `.agents/models.md` as the machine-readable source of truth for preferred and fallback provider, model, and effort assignments. Use `.agents/handoff-evidence.md` for runner-owned proof of the actual role run.
 
-The packaged default uses Terra with medium effort for routine architecture,
-product/design shaping, implementation, and testing. Primary review prefers
+The packaged default uses Luna with extra-high (`xhigh`) effort for architecture,
+and Terra with medium effort for routine product/design shaping, implementation,
+and testing. Primary review prefers
 Anthropic Sonnet 4.6 at medium effort when permitted. Explicit economy routing
 uses Luna medium for mechanical Executor work and deterministic Tester commands;
 missing or ambiguous routing remains routine. Sol and the high-effort second
