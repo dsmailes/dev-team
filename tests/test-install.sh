@@ -10,18 +10,84 @@ hash_file() {
   cksum "$1" | awk '{print $1 ":" $2}'
 }
 
+assert_clean_state() {
+  clean_project=$1
+  [ "$(find "$clean_project/.tickets" -type f | wc -l | tr -d ' ')" = 3 ]
+  cmp "$ROOT/starter/.tickets/queue.md" "$clean_project/.tickets/queue.md"
+  cmp "$ROOT/.tickets/template.md" "$clean_project/.tickets/template.md"
+  [ "$(find "$clean_project/.memory" -type f | wc -l | tr -d ' ')" = 5 ]
+  for memory in project commands decisions pitfalls; do
+    cmp "$ROOT/starter/.memory/$memory.md" "$clean_project/.memory/$memory.md"
+  done
+  python3 "$clean_project/scripts/render-ticket-dashboard.py" --project "$clean_project" --validate
+}
+
+# A new project must not inherit this pack's development board or memory.
 "$ROOT/install.sh" --project "$PROJECT" --no-import-skills --no-model-prompt
+assert_clean_state "$PROJECT"
+
+HERE=$TMPDIR/here
+mkdir "$HERE"
+(
+  cd "$HERE"
+  "$ROOT/install.sh" --here --no-import-skills --no-model-prompt
+)
+assert_clean_state "$HERE"
+
+# Bootstrap from a local archive whose live board and memory contain private state.
+# Only the reusable docs and starter assets should reach the target.
+PACK=$TMPDIR/archive/dev-team
+mkdir -p "$PACK"
+for path in install.sh README.md AGENTS.md .agents .skills .tickets .memory scripts docs starter; do
+  cp -R "$ROOT/$path" "$PACK/$path"
+done
+printf '%s\n' 'private source ticket' > "$PACK/.tickets/PRIVATE-999.md"
+printf '%s\n' 'private source queue' > "$PACK/.tickets/queue.md"
+for memory in project commands decisions pitfalls; do
+  printf '%s\n' 'private source memory' > "$PACK/.memory/$memory.md"
+done
+printf '%s\n' 'private source notes' > "$PACK/.memory/private.md"
+tar -czf "$TMPDIR/pack.tar.gz" -C "$TMPDIR/archive" dev-team
+BOOTSTRAP=$TMPDIR/bootstrap
+mkdir "$BOOTSTRAP"
+(
+  cd "$BOOTSTRAP"
+  DEV_TEAM_WORKFLOW_PACK_TARBALL_URL="file://$TMPDIR/pack.tar.gz" \
+    sh -s -- --here --no-import-skills --no-model-prompt < "$ROOT/install.sh"
+)
+assert_clean_state "$BOOTSTRAP"
+
+"$ROOT/install.sh" --project "$TMPDIR/dry-fresh" --dry-run --no-import-skills --no-model-prompt
+[ ! -e "$TMPDIR/dry-fresh" ]
+
+cp -R "$PROJECT" "$TMPDIR/before-conservative-checks"
+"$ROOT/install.sh" --project "$PROJECT" --update --dry-run
+"$ROOT/install.sh" --project "$PROJECT" --reset-project-state --force --dry-run
+if "$ROOT/install.sh" --project "$PROJECT" --force --no-import-skills --no-model-prompt; then
+  echo "expected --force alone to refuse an existing installation" >&2
+  exit 1
+fi
+if "$ROOT/install.sh" --project "$PROJECT" --reset-project-state --force </dev/null; then
+  echo "expected noninteractive reset to fail" >&2
+  exit 1
+fi
+diff -r "$TMPDIR/before-conservative-checks" "$PROJECT"
 
 GENERATED=$TMPDIR/generated-models
 "$ROOT/install.sh" --project "$GENERATED" --models-provider codex --no-import-skills --no-model-prompt
 grep -Fq '## Runtime Provider Boundary' "$GENERATED/.agents/models.md"
 grep -Fq '| Reviewer | `anthropic-sonnet-4-6` | `medium` | `anthropic` | `codex` | `terra` |' "$GENERATED/.agents/models.md"
+grep -Fq 'Native Fallback Effort' "$GENERATED/.agents/models.md"
+python3 -B "$GENERATED/scripts/check-workflow-policy.py" --input "$ROOT/tests/conformance/policy-chain.json"
 
 grep -Fq '## Agent Run Summary' "$PROJECT/.tickets/template.md"
 grep -Fq '## Role Handoff Evidence' "$PROJECT/.tickets/template.md"
 grep -Fq 'runner completion operation' "$PROJECT/.tickets/template.md"
 grep -Fq 'handoff-evidence.md' "$PROJECT/.agents/handoff.md"
 test -f "$PROJECT/.agents/handoff-evidence.md"
+test -f "$PROJECT/.agents/runtime-modes.md"
+test -x "$PROJECT/scripts/check-workflow-policy.py"
+python3 -B "$PROJECT/scripts/check-workflow-policy.py" --input "$ROOT/tests/conformance/policy-chain.json"
 grep -Fq 'orchestration-only' "$PROJECT/.agents/architect.md"
 grep -Fq 'only authoritative live board' "$PROJECT/.agents/architect.md"
 grep -Fq 'only authoritative live board' "$PROJECT/.agents/runbook.md"
@@ -149,6 +215,12 @@ QUEUE=$PROJECT/.tickets/queue.md
 mv "$QUEUE.tmp" "$QUEUE"
 
 printf '%s\n' 'custom memory must survive update' >> "$PROJECT/.memory/project.md"
+mkdir "$PROJECT/.memory/custom"
+printf '%s\n' 'custom nested memory' > "$PROJECT/.memory/custom/facts.md"
+printf '%s\n' 'custom memory instructions' >> "$PROJECT/.memory/README.md"
+cp -R "$PROJECT/.memory" "$TMPDIR/saved-memory"
+printf '%s\n' 'custom project README' > "$PROJECT/README.md"
+printf '%s\n' 'custom project instructions' >> "$PROJECT/AGENTS.md"
 cat > "$PROJECT/.skills/imported.md" <<'EOF'
 # Imported project skills
 
@@ -165,6 +237,8 @@ QUEUE_HASH=$(hash_file "$PROJECT/.tickets/queue.md")
 MEMORY_HASH=$(hash_file "$PROJECT/.memory/project.md")
 IMPORTED_SKILLS_HASH=$(hash_file "$PROJECT/.skills/imported.md")
 MODELS_HASH=$(hash_file "$PROJECT/.agents/models.md")
+README_HASH=$(hash_file "$PROJECT/README.md")
+AGENTS_HASH=$(hash_file "$PROJECT/AGENTS.md")
 
 printf '%s\n' 'stale reusable ticket template' > "$PROJECT/.tickets/template.md"
 
@@ -175,8 +249,16 @@ printf '%s\n' 'stale reusable ticket template' > "$PROJECT/.tickets/template.md"
 [ "$MEMORY_HASH" = "$(hash_file "$PROJECT/.memory/project.md")" ]
 [ "$IMPORTED_SKILLS_HASH" = "$(hash_file "$PROJECT/.skills/imported.md")" ]
 [ "$MODELS_HASH" = "$(hash_file "$PROJECT/.agents/models.md")" ]
+[ "$README_HASH" = "$(hash_file "$PROJECT/README.md")" ]
+[ "$AGENTS_HASH" = "$(hash_file "$PROJECT/AGENTS.md")" ]
+diff -r "$TMPDIR/saved-memory" "$PROJECT/.memory"
 grep -Fq '## Workspace And Integration Contract' "$PROJECT/.tickets/template.md"
 ! grep -Fq 'stale reusable ticket template' "$PROJECT/.tickets/template.md"
+cmp "$ROOT/.agents/runtime-modes.md" "$PROJECT/.agents/runtime-modes.md"
+cmp "$ROOT/scripts/check-workflow-policy.py" "$PROJECT/scripts/check-workflow-policy.py"
+for module in __init__.py models.py handoff.py fingerprint.py; do
+  cmp "$ROOT/scripts/workflow_policy/$module" "$PROJECT/scripts/workflow_policy/$module"
+done
 grep -Fq '## Second Review' "$PROJECT/.tickets/template.md"
 
 python3 "$PROJECT/scripts/render-ticket-dashboard.py" --project "$PROJECT" --validate
@@ -185,5 +267,6 @@ grep -Fq -- '**Design:** 1' "$PROJECT/docs/tickets.md"
 grep -Fq 'Generated projection only' "$PROJECT/docs/tickets.md"
 grep -Fq 'Generated projection only' "$PROJECT/docs/tickets.html"
 python3 "$ROOT/tests/test-handoff-conformance.py"
+python3 "$ROOT/tests/test-install-interactive.py"
 
 echo "Installer update-preservation regression test passed."

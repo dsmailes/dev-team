@@ -1,0 +1,32 @@
+{
+  "snapshot": {
+    "mode": "enforced", "ticket_id": "APP-100", "attempt_id": "attempt-2",
+    "commit_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "started_at": "2026-01-01T00:00:00Z", "observed_at": "2026-01-01T00:10:00Z",
+    "orchestrator_session_id": "architect-session",
+    "from_state": "Test", "to_state": "Done", "operation": "complete",
+    "second_review_required": false,
+    "integration": {"required": false, "reason": "Single serialized change; no integration batch."},
+    "runtime": {
+      "harness": "official-codex", "native_provider": "codex", "allowed_providers": ["codex"],
+      "capabilities": ["model-routing-v2", "handoff-evidence-v2"],
+      "models": [
+        {"provider": "codex", "model": "luna", "efforts": ["medium", "xhigh"], "availability": "available", "quota": "unknown"},
+        {"provider": "codex", "model": "terra", "efforts": ["medium", "high"], "availability": "available", "quota": "available"},
+        {"provider": "codex", "model": "sol", "efforts": ["high"], "availability": "available", "quota": "available"}
+      ]
+    },
+    "assignments": {
+      "executor": {"provider": "codex", "model": "terra", "effort": "medium", "request": {"routing": "routine"}},
+      "reviewer": {"provider": "codex", "model": "terra", "effort": "medium", "request": {"routing": "routine"}},
+      "tester": {"provider": "codex", "model": "terra", "effort": "medium", "request": {"routing": "routine"}}
+    },
+    "sessions": {"executor": "executor-session", "reviewer": "reviewer-session", "tester": "tester-session"},
+    "selected_runs": {"executor": "exec-2", "reviewer": "review-2", "tester": "test-2"}
+  },
+  "records": [
+    {"run_id": "exec-2", "attempt_id": "attempt-2", "ticket_id": "APP-100", "role": "executor", "provider": "codex", "model": "terra", "effort": "medium", "session_id": "executor-session", "commit_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "outcome": "pass", "started_at": "2026-01-01T00:00:00Z", "completed_at": "2026-01-01T00:01:00Z"},
+    {"run_id": "review-2", "attempt_id": "attempt-2", "ticket_id": "APP-100", "role": "reviewer", "provider": "codex", "model": "terra", "effort": "medium", "session_id": "reviewer-session", "commit_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "outcome": "pass", "started_at": "2026-01-01T00:02:00Z", "completed_at": "2026-01-01T00:03:00Z"},
+    {"run_id": "test-2", "attempt_id": "attempt-2", "ticket_id": "APP-100", "role": "tester", "provider": "codex", "model": "terra", "effort": "medium", "session_id": "tester-session", "commit_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "outcome": "pass", "started_at": "2026-01-01T00:04:00Z", "completed_at": "2026-01-01T00:05:00Z"}
+  ]
+}

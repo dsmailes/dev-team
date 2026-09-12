@@ -9,6 +9,7 @@ This project is a portable agent workflow pack. It is not an application.
 - `.agents/runbook.md`: orchestration workflow.
 - `.agents/prompts.md`: spawn prompts for each role.
 - `.agents/handoff.md`: required gates for moving tickets between roles and states.
+- `.agents/runtime-modes.md`: explicit enforced/portable operation and compatibility limits.
 - `.agents/handoff-evidence.md`: runner-generated role evidence schema and protected transition rules.
 - `.skills/registry.md`: language, framework, platform, and task skill routing.
 - `.skills/principles.md`: reusable engineering and handoff practices.
@@ -28,10 +29,11 @@ This project is a portable agent workflow pack. It is not an application.
 - Use `Skill Context` as the single source of truth for role-specific skill assignment.
 - Use `.memory/` for durable project knowledge only. Keep active task notes in `.tickets/`.
 - Do not move a ticket between states unless the relevant handoff gate is complete or explicitly waived with a reason.
-- In normal mode, the Architect is orchestration-only and may not implement, review, test, generate handoff evidence, or mark its own work `Done`. The runner alone validates protected handoffs and performs `Test -> Done` through its completion operation.
+- In either mode, the Architect is orchestration-only and may not implement, review, test, generate handoff evidence, or mark its own work `Done`. Select explicit `enforced` or `portable` mode using `.agents/runtime-modes.md`. In enforced mode the runner alone validates protected handoffs and performs `Test -> Done`; portable mode uses disclosed independent reports and authorized manual acceptance, never fabricated runtime evidence. Missing independent sessions is blocked; no self-review or silent downgrade.
 - Keep installer behavior conservative: no overwrites unless `--force` is explicitly passed.
 - Prefer Markdown instructions that are easy to copy into project-local workflows.
 - Before concurrent mutation or build work begins, classify tickets as `read-only` or `mutating/building`. Execution mode: `isolated` or `serialized`. Use isolated ticket branches/worktrees and one repository-external artifact root per project/ticket when the runtime supports them; otherwise serialize mutable work in one shared worktree. Executor, Reviewer, Tester, and every retry reuse that same ticket root.
+- In portable mode without commit authorization, use the frozen content fingerprint procedure in `.agents/runtime-modes.md`, including untracked files; never invent a commit SHA.
 - Treat a recorded scoped ticket commit as the immutable target for review and focused testing. Merge reviewed ticket commits into an integration batch, run one full integration matrix against its integration commit, and clean up named worktrees and disposable ticket artifacts only after evidence is captured. Preserve failed or blocked artifacts for diagnosis.
 - Treat host-wide resources as optional platform-specific concerns. Use a named lease only when the selected platform or framework skill requires one, and hold it only around the contended command. Keep unrelated work parallel.
 

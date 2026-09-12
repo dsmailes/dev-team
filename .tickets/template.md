@@ -4,11 +4,9 @@
 
 `ARCH-000`
 
-Must match the ticket filename and H1.
-
 ## Title
 
-Short imperative title.
+Short imperative title; filename, H1, and ID must agree.
 
 ## State
 
@@ -16,283 +14,162 @@ Short imperative title.
 
 ## Problem
 
-What user or system problem is being solved?
+Concrete user/system problem.
 
 ## Scope
 
-What is included?
+Included behavior and ownership.
 
 ## Out Of Scope
 
-What should not be changed?
+Excluded behavior.
 
 ## Acceptance Criteria
 
-- Criterion 1
-- Criterion 2
+- Concrete observable criterion.
 
 ## Questioning Notes
 
 - Context inspected:
-- Decision tree:
+- Decision tree / approaches:
 - Blocking questions:
-- Assumptions:
-- Deferred questions:
-- Approaches considered:
-- Chosen approach:
-- Rejected alternatives:
+- Assumptions / deferred decisions:
+- Chosen approach and reason:
 
 ## Likely Files
 
-- `path/to/file`
+- Owned paths:
 
 ## Risks
 
-- Risk 1
+- Concrete risk or explicitly None.
 
 ## Rollback And Persistence
 
-- Persistent changes:
-- User-owned configuration touched:
-- Idempotency expectation:
-- Rollback or undo path:
-
-## Workspace And Integration Contract
-
-- Ticket classification: `read-only` or `mutating/building`.
-- Runtime capability: Isolated ticket worktrees available: `Yes`, `No`, or `Unknown`.
-- Execution mode: `isolated` or `serialized`.
-- Base commit:
-- Ticket branch:
-- Executor worktree:
-- Ticket commit:
-- Verification worktree:
-- Verification commit:
-- Ticket-scoped artifact root:
-- Artifact ownership marker:
-- Artifact reuse: `Executor`, `Reviewer`, `Tester`, and retries use the same root.
-- Cleanup status:
-- Integration batch:
-- Included ticket commits:
-- Integration commit:
-- Merge/conflict notes:
-- Focused verification evidence:
-- Post-merge integration matrix command/result:
-
-In `isolated` mode, each concurrent mutating/building ticket owns a unique branch, worktree, and one repository-external artifact root keyed by project/ticket. In `serialized` mode, only one mutating/building ticket owns the shared worktree at a time. Every role and retry reuses the same ticket root. Reviewer and Tester verify the immutable ticket commit from a clean verification worktree. The orchestrator runs one full integration matrix for each merged integration batch. Preserve failed workspaces and artifacts until diagnosis evidence is captured. After acceptance, retain concise evidence and intentional source assets, then remove disposable contents only from the ownership-verified ticket root.
-
-## Optional Host Resource Coordination
-
-- Required: `No`
-- Platform or framework skill:
-- Lease resource:
-- Lease root:
-- Lease command/evidence: Not applicable.
-- Platform-specific build-root configuration: Not applicable.
-- Platform-specific artifact path and checks: Not applicable.
-
-Add this section only when a selected platform or framework skill identifies a host-wide resource. Hold the lease only for its contended command with `scripts/with-host-resource-lease.sh RESOURCE -- COMMAND`, and run unrelated work outside it. Follow the selected skill's build-root rules rather than importing another platform's conventions.
+- Persistent changes / user configuration:
+- Idempotency:
+- Rollback or explicitly None:
 
 ## Skill Context
 
-- Language:
-- Framework:
-- Platform:
-- Project type:
-- Task type:
-- Required skills:
-  - Architect:
-  - Designer:
-  - Executor:
-  - Reviewer:
-  - Tester:
-- Optional skills:
-- Design tooling:
-  - Required: `No`
-  - Capabilities:
-  - Source:
-  - Notes:
-- Custom skill notes:
+- Language / framework / platform:
+- Project type / task type:
+- Architect:
+- Designer:
+- Executor:
+- Reviewer:
+- Tester:
+- Optional skills / custom notes:
+- Design tooling capabilities: None.
 
 ## Execution Model
 
 - Executor routing: `routine`
-- Executor model: `terra`
-- Executor effort: `medium`
 - Tester routing: `routine`
-- Economy routing reason:
-- Escalation needed: `No`
-- Escalation model:
-- Escalation reason:
-- Terra unavailable fallback:
-- Model actually used:
+- Authorized assignments: See .agents/models.md.
+- Economy reason / deterministic commands / low-risk scope:
+- Escalation authorized: No
+- Escalation trigger / reason:
+- Actual model and effort / deviation: Unavailable
 
-## Role Handoff Evidence
+## Runtime Mode
 
-This section is runtime-managed. The runner writes immutable records here or
-links the authoritative external evidence ledger. Agents must not add, alter,
-or claim these records in prose. `Agent Run Summary` below is not proof.
+- Mode: Select enforced or portable before dispatch.
+- Declared capabilities / provider boundary:
+- Independent role/session identities:
+- Configured versus actual assignment deviations:
+- Correction rounds: 0 of 2
+- No-progress finding / blocker:
+- Bound override decision: None.
 
-| Run ID | Ticket ID | Role | Provider | Model | Session ID | Commit SHA | Outcome | Started At | Completed At |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Runner-managed | `ARCH-000` | Not run | Not run | Not run | Not run | Not run | Not run | Not run | Not run |
+Follow .agents/runtime-modes.md. No silent downgrade, fabricated evidence, or
+self-review. Missing independent sessions keeps work blocked.
 
-Protected transitions require runner-validated `pass` records: Executor for
-`In Progress -> Review`, independent Reviewer for `Review -> Test`, and
-independent Tester for the runner completion operation `Test -> Done`. Reviewer
-and Tester must use the Executor commit SHA. Generic state edits cannot mark a
-ticket `Done`.
+## Workspace And Integration Contract
 
-## Agent Run Summary
+- Ticket classification: read-only or mutating/building.
+- Execution mode: isolated or serialized.
+- Workspace ownership / base commit:
+- Ticket branch / executor worktree:
+- Ticket commit: Real immutable SHA, or Unavailable in portable precommit mode.
+- Portable frozen content-sha256 target: Not applicable unless explicitly selected.
+- Verification worktree:
+- Verification commit / fingerprint before and after:
+- Ticket-scoped artifact root / ownership marker:
+- Integration batch / applicability reason:
+- Included ticket commits or portable targets:
+- Integration commit: Real SHA, or separately named portable target.
+- Focused verification evidence:
+- Post-merge integration matrix command/result:
+- Merge/conflict notes:
+- Cleanup status:
 
-Record every role that actually ran for this ticket. Do not estimate token usage: write `Unavailable` when the runtime does not expose it. This is status context, not handoff evidence.
+Every role and retry reuses the same ticket root. Required integration precedes
+acceptance/completion and cleanup. Preserve failed/blocked artifacts.
 
-| Role | Agent or task | Model | Effort | Token usage |
-| --- | --- | --- | --- | --- |
-| Architect | Not run | Not run | Not run | Not run |
-| Designer | Not run | Not run | Not run | Not run |
-| Executor | Not run | Not run | Not run | Not run |
-| Reviewer | Not run | Not run | Not run | Not run |
-| Second Reviewer | Not run | Not run | Not run | Not run |
-| Tester | Not run | Not run | Not run | Not run |
+## Optional Host Resource Coordination
+
+- Required: No
+- Selected platform skill / resource:
+- Lease command and evidence:
+- Platform-specific prerequisites:
 
 ## Designer Review
 
-- Required: `No`
-- Reason:
-- Preferred model: See `.agents/models.md`.
-- Preferred effort: See `.agents/models.md`.
-- Design tooling needed:
-- Output needed:
+- Required: No
+- Reason / output needed:
 
 ## Second Review
 
-- Required: `Not required`
-- Trigger:
-- Model:
-- Effort:
-- Commit SHA:
-- Focus:
-- Outcome:
+- Required: Not required
+- Trigger / independent identity / exact target / outcome:
 
 ## Design Brief
 
-- UI goal:
-- Target user and workflow:
-- Layout and components:
-- States and edge cases:
-- Accessibility:
-- Responsive or platform-specific behavior:
-- Assets and icons:
-- Design tooling used:
-- Executor notes:
+- UI goal / target user:
+- Layout / states / interaction:
+- Accessibility / platform behavior:
+- Assets / design tooling / guidance:
 
 ## TDD Plan
 
-- Failing test:
-- Expected failure:
-- Minimal implementation:
-- Passing verification:
-- TDD waiver, if any:
+- Failing test / expected failure:
+- Minimal implementation / passing verification:
+- Waiver and reason: None.
 
 ## Verification Plan
 
-- Command or manual check
+- Exact risk-linked command or manual check:
+- Integration scope or explicit non-applicability:
 
 ## Handoff Gates
 
-### Backlog -> Ready
+Use the full gates in .agents/handoff.md; do not duplicate their checklists here.
 
-- [ ] Problem is clear.
-- [ ] Scope and out-of-scope are written.
-- [ ] Acceptance criteria are written.
-- [ ] `Questioning Notes` is filled.
-- [ ] Blocking questions are answered, waived with a reason, or moved to `Blocked`.
-- [ ] Likely files or modules are listed.
-- [ ] Risks are listed.
-- [ ] Rollback and persistence impact is documented, or explicitly marked `None`.
-- [ ] `Skill Context` is filled, including role-specific skills or `None`.
-- [ ] `Execution Model` is filled with explicit Executor and Tester routing.
-- [ ] Economy routing is used only for deterministic, low-risk work and records a reason.
-- [ ] Verification plan exists.
-- [ ] `Designer Review` is marked `Yes` or `No`.
-- [ ] `Second Review` is marked `Required` or `Not required`.
-- [ ] TDD plan exists for behavior changes, or a waiver explains why it does not apply.
-- Waiver:
+- Backlog -> Ready: Criteria, questions, risks, rollback, skills and verification:
+- Ready -> Design -> Ready (if required): Design brief and acceptance:
+- Ready -> In Progress: Ownership, mode, assignments and independent roles:
+- In Progress -> Review: Executor report/target and mode-specific gate:
+- Review -> Test: Independent review and required Second Review:
+- Test -> Done: Independent tests, required integration, mode-specific acceptance:
+- Waivers: No agent waiver of enforced evidence gates.
 
-### Ready -> Design
+## Role Handoff Evidence
 
-- [ ] Designer owner is assigned.
-- [ ] Relevant UI files, design-system notes, and memory entries are listed.
-- [ ] Output needed from Designer is stated.
-- [ ] Open design/product questions are listed or explicitly marked `None`.
-- Waiver:
+Runner-managed in enforced mode only; use .agents/handoff-evidence.md.
+Evidence IDs / protected ledger: Unavailable.
+Portable mode leaves evidence Unavailable and links independent reports below.
+Only the runner completion operation performs enforced Test -> Done; portable
+acceptance follows .agents/runtime-modes.md and is never authenticated evidence.
 
-### Design -> Ready
+## Agent Run Summary
 
-- [ ] Design brief is complete.
-- [ ] UI acceptance criteria are concrete enough for Executor.
-- [ ] Accessibility, responsive/platform behavior, states, and edge cases are documented.
-- [ ] Assets/icons/copy needs are documented or explicitly marked `None`.
-- Waiver:
+| Role | Agent or task | Actual model | Effort | Token usage | Elapsed | Correction round | Findings / deviation |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Role that ran | Unavailable | Unavailable | Unavailable | Unavailable | Unavailable | 0 | None |
 
-### Ready -> In Progress
-
-- [ ] Executor owner is assigned.
-- [ ] Executor model and effort are stated.
-- [ ] Executor escalation reason is stated, or escalation is marked `No`.
-- [ ] Relevant files are listed.
-- [ ] Relevant memory entries are listed.
-- [ ] Acceptance criteria are restated or referenced.
-- [ ] Expected executor output is stated.
-- [ ] Verification command or manual check is stated.
-- [ ] Ticket classification, execution mode, base commit, workspace ownership, repository-external ticket artifact root, ownership marker, and cross-role reuse are recorded.
-- [ ] Optional Host Resource Coordination is complete when an applicable platform or framework skill requires it.
-- Waiver:
-
-### In Progress -> Review
-
-- [ ] Files changed are listed.
-- [ ] Implementation notes are written.
-- [ ] Runner-generated passing Executor evidence record is attached or linked.
-- [ ] Executor provider, model, and effort match `.agents/models.md`.
-- [ ] Red/green evidence is recorded, or TDD waiver is referenced.
-- [ ] Commands run are recorded.
-- [ ] Known gaps are recorded or explicitly marked `None`.
-- [ ] Scoped ticket commit, clean executor status, and artifact locations are recorded.
-- [ ] Verification worktree and exact verification commit are recorded.
-- Waiver: Not permitted in normal mode; the runner must validate Executor evidence.
-
-### Review -> Test
-
-- [ ] Spec compliance review is complete.
-- [ ] Code quality review is complete.
-- [ ] Runner-generated passing Reviewer record references the Executor commit and an independent session.
-- [ ] Reviewer provider, model, and effort match `.agents/models.md`.
-- [ ] Open review issues are resolved, waived with reason, or ticket is blocked.
-- [ ] `Second Review` is marked `Required` or `Not required`. When required, the independent reviewer verified the same ticket commit SHA and its outcome is recorded.
-- [ ] Test scope is identified.
-- [ ] Reviewer clean-worktree and commit-identity checks are recorded.
-- Waiver: Not permitted in normal mode; the runner must validate independent Reviewer evidence.
-
-### Test -> Done
-
-- [ ] Fresh verification evidence is recorded.
-- [ ] Runner completion operation recorded a passing Tester record for the Executor commit with an independent session.
-- [ ] Tester provider, model, and effort match `.agents/models.md`.
-- [ ] Tester clean-worktree, commit-identity, and artifact-root checks are recorded.
-- [ ] Host-resource lease evidence is recorded when applicable.
-- [ ] Integration batch membership, integration commit, and one post-merge integration matrix result are recorded.
-- [ ] Merge conflicts and affected focused reruns are recorded or explicitly marked `None`.
-- [ ] Cleanup status confirms disposable ticket artifacts were removed after acceptance, or records why failed/blocked artifacts were retained.
-- [ ] Failures or coverage gaps are recorded or explicitly marked `None`.
-- [ ] Durable memory updates are promoted to `.memory/` or explicitly marked `None`.
-- [ ] Follow-up tickets are created or explicitly marked `None`.
-- [ ] Final ticket state matches `.tickets/queue.md`.
-- [ ] `Agent Run Summary` lists every role that ran, its model and effort, and token usage or `Unavailable`.
-- Waiver: Not permitted in normal mode; the runner completion operation must validate independent Tester evidence.
-
-`Test -> Done` is unavailable through generic state editing. The runner completion operation must validate this section and the protected evidence chain.
+Record every role that ran. No estimated usage or claimed model activation.
+Report fallback/escalation reason and transient retries when applicable.
 
 ## Review Plan
 
@@ -301,27 +178,25 @@ Record every role that actually ran for this ticket. Do not estimate token usage
 
 ## Decisions
 
-- Decision log entry
+- Decision / rationale:
 
 ## Memory Updates
 
-- Project:
-- Commands:
-- Decisions:
-- Pitfalls:
+- Durable verified update or None:
 
 ## Implementation Notes
 
-- Executor notes
-- Red/green evidence:
-- Commands run:
+- Changed files / exact target:
+- Red/green commands and results:
+- Remaining gaps:
 
 ## Review Notes
 
-- Spec compliance notes:
-- Code quality notes:
+- Independent report path / identity / target:
+- Findings / outcome:
 
 ## Test Notes
 
-- Tester notes
-- Fresh verification evidence:
+- Independent report path / identity / target:
+- Fresh commands/results / integration:
+- Remaining gaps / outcome:

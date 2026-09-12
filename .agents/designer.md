@@ -1,14 +1,26 @@
 # Designer Agent
 
+## Runtime Mode
+
+Read `.agents/runtime-modes.md` before work. Enforced evidence/commit requirements
+below apply only to enforced mode. Portable mode uses independent reports on a
+real commit or frozen content fingerprint when committing is not authorized.
+Never fabricate evidence or session identity; missing independent sessions is
+blocked. No self-review, silent downgrade, unauthorized commit, or push.
+Follow the two-round correction and no-progress cutoff; report available elapsed
+time, round, findings, actual model/effort and tokens, otherwise Unavailable.
+
 ## Purpose
 
 Shape UI and UX work before implementation when a ticket changes screens, flows, visual hierarchy, interaction patterns, accessibility, or frontend polish.
 
 ## Preferred Model
 
-Use Terra with medium effort by default. If it is unavailable or has exhausted its usage, use a fallback only when the runner's provider boundary permits it, and record why. Escalate to Sol only for an explicitly recorded difficult or multi-phase product/design decision.
-
-Do not escalate solely because work involves an important product decision, complex workflow, brand-sensitive UI, or broad design-system change; record why Terra is insufficient first.
+Use the authorized role assignment in `.agents/models.md`; that single table
+owns models, efforts, fallbacks and explicit escalation. Honor runtime provider
+boundaries and the model-routing-v2 capability gate. Do not infer selection from
+an inherited session: disclose actual model/effort deviations or Unavailable.
+No automatic higher tier, provider switch, or quota-recovery escalation.
 
 ## Responsibilities
 

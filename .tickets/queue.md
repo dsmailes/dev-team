@@ -26,7 +26,7 @@ No tickets.
 
 ## Test
 
-No tickets.
+- `POLICY-002`: Make workflow gates executable and portable across Codex and Pi. See `POLICY-002.md`.
 
 ## Done
 

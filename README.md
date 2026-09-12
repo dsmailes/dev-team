@@ -8,9 +8,11 @@ Portable role prompts, ticket templates, and skill-routing guidance for running 
 
 - `.agents/`: role definitions, project-local model config, prompts, and runbook.
 - `.skills/`: skill registry and cross-skill principles.
-- `.tickets/`: local ticket queue, ticket template, and starter ticket.
+- `.tickets/`: empty local ticket queue, reusable README and ticket template.
 - `.memory/`: durable project knowledge that future agents should not rediscover.
 - `scripts/render-ticket-dashboard.py`: static HTML dashboard generator for `.tickets/`.
+- `scripts/check-workflow-policy.py` and `scripts/workflow_policy/`: read-only stdlib policy checks and portable content fingerprints.
+- `.agents/runtime-modes.md`: explicit operating modes and Pi adapter migration checklist.
 - `docs/workflow-diagram.png` and `docs/ticket-dashboard-example.svg`: README image assets.
 
 ## Agent Roles
@@ -25,28 +27,50 @@ Portable role prompts, ticket templates, and skill-routing guidance for running 
 
 Model choices live in `.agents/models.md`.
 
-The default profile is Codex GPT-5.6:
+Defaults remain unchanged: Architect Luna xhigh; Designer, Executor and Tester
+Terra medium; Reviewer Sonnet 4.6 medium when permitted, otherwise Terra medium;
+optional Second Reviewer GPT-5.5 high. The first nine model columns retain their
+legacy values. Executor/Tester economy routing is explicit, bounded mechanical
+work or named deterministic verification, not diagnosis or UI judgment.
 
-- Architect: Luna with extra-high (`xhigh`) effort by default; falls back to Anthropic Sonnet 5 if Luna is unavailable or has exhausted its usage.
-- Designer: Terra with medium effort by default; falls back to Anthropic Sonnet 5 if Terra is unavailable or has exhausted its usage.
-- Executor: Terra with medium effort by default; falls back to Anthropic Sonnet 5 if Terra is unavailable or has exhausted its usage.
-- Reviewer: Anthropic Sonnet 4.6 with medium effort when the runner permits Anthropic and exposes it; otherwise Terra with medium effort in a Codex harness.
-- Second Reviewer: GPT-5.5 with high effort only when an independent adversarial review is required; falls back to Anthropic Opus 4.8 if GPT-5.5 is unavailable or has exhausted its usage.
-- Tester: Terra with medium effort by default; falls back to Anthropic Sonnet 5 if Terra is unavailable or has exhausted its usage. Luna is reserved for narrow, deterministic, low-context checks.
+Optional fallback effort, native fallback, and escalation columns require declared
+model-routing-v2 support. Architect may then use native Codex Terra high when
+Luna is unavailable; the Anthropic fallback remains configured. Sol escalation
+is explicit and uses the table's effort, not automatic higher-tier reasoning.
+Higher tiers need an explicit project configuration decision. No Astra switch.
 
-Tickets explicitly route Executor and Tester work as `routine` or `economy`.
-Economy uses Luna at medium effort for low-risk mechanical implementation and
-named deterministic verification commands. Missing or ambiguous routing,
-debugging, UI judgment, and broader integration work remain on Terra medium.
-If Luna is unavailable or exhausted, the runner returns to Terra medium.
+Official Codex/ChatGPT and Claude remain provider-local. Custom runtimes can use
+only explicitly declared allowed providers. Check availability and supported
+effort; confirmed exhaustion permits fallback, unknown quota does not. Transient
+failures have bounded retries distinct from quota recovery. Observed inherited
+models may differ from configuration: disclose deviations or Unavailable.
 
-Before spawning a role, the runner declares a provider boundary. Official ChatGPT/Codex harnesses permit only Codex models; official Claude harnesses permit only Anthropic models. Custom runners may declare multiple allowed providers and then use cross-provider fallbacks. Agents never infer that boundary from model names, tools, paths, or conversation content. Within the permitted set, the runner checks both model availability and remaining usage/quota, recording why it used a fallback.
+For exact candidates, efforts and eligibility, read [.agents/models.md](.agents/models.md).
+This table is authoritative; old Pi ignores extensions until its adapter changes.
 
-For other providers, the installer can infer provider-class placeholders such as `anthropic-balanced-coding` or `google-best-reasoning`. Replace those with exact model IDs supported by your local runner.
+## Operating Modes
 
-Tickets include an `Execution Model` section. Codex installs Architect on Luna at extra-high (`xhigh`) effort; Designer, Executor, Reviewer, and Tester remain at `medium` effort. Reviewer prefers Sonnet 4.6 only when the runner permits Anthropic and exposes it, otherwise it uses `terra` in a Codex harness. Escalation to `high` effort or `sol` must be recorded; use it for a focused difficult problem that remains blocked after the permitted default and fallback, and reserve ultra tiers for genuinely multi-phase or parallel work. Ordinary multi-file or integration work is not enough by itself.
+Select explicit enforced or portable mode using
+[.agents/runtime-modes.md](.agents/runtime-modes.md). Enforced mode requires trusted
+runner records and protected completion; the reference checker does not supply
+those capabilities or authenticate data. Failed enforced gates never silently
+fall back to portable operation.
 
-Tickets also include a `Second Review` decision. Require it for high-risk changes, unresolved review uncertainty, or when the user asks for an independent pass; GPT-5.5 then reviews the exact same ticket commit after the primary Terra review. Use Sol only when the recorded review or test problem remains difficult after Terra and its fallback.
+Portable mode works with independent role sessions and disclosed review/test
+reports in official Codex/ChatGPT. Without commit authorization, freeze ownership
+and use a content-sha256 fingerprint of tracked and nonignored untracked source;
+never fabricate a commit SHA or runner evidence. Missing independent sessions
+keeps work blocked, never self-reviewed. Required integration precedes acceptance.
+Default correction limit is two rounds, with an earlier no-progress cutoff.
+
+`python3 -B scripts/check-workflow-policy.py --fingerprint /absolute/project --ticket-id APP-123`
+
+`python3 -B scripts/check-workflow-policy.py --input /outside/project/attempt.json`
+
+The read-only CLI validates supplied snapshots/records against the selected model
+table. It never creates sessions, activates models, writes tickets or completes
+work. Accepted results still say authenticated: false. See the evidence contract
+for the input schema and runtime-modes.md for precise Pi migration gaps.
 
 Concurrent implementation tickets use dedicated worktrees, ticket-scoped artifacts, immutable verification commits, and one post-merge integration matrix per batch. Preserve blocked or failed workspaces for diagnosis; clean up only named, merged, verified workspaces after artifact capture.
 
@@ -200,6 +224,9 @@ Update mode refreshes:
 .agents/
 .skills/
 scripts/render-ticket-dashboard.py
+scripts/check-workflow-policy.py
+scripts/workflow_policy/
+scripts/with-host-resource-lease.sh
 docs/workflow-diagram.png
 docs/ticket-dashboard-example.svg
 .tickets/README.md
@@ -231,7 +258,9 @@ To deliberately replace the model configuration during an update:
 /path/to/dev-team/install.sh --project /path/to/project --update --models-provider codex
 ```
 
-This command intentionally replaces `.agents/models.md`. A plain `--update` preserves custom model configuration.
+This command intentionally replaces `.agents/models.md`. A plain `--update` preserves custom model configuration, including legacy files without extension columns.
+
+Updates also preserve installed `AGENTS.md`. Existing users must manually merge the new `.agents/runtime-modes.md` guidance into their project instructions when needed; the installer will not overwrite them. Enabling model-routing-v2 is a separate adapter/configuration decision, not an effect of updating files.
 
 Preview any installation, update, or reset without changing files:
 
@@ -281,7 +310,7 @@ Skip tickets only for simple explanations, one-command lookups, tiny typo fixes,
 2. Route UI tickets through Designer in the `Design` state when `Designer Review` is required, then return them to `Ready`.
 3. Assign one `Ready` ticket to Executor.
 4. Run Reviewer after implementation.
-5. Run Tester before marking the ticket `Done`.
+5. Run independent Tester, then required integration, before mode-specific acceptance/completion.
 
 The key field is `Skill Context` in each ticket. It records language, framework, platform, project type, task type, and which skills each role should use.
 
@@ -293,11 +322,11 @@ The Architect should inspect project context first, then record `Questioning Not
 
 The individual `.tickets/*.md` files plus `.tickets/queue.md` are the only authoritative live board. Runtime records under `.dev-team/` are execution history and evidence; generated `docs/tickets.*` files are snapshots. Neither is a second source of ticket state.
 
-Ticket IDs are allocated by scanning `.tickets/*.md` and choosing the next unused numeric suffix for the selected prefix. Keep the filename, H1, `## ID`, ticket `State`, and `.tickets/queue.md` entry aligned. The value under `## State` must be one exact lifecycle token; put closure or blocker prose in a separate section. The packaged `ARCH-001` ticket is a bootstrap placeholder; once real project tickets exist, mark it `Done`, move it to `Blocked`, or replace it with project-specific planning work.
+Ticket IDs are allocated by scanning `.tickets/*.md` and choosing the next unused numeric suffix for the selected prefix. Keep the filename, H1, `## ID`, ticket `State`, and `.tickets/queue.md` entry aligned. The value under `## State` must be one exact lifecycle token; put closure or blocker prose in a separate section. Fresh installs have an empty board; create the first real ticket from the template.
 
 Use `.memory/` for durable knowledge only: verified commands, architectural decisions, project orientation, and pitfalls. Keep active task notes in `.tickets/`.
 
-When a ticket reaches `Done`, the harness announces its `Agent Run Summary`: every role that ran, the agent or task identity, actual model and effort, and token usage when the runtime exposes it. If token telemetry is unavailable, the summary says `Unavailable`; it never estimates usage. This summary is not handoff proof: `.agents/handoff-evidence.md` requires the runner to create immutable Executor, independent Reviewer, and independent Tester records for the same executor commit. Only the runner completion operation may move `Test` to `Done`.
+When a ticket reaches `Done`, the harness announces its `Agent Run Summary`: every role that ran, the agent or task identity, actual model and effort, and token usage when the runtime exposes it. If token telemetry is unavailable, the summary says `Unavailable`; it never estimates usage. This summary is not handoff proof. Enforced mode requires runner-generated records and runner completion; portable mode uses independent reports and explicit acceptance as documented in `.agents/runtime-modes.md`. Neither permits self-review or fabricated telemetry.
 
 Runtime support is optional. When available, the workflow can use fresh-context subagents, live supervisor contact, background execution, and an allowed-agent list. When unavailable, agents use explicit ticket handoffs and report `NEEDS_CONTEXT` or `BLOCKED` instead of guessing.
 

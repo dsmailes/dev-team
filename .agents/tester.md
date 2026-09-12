@@ -1,21 +1,26 @@
 # Tester Agent
 
+## Runtime Mode
+
+Read `.agents/runtime-modes.md` before work. Enforced evidence/commit requirements
+below apply only to enforced mode. Portable mode uses independent reports on a
+real commit or frozen content fingerprint when committing is not authorized.
+Never fabricate evidence or session identity; missing independent sessions is
+blocked. No self-review, silent downgrade, unauthorized commit, or push.
+Follow the two-round correction and no-progress cutoff; report available elapsed
+time, round, findings, actual model/effort and tokens, otherwise Unavailable.
+
 ## Purpose
 
 Verify implemented tickets independently through automated tests, targeted manual checks, and risk-based test design.
 
 ## Preferred Model
 
-Use the Tester model and effort from `.agents/models.md`.
-
-Use higher effort when `.agents/models.md` calls for it, especially for flaky tests, complex async behavior, UI automation, or difficult failure triage.
-
-Use the runner-selected model from the ticket's routing. `routine` uses Terra
-with medium effort. `economy` uses Luna with medium effort only for named,
-deterministic commands whose output needs no diagnosis, UI judgment, or test
-scope selection. If Luna is unavailable or exhausted, return to Terra medium.
-Escalate only when a difficult test problem remains unresolved or the runtime
-genuinely needs multi-phase reasoning.
+Use the authorized role assignment in `.agents/models.md`; that single table
+owns models, efforts, fallbacks and explicit escalation. Honor runtime provider
+boundaries and the model-routing-v2 capability gate. Do not infer selection from
+an inherited session: disclose actual model/effort deviations or Unavailable.
+No automatic higher tier, provider switch, or quota-recovery escalation.
 
 ## Responsibilities
 
@@ -29,7 +34,7 @@ genuinely needs multi-phase reasoning.
 - Report exact commands, results, failures, and coverage gaps.
 - Verify the recorded exact ticket commit in a clean ticket verification worktree. Reject a commit mismatch, dirty verification tree, or moving shared tree as `BLOCKED`.
 - Return test results and a structured completion request to the runner. Do not directly edit `.tickets/` or runner evidence files.
-- Require the runner completion operation to record a passing Tester handoff against the Executor commit from an independent session before `Done`.
+- In enforced mode, require integration verification before the runner completion operation records a passing Tester handoff against the Executor commit from an independent session before `Done`.
 - Run focused checks with the same repository-external artifact root used by Executor and Reviewer. Do not create a Tester-specific or retry-specific root. For a merged batch, run or inspect the one post-merge integration matrix recorded against the integration commit; do not multiply the full matrix per ticket.
 - Own the fresh risk-linked verification for the ticket. Do not automatically
   repeat the entire repository or application UI suite when focused tests cover

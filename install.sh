@@ -98,6 +98,7 @@ MODELS_PROVIDER=""
 MODELS_FILE=""
 NO_MODEL_PROMPT=0
 MODEL_CONFIG_REQUESTED=0
+MODEL_DEFAULTS_SET=0
 
 while [ "$#" -gt 0 ]; do
   case "$1" in
@@ -361,7 +362,7 @@ fi
 copy_dir() {
   name=$1
   source=$SOURCE_DIR/$name
-  target=$TARGET_DIR/$name
+  target=$TARGET_DIR/${2:-$name}
 
   if [ ! -d "$source" ]; then
     echo "error: missing source directory: $source" >&2
@@ -568,6 +569,7 @@ set_model_defaults() {
       TESTER_ECONOMY_EFFORT=medium
       ;;
   esac
+  MODEL_DEFAULTS_SET=1
 }
 
 prompt_value() {
@@ -645,8 +647,29 @@ write_models_config() {
     MODELS_PROVIDER=codex
   fi
 
-  set_model_defaults "$MODELS_PROVIDER"
+  # Interactive customization already initialized and then adjusted these values.
+  if [ "$MODEL_DEFAULTS_SET" -eq 0 ]; then
+    set_model_defaults "$MODELS_PROVIDER"
+  fi
   mkdir -p "$TARGET_DIR/.agents"
+
+  # Extensions are data only; runners opt in with model-routing-v2.
+  NATIVE_PROVIDER=-
+  NATIVE_MODEL=-
+  NATIVE_EFFORT=-
+  ESCALATION_PROVIDER=-
+  ESCALATION_MODEL=-
+  ESCALATION_EFFORT=-
+  ARCHITECT_FALLBACK_EFFORT=$ARCHITECT_EFFORT
+  if [ "$MODELS_PROVIDER" = codex ]; then
+    NATIVE_PROVIDER=codex
+    NATIVE_MODEL=terra
+    NATIVE_EFFORT=high
+    ESCALATION_PROVIDER=codex
+    ESCALATION_MODEL=sol
+    ESCALATION_EFFORT=high
+    ARCHITECT_FALLBACK_EFFORT=medium
+  fi
 
   cat > "$TARGET_DIR/.agents/models.md" <<EOF
 # Agent Model Configuration
@@ -665,11 +688,12 @@ The runner, not an agent, supplies this context before model selection:
 
 \`\`\`yaml
 runtime:
-  harness: official-chatgpt | official-claude | custom | unknown
+  harness: official-codex | official-chatgpt | official-claude | custom | unknown
   allowed_providers: [$MODELS_PROVIDER]
+  native_provider: $MODELS_PROVIDER
 \`\`\`
 
-- \`official-chatgpt\` permits only \`codex\` models.
+- \`official-codex\` and \`official-chatgpt\` permit only \`codex\` models.
 - \`official-claude\` permits only \`anthropic\` models.
 - \`custom\` may use every provider explicitly listed in \`allowed_providers\`.
 - \`unknown\` must not attempt a cross-provider model.
@@ -679,31 +703,36 @@ eligible only when its provider is allowed and the runtime exposes it.
 
 ## Availability And Usage Checks
 
-Before spawning a role, check both of the following. Either failing means the
-model is not usable and the runner must select the fallback:
-
-1. **Availability**: the active runtime's model list exposes the preferred model.
-2. **Usage**: the preferred model has remaining usage/quota. Treat an exhausted
-   quota, rate-limit rejection, billing/credit failure, or any runtime signal
-   that further calls to that model will be rejected the same as unavailable.
-
-Record which condition failed (\`unavailable\` or \`usage-exhausted\`) and the
-actual model selected in the ticket's \`Agent Run Summary\` and \`Execution Model\`
-fallback reason. Do not retry the same exhausted model; move directly to the
-fallback in the table below.
+Check availability, supported effort and quota before dispatch. Confirmed
+unavailability or usage-exhausted permits fallback. Unknown quota is not
+exhaustion. Transient errors permit at most two bounded retries of the same
+candidate, then block; do not use them to justify escalation. Never retry a
+confirmed exhausted model. Record actual selection/reason or Unavailable.
 
 ## Role Assignments
 
-The table below is machine-readable. Runners select exactly one preferred or fallback assignment; prose in this file does not override its fields.
+This single table is authoritative. First nine columns retain legacy semantics.
+Optional extensions require a declared model-routing-v2 capability. Without
+it, fallback effort inherits primary effort; native/escalation columns are
+ignored. Current Pi does not enforce these extensions. Read runtime-modes.md
+for operating modes and adapter gaps. Unknown actual models are Unavailable.
 
-| Role | Model | Effort | Provider | Fallback Provider | Fallback Model | Economy Provider | Economy Model | Economy Effort |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Architect | \`$ARCHITECT_MODEL\` | \`$ARCHITECT_EFFORT\` | \`$ARCHITECT_PROVIDER\` | \`$ARCHITECT_FALLBACK_PROVIDER\` | \`$ARCHITECT_FALLBACK_MODEL\` | - | - | - |
-| Designer | \`$DESIGNER_MODEL\` | \`$DESIGNER_EFFORT\` | \`$DESIGNER_PROVIDER\` | \`$DESIGNER_FALLBACK_PROVIDER\` | \`$DESIGNER_FALLBACK_MODEL\` | - | - | - |
-| Executor | \`$EXECUTOR_MODEL\` | \`$EXECUTOR_EFFORT\` | \`$EXECUTOR_PROVIDER\` | \`$EXECUTOR_FALLBACK_PROVIDER\` | \`$EXECUTOR_FALLBACK_MODEL\` | \`$EXECUTOR_ECONOMY_PROVIDER\` | \`$EXECUTOR_ECONOMY_MODEL\` | \`$EXECUTOR_ECONOMY_EFFORT\` |
-| Reviewer | \`$REVIEWER_MODEL\` | \`$REVIEWER_EFFORT\` | \`$REVIEWER_PROVIDER\` | \`$REVIEWER_FALLBACK_PROVIDER\` | \`$REVIEWER_FALLBACK_MODEL\` | - | - | - |
-| Second Reviewer | \`$SECOND_REVIEWER_MODEL\` | \`$SECOND_REVIEWER_EFFORT\` | \`$SECOND_REVIEWER_PROVIDER\` | \`$SECOND_REVIEWER_FALLBACK_PROVIDER\` | \`$SECOND_REVIEWER_FALLBACK_MODEL\` | - | - | - |
-| Tester | \`$TESTER_MODEL\` | \`$TESTER_EFFORT\` | \`$TESTER_PROVIDER\` | \`$TESTER_FALLBACK_PROVIDER\` | \`$TESTER_FALLBACK_MODEL\` | \`$TESTER_ECONOMY_PROVIDER\` | \`$TESTER_ECONOMY_MODEL\` | \`$TESTER_ECONOMY_EFFORT\` |
+With v2, routine tries preferred, native fallback (native provider only), then
+provider fallback; economy tries its entry then routine. Every candidate must
+be allowed, exposed, effort-supported and not confirmed exhausted. Escalation
+needs explicit authorization, a focused-difficult/multi-phase trigger and reason;
+never escalate for quota recovery. Higher effort needs a project table decision.
+Missing optional candidates are unavailable; missing fallback effort inherits
+primary effort for legacy configurations.
+
+| Role | Model | Effort | Provider | Fallback Provider | Fallback Model | Economy Provider | Economy Model | Economy Effort | Fallback Effort | Native Fallback Provider | Native Fallback Model | Native Fallback Effort | Escalation Provider | Escalation Model | Escalation Effort |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Architect | \`$ARCHITECT_MODEL\` | \`$ARCHITECT_EFFORT\` | \`$ARCHITECT_PROVIDER\` | \`$ARCHITECT_FALLBACK_PROVIDER\` | \`$ARCHITECT_FALLBACK_MODEL\` | - | - | - | \`$ARCHITECT_FALLBACK_EFFORT\` | \`$NATIVE_PROVIDER\` | \`$NATIVE_MODEL\` | \`$NATIVE_EFFORT\` | - | - | - |
+| Designer | \`$DESIGNER_MODEL\` | \`$DESIGNER_EFFORT\` | \`$DESIGNER_PROVIDER\` | \`$DESIGNER_FALLBACK_PROVIDER\` | \`$DESIGNER_FALLBACK_MODEL\` | - | - | - | \`$DESIGNER_EFFORT\` | - | - | - | \`$ESCALATION_PROVIDER\` | \`$ESCALATION_MODEL\` | \`$ESCALATION_EFFORT\` |
+| Executor | \`$EXECUTOR_MODEL\` | \`$EXECUTOR_EFFORT\` | \`$EXECUTOR_PROVIDER\` | \`$EXECUTOR_FALLBACK_PROVIDER\` | \`$EXECUTOR_FALLBACK_MODEL\` | \`$EXECUTOR_ECONOMY_PROVIDER\` | \`$EXECUTOR_ECONOMY_MODEL\` | \`$EXECUTOR_ECONOMY_EFFORT\` | \`$EXECUTOR_EFFORT\` | - | - | - | \`$ESCALATION_PROVIDER\` | \`$ESCALATION_MODEL\` | \`$ESCALATION_EFFORT\` |
+| Reviewer | \`$REVIEWER_MODEL\` | \`$REVIEWER_EFFORT\` | \`$REVIEWER_PROVIDER\` | \`$REVIEWER_FALLBACK_PROVIDER\` | \`$REVIEWER_FALLBACK_MODEL\` | - | - | - | \`$REVIEWER_EFFORT\` | - | - | - | \`$ESCALATION_PROVIDER\` | \`$ESCALATION_MODEL\` | \`$ESCALATION_EFFORT\` |
+| Second Reviewer | \`$SECOND_REVIEWER_MODEL\` | \`$SECOND_REVIEWER_EFFORT\` | \`$SECOND_REVIEWER_PROVIDER\` | \`$SECOND_REVIEWER_FALLBACK_PROVIDER\` | \`$SECOND_REVIEWER_FALLBACK_MODEL\` | - | - | - | \`$SECOND_REVIEWER_EFFORT\` | - | - | - | - | - | - |
+| Tester | \`$TESTER_MODEL\` | \`$TESTER_EFFORT\` | \`$TESTER_PROVIDER\` | \`$TESTER_FALLBACK_PROVIDER\` | \`$TESTER_FALLBACK_MODEL\` | \`$TESTER_ECONOMY_PROVIDER\` | \`$TESTER_ECONOMY_MODEL\` | \`$TESTER_ECONOMY_EFFORT\` | \`$TESTER_EFFORT\` | - | - | - | \`$ESCALATION_PROVIDER\` | \`$ESCALATION_MODEL\` | \`$ESCALATION_EFFORT\` |
 
 ## Provider Mapping Guidance
 
@@ -735,6 +764,7 @@ sync_agents_for_update() {
   replace_file .agents/executor.md .agents/executor.md
   replace_file .agents/handoff.md .agents/handoff.md
   replace_file .agents/handoff-evidence.md .agents/handoff-evidence.md
+  replace_file .agents/runtime-modes.md .agents/runtime-modes.md
   replace_file .agents/prompts.md .agents/prompts.md
   replace_file .agents/reviewer.md .agents/reviewer.md
   replace_file .agents/runbook.md .agents/runbook.md
@@ -745,6 +775,11 @@ sync_scripts_for_update() {
   mkdir -p "$TARGET_DIR/scripts"
   replace_file scripts/render-ticket-dashboard.py scripts/render-ticket-dashboard.py
   replace_file scripts/with-host-resource-lease.sh scripts/with-host-resource-lease.sh
+  replace_file scripts/check-workflow-policy.py scripts/check-workflow-policy.py
+  mkdir -p "$TARGET_DIR/scripts/workflow_policy"
+  for module in __init__.py models.py handoff.py fingerprint.py; do
+    replace_file "scripts/workflow_policy/$module" "scripts/workflow_policy/$module"
+  done
 }
 
 sync_docs_assets_for_update() {
@@ -776,8 +811,11 @@ if [ "$UPDATE" -eq 1 ]; then
 else
   copy_dir .agents
   copy_dir .skills
-  copy_dir .tickets
-  copy_dir .memory
+  copy_dir starter/.tickets .tickets
+  copy_file .tickets/README.md
+  copy_file .tickets/template.md
+  copy_dir starter/.memory .memory
+  copy_file .memory/README.md
   copy_dir scripts
   copy_file docs/workflow-diagram.png docs/workflow-diagram.png
   copy_file docs/ticket-dashboard-example.svg docs/ticket-dashboard-example.svg

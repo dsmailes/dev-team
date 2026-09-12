@@ -6,7 +6,6 @@ This directory is a lightweight local ticketing system for agent-coordinated wor
 
 - `queue.md` plus the individual ticket files are the authoritative live board.
 - `template.md`: template for new tickets.
-- `ARCH-001.md`: example ticket showing the expected level of detail.
 - `../scripts/render-ticket-dashboard.py`: generates non-authoritative `docs/tickets.html` and `docs/tickets.md` projections from the live board.
 
 Runner records under `.dev-team/` are execution history and evidence, not a second ticket board. Generated dashboard files are snapshots and must be regenerated after every ticket or queue mutation before they are displayed or summarized.
@@ -48,7 +47,12 @@ Runner records under `.dev-team/` are execution history and evidence, not a seco
 
 Use `isolated` mode when safe ticket worktrees are available; otherwise use `serialized` mode and allow only one mutating/building ticket to own the shared worktree. Reviewer and Tester verify the recorded ticket commit from clean verification worktrees. The orchestrator merges reviewed commits into an integration batch, runs one full integration matrix on the resulting integration commit, and records the shared evidence on every included ticket before cleanup.
 
-The packaged `ARCH-001` ticket is a bootstrap placeholder for capturing the first real project request. Once real project tickets exist, mark it `Done`, move it to `Blocked`, or replace it with project-specific planning work so it does not remain ambiguous backlog.
+Fresh installs start with an empty board and clean memory. Create the first real ticket from template.md; there is no packaged bootstrap ticket to complete.
+
+Select explicit enforced or portable mode using `.agents/runtime-modes.md`.
+Portable precommit review uses a frozen fingerprint including untracked files,
+not a fabricated SHA. Both modes require independent review/testing and required
+integration before acceptance; unavailable independence keeps work blocked.
 
 ## Example Lifecycle
 

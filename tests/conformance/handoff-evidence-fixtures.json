@@ -1,32 +1,2633 @@
 {
-  "schema_fields": [
-    "run_id",
-    "ticket_id",
-    "role",
-    "provider",
-    "model",
-    "effort",
-    "session_id",
-    "commit_sha",
-    "outcome",
-    "started_at",
-    "completed_at"
-  ],
+  "schema_version": 2,
+  "scope": "Synthetic policy vectors, not runtime evidence. Resolve model assignments from the supplied models.md; snapshots are test inputs.",
+  "models_path": ".agents/models.md",
   "fixtures": [
     {
-      "name": "accepts-independent-passing-chain",
+      "name": "accepts-independent-chain",
       "expected": "accept",
-      "records": [
-        {"run_id": "run-executor", "ticket_id": "APP-100", "role": "executor", "provider": "codex", "model": "terra", "effort": "high", "session_id": "session-executor", "commit_sha": "abc123", "outcome": "pass", "started_at": "2026-01-01T00:00:00Z", "completed_at": "2026-01-01T00:01:00Z"},
-        {"run_id": "run-reviewer", "ticket_id": "APP-100", "role": "reviewer", "provider": "anthropic", "model": "anthropic-sonnet-5", "effort": "medium", "session_id": "session-reviewer", "commit_sha": "abc123", "outcome": "pass", "started_at": "2026-01-01T00:02:00Z", "completed_at": "2026-01-01T00:03:00Z"},
-        {"run_id": "run-tester", "ticket_id": "APP-100", "role": "tester", "provider": "codex", "model": "terra", "effort": "high", "session_id": "session-tester", "commit_sha": "abc123", "outcome": "pass", "started_at": "2026-01-01T00:04:00Z", "completed_at": "2026-01-01T00:05:00Z"}
-      ]
+      "payload": {
+        "snapshot": {
+          "mode": "enforced",
+          "ticket_id": "APP-100",
+          "attempt_id": "attempt-2",
+          "commit_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "started_at": "2026-01-01T00:00:00Z",
+          "observed_at": "2026-01-01T00:10:00Z",
+          "orchestrator_session_id": "architect-session",
+          "from_state": "Test",
+          "to_state": "Done",
+          "operation": "complete",
+          "second_review_required": false,
+          "integration": {
+            "required": false,
+            "reason": "Single serialized change; no integration batch."
+          },
+          "runtime": {
+            "harness": "official-codex",
+            "native_provider": "codex",
+            "allowed_providers": [
+              "codex"
+            ],
+            "capabilities": [
+              "model-routing-v2",
+              "handoff-evidence-v2"
+            ],
+            "models": [
+              {
+                "provider": "codex",
+                "model": "luna",
+                "efforts": [
+                  "medium",
+                  "xhigh"
+                ],
+                "availability": "available",
+                "quota": "unknown"
+              },
+              {
+                "provider": "codex",
+                "model": "terra",
+                "efforts": [
+                  "medium",
+                  "high"
+                ],
+                "availability": "available",
+                "quota": "available"
+              },
+              {
+                "provider": "codex",
+                "model": "sol",
+                "efforts": [
+                  "high"
+                ],
+                "availability": "available",
+                "quota": "available"
+              }
+            ]
+          },
+          "assignments": {
+            "executor": {
+              "provider": "codex",
+              "model": "terra",
+              "effort": "medium",
+              "request": {
+                "routing": "routine"
+              }
+            },
+            "reviewer": {
+              "provider": "codex",
+              "model": "terra",
+              "effort": "medium",
+              "request": {
+                "routing": "routine"
+              }
+            },
+            "tester": {
+              "provider": "codex",
+              "model": "terra",
+              "effort": "medium",
+              "request": {
+                "routing": "routine"
+              }
+            }
+          },
+          "sessions": {
+            "executor": "executor-session",
+            "reviewer": "reviewer-session",
+            "tester": "tester-session"
+          },
+          "selected_runs": {
+            "executor": "exec-2",
+            "reviewer": "review-2",
+            "tester": "test-2"
+          }
+        },
+        "records": [
+          {
+            "run_id": "exec-2",
+            "attempt_id": "attempt-2",
+            "ticket_id": "APP-100",
+            "role": "executor",
+            "provider": "codex",
+            "model": "terra",
+            "effort": "medium",
+            "session_id": "executor-session",
+            "commit_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "outcome": "pass",
+            "started_at": "2026-01-01T00:00:00Z",
+            "completed_at": "2026-01-01T00:01:00Z"
+          },
+          {
+            "run_id": "review-2",
+            "attempt_id": "attempt-2",
+            "ticket_id": "APP-100",
+            "role": "reviewer",
+            "provider": "codex",
+            "model": "terra",
+            "effort": "medium",
+            "session_id": "reviewer-session",
+            "commit_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "outcome": "pass",
+            "started_at": "2026-01-01T00:02:00Z",
+            "completed_at": "2026-01-01T00:03:00Z"
+          },
+          {
+            "run_id": "test-2",
+            "attempt_id": "attempt-2",
+            "ticket_id": "APP-100",
+            "role": "tester",
+            "provider": "codex",
+            "model": "terra",
+            "effort": "medium",
+            "session_id": "tester-session",
+            "commit_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "outcome": "pass",
+            "started_at": "2026-01-01T00:04:00Z",
+            "completed_at": "2026-01-01T00:05:00Z"
+          }
+        ]
+      }
     },
-    {"name": "rejects-architect-self-review", "expected": "reject:self-review", "records": []},
-    {"name": "rejects-missing-executor-evidence", "expected": "reject:missing-executor-evidence", "records": []},
-    {"name": "rejects-model-mismatch", "expected": "reject:model-mismatch", "records": []},
-    {"name": "rejects-reused-session", "expected": "reject:reused-session", "records": []},
-    {"name": "rejects-commit-mismatch", "expected": "reject:commit-mismatch", "records": []},
-    {"name": "rejects-direct-done-move", "expected": "reject:completion-operation-required", "records": []}
+    {
+      "name": "rejects-wrong-role",
+      "expected": "wrong-role",
+      "payload": {
+        "snapshot": {
+          "mode": "enforced",
+          "ticket_id": "APP-100",
+          "attempt_id": "attempt-2",
+          "commit_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "started_at": "2026-01-01T00:00:00Z",
+          "observed_at": "2026-01-01T00:10:00Z",
+          "orchestrator_session_id": "architect-session",
+          "from_state": "Test",
+          "to_state": "Done",
+          "operation": "complete",
+          "second_review_required": false,
+          "integration": {
+            "required": false,
+            "reason": "Single serialized change; no integration batch."
+          },
+          "runtime": {
+            "harness": "official-codex",
+            "native_provider": "codex",
+            "allowed_providers": [
+              "codex"
+            ],
+            "capabilities": [
+              "model-routing-v2",
+              "handoff-evidence-v2"
+            ],
+            "models": [
+              {
+                "provider": "codex",
+                "model": "luna",
+                "efforts": [
+                  "medium",
+                  "xhigh"
+                ],
+                "availability": "available",
+                "quota": "unknown"
+              },
+              {
+                "provider": "codex",
+                "model": "terra",
+                "efforts": [
+                  "medium",
+                  "high"
+                ],
+                "availability": "available",
+                "quota": "available"
+              },
+              {
+                "provider": "codex",
+                "model": "sol",
+                "efforts": [
+                  "high"
+                ],
+                "availability": "available",
+                "quota": "available"
+              }
+            ]
+          },
+          "assignments": {
+            "executor": {
+              "provider": "codex",
+              "model": "terra",
+              "effort": "medium",
+              "request": {
+                "routing": "routine"
+              }
+            },
+            "reviewer": {
+              "provider": "codex",
+              "model": "terra",
+              "effort": "medium",
+              "request": {
+                "routing": "routine"
+              }
+            },
+            "tester": {
+              "provider": "codex",
+              "model": "terra",
+              "effort": "medium",
+              "request": {
+                "routing": "routine"
+              }
+            }
+          },
+          "sessions": {
+            "executor": "executor-session",
+            "reviewer": "reviewer-session",
+            "tester": "tester-session"
+          },
+          "selected_runs": {
+            "executor": "exec-2",
+            "reviewer": "review-2",
+            "tester": "test-2"
+          }
+        },
+        "records": [
+          {
+            "run_id": "exec-2",
+            "attempt_id": "attempt-2",
+            "ticket_id": "APP-100",
+            "role": "executor",
+            "provider": "codex",
+            "model": "terra",
+            "effort": "medium",
+            "session_id": "executor-session",
+            "commit_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "outcome": "pass",
+            "started_at": "2026-01-01T00:00:00Z",
+            "completed_at": "2026-01-01T00:01:00Z"
+          },
+          {
+            "run_id": "review-2",
+            "attempt_id": "attempt-2",
+            "ticket_id": "APP-100",
+            "role": "architect",
+            "provider": "codex",
+            "model": "terra",
+            "effort": "medium",
+            "session_id": "reviewer-session",
+            "commit_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "outcome": "pass",
+            "started_at": "2026-01-01T00:02:00Z",
+            "completed_at": "2026-01-01T00:03:00Z"
+          },
+          {
+            "run_id": "test-2",
+            "attempt_id": "attempt-2",
+            "ticket_id": "APP-100",
+            "role": "tester",
+            "provider": "codex",
+            "model": "terra",
+            "effort": "medium",
+            "session_id": "tester-session",
+            "commit_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "outcome": "pass",
+            "started_at": "2026-01-01T00:04:00Z",
+            "completed_at": "2026-01-01T00:05:00Z"
+          }
+        ]
+      }
+    },
+    {
+      "name": "rejects-architect-self-review",
+      "expected": "self-review",
+      "payload": {
+        "snapshot": {
+          "mode": "enforced",
+          "ticket_id": "APP-100",
+          "attempt_id": "attempt-2",
+          "commit_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "started_at": "2026-01-01T00:00:00Z",
+          "observed_at": "2026-01-01T00:10:00Z",
+          "orchestrator_session_id": "architect-session",
+          "from_state": "Test",
+          "to_state": "Done",
+          "operation": "complete",
+          "second_review_required": false,
+          "integration": {
+            "required": false,
+            "reason": "Single serialized change; no integration batch."
+          },
+          "runtime": {
+            "harness": "official-codex",
+            "native_provider": "codex",
+            "allowed_providers": [
+              "codex"
+            ],
+            "capabilities": [
+              "model-routing-v2",
+              "handoff-evidence-v2"
+            ],
+            "models": [
+              {
+                "provider": "codex",
+                "model": "luna",
+                "efforts": [
+                  "medium",
+                  "xhigh"
+                ],
+                "availability": "available",
+                "quota": "unknown"
+              },
+              {
+                "provider": "codex",
+                "model": "terra",
+                "efforts": [
+                  "medium",
+                  "high"
+                ],
+                "availability": "available",
+                "quota": "available"
+              },
+              {
+                "provider": "codex",
+                "model": "sol",
+                "efforts": [
+                  "high"
+                ],
+                "availability": "available",
+                "quota": "available"
+              }
+            ]
+          },
+          "assignments": {
+            "executor": {
+              "provider": "codex",
+              "model": "terra",
+              "effort": "medium",
+              "request": {
+                "routing": "routine"
+              }
+            },
+            "reviewer": {
+              "provider": "codex",
+              "model": "terra",
+              "effort": "medium",
+              "request": {
+                "routing": "routine"
+              }
+            },
+            "tester": {
+              "provider": "codex",
+              "model": "terra",
+              "effort": "medium",
+              "request": {
+                "routing": "routine"
+              }
+            }
+          },
+          "sessions": {
+            "executor": "executor-session",
+            "reviewer": "architect-session",
+            "tester": "tester-session"
+          },
+          "selected_runs": {
+            "executor": "exec-2",
+            "reviewer": "review-2",
+            "tester": "test-2"
+          }
+        },
+        "records": [
+          {
+            "run_id": "exec-2",
+            "attempt_id": "attempt-2",
+            "ticket_id": "APP-100",
+            "role": "executor",
+            "provider": "codex",
+            "model": "terra",
+            "effort": "medium",
+            "session_id": "executor-session",
+            "commit_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "outcome": "pass",
+            "started_at": "2026-01-01T00:00:00Z",
+            "completed_at": "2026-01-01T00:01:00Z"
+          },
+          {
+            "run_id": "review-2",
+            "attempt_id": "attempt-2",
+            "ticket_id": "APP-100",
+            "role": "reviewer",
+            "provider": "codex",
+            "model": "terra",
+            "effort": "medium",
+            "session_id": "architect-session",
+            "commit_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "outcome": "pass",
+            "started_at": "2026-01-01T00:02:00Z",
+            "completed_at": "2026-01-01T00:03:00Z"
+          },
+          {
+            "run_id": "test-2",
+            "attempt_id": "attempt-2",
+            "ticket_id": "APP-100",
+            "role": "tester",
+            "provider": "codex",
+            "model": "terra",
+            "effort": "medium",
+            "session_id": "tester-session",
+            "commit_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "outcome": "pass",
+            "started_at": "2026-01-01T00:04:00Z",
+            "completed_at": "2026-01-01T00:05:00Z"
+          }
+        ]
+      }
+    },
+    {
+      "name": "rejects-missing-executor",
+      "expected": "missing-executor-evidence",
+      "payload": {
+        "snapshot": {
+          "mode": "enforced",
+          "ticket_id": "APP-100",
+          "attempt_id": "attempt-2",
+          "commit_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "started_at": "2026-01-01T00:00:00Z",
+          "observed_at": "2026-01-01T00:10:00Z",
+          "orchestrator_session_id": "architect-session",
+          "from_state": "Test",
+          "to_state": "Done",
+          "operation": "complete",
+          "second_review_required": false,
+          "integration": {
+            "required": false,
+            "reason": "Single serialized change; no integration batch."
+          },
+          "runtime": {
+            "harness": "official-codex",
+            "native_provider": "codex",
+            "allowed_providers": [
+              "codex"
+            ],
+            "capabilities": [
+              "model-routing-v2",
+              "handoff-evidence-v2"
+            ],
+            "models": [
+              {
+                "provider": "codex",
+                "model": "luna",
+                "efforts": [
+                  "medium",
+                  "xhigh"
+                ],
+                "availability": "available",
+                "quota": "unknown"
+              },
+              {
+                "provider": "codex",
+                "model": "terra",
+                "efforts": [
+                  "medium",
+                  "high"
+                ],
+                "availability": "available",
+                "quota": "available"
+              },
+              {
+                "provider": "codex",
+                "model": "sol",
+                "efforts": [
+                  "high"
+                ],
+                "availability": "available",
+                "quota": "available"
+              }
+            ]
+          },
+          "assignments": {
+            "executor": {
+              "provider": "codex",
+              "model": "terra",
+              "effort": "medium",
+              "request": {
+                "routing": "routine"
+              }
+            },
+            "reviewer": {
+              "provider": "codex",
+              "model": "terra",
+              "effort": "medium",
+              "request": {
+                "routing": "routine"
+              }
+            },
+            "tester": {
+              "provider": "codex",
+              "model": "terra",
+              "effort": "medium",
+              "request": {
+                "routing": "routine"
+              }
+            }
+          },
+          "sessions": {
+            "executor": "executor-session",
+            "reviewer": "reviewer-session",
+            "tester": "tester-session"
+          },
+          "selected_runs": {
+            "executor": "exec-2",
+            "reviewer": "review-2",
+            "tester": "test-2"
+          }
+        },
+        "records": [
+          {
+            "run_id": "review-2",
+            "attempt_id": "attempt-2",
+            "ticket_id": "APP-100",
+            "role": "reviewer",
+            "provider": "codex",
+            "model": "terra",
+            "effort": "medium",
+            "session_id": "reviewer-session",
+            "commit_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "outcome": "pass",
+            "started_at": "2026-01-01T00:02:00Z",
+            "completed_at": "2026-01-01T00:03:00Z"
+          },
+          {
+            "run_id": "test-2",
+            "attempt_id": "attempt-2",
+            "ticket_id": "APP-100",
+            "role": "tester",
+            "provider": "codex",
+            "model": "terra",
+            "effort": "medium",
+            "session_id": "tester-session",
+            "commit_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "outcome": "pass",
+            "started_at": "2026-01-01T00:04:00Z",
+            "completed_at": "2026-01-01T00:05:00Z"
+          }
+        ]
+      }
+    },
+    {
+      "name": "rejects-model-mismatch",
+      "expected": "model-mismatch",
+      "payload": {
+        "snapshot": {
+          "mode": "enforced",
+          "ticket_id": "APP-100",
+          "attempt_id": "attempt-2",
+          "commit_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "started_at": "2026-01-01T00:00:00Z",
+          "observed_at": "2026-01-01T00:10:00Z",
+          "orchestrator_session_id": "architect-session",
+          "from_state": "Test",
+          "to_state": "Done",
+          "operation": "complete",
+          "second_review_required": false,
+          "integration": {
+            "required": false,
+            "reason": "Single serialized change; no integration batch."
+          },
+          "runtime": {
+            "harness": "official-codex",
+            "native_provider": "codex",
+            "allowed_providers": [
+              "codex"
+            ],
+            "capabilities": [
+              "model-routing-v2",
+              "handoff-evidence-v2"
+            ],
+            "models": [
+              {
+                "provider": "codex",
+                "model": "luna",
+                "efforts": [
+                  "medium",
+                  "xhigh"
+                ],
+                "availability": "available",
+                "quota": "unknown"
+              },
+              {
+                "provider": "codex",
+                "model": "terra",
+                "efforts": [
+                  "medium",
+                  "high"
+                ],
+                "availability": "available",
+                "quota": "available"
+              },
+              {
+                "provider": "codex",
+                "model": "sol",
+                "efforts": [
+                  "high"
+                ],
+                "availability": "available",
+                "quota": "available"
+              }
+            ]
+          },
+          "assignments": {
+            "executor": {
+              "provider": "codex",
+              "model": "terra",
+              "effort": "medium",
+              "request": {
+                "routing": "routine"
+              }
+            },
+            "reviewer": {
+              "provider": "codex",
+              "model": "terra",
+              "effort": "medium",
+              "request": {
+                "routing": "routine"
+              }
+            },
+            "tester": {
+              "provider": "codex",
+              "model": "terra",
+              "effort": "medium",
+              "request": {
+                "routing": "routine"
+              }
+            }
+          },
+          "sessions": {
+            "executor": "executor-session",
+            "reviewer": "reviewer-session",
+            "tester": "tester-session"
+          },
+          "selected_runs": {
+            "executor": "exec-2",
+            "reviewer": "review-2",
+            "tester": "test-2"
+          }
+        },
+        "records": [
+          {
+            "run_id": "exec-2",
+            "attempt_id": "attempt-2",
+            "ticket_id": "APP-100",
+            "role": "executor",
+            "provider": "codex",
+            "model": "terra",
+            "effort": "medium",
+            "session_id": "executor-session",
+            "commit_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "outcome": "pass",
+            "started_at": "2026-01-01T00:00:00Z",
+            "completed_at": "2026-01-01T00:01:00Z"
+          },
+          {
+            "run_id": "review-2",
+            "attempt_id": "attempt-2",
+            "ticket_id": "APP-100",
+            "role": "reviewer",
+            "provider": "codex",
+            "model": "sol",
+            "effort": "medium",
+            "session_id": "reviewer-session",
+            "commit_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "outcome": "pass",
+            "started_at": "2026-01-01T00:02:00Z",
+            "completed_at": "2026-01-01T00:03:00Z"
+          },
+          {
+            "run_id": "test-2",
+            "attempt_id": "attempt-2",
+            "ticket_id": "APP-100",
+            "role": "tester",
+            "provider": "codex",
+            "model": "terra",
+            "effort": "medium",
+            "session_id": "tester-session",
+            "commit_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "outcome": "pass",
+            "started_at": "2026-01-01T00:04:00Z",
+            "completed_at": "2026-01-01T00:05:00Z"
+          }
+        ]
+      }
+    },
+    {
+      "name": "rejects-reused-session",
+      "expected": "reused-session",
+      "payload": {
+        "snapshot": {
+          "mode": "enforced",
+          "ticket_id": "APP-100",
+          "attempt_id": "attempt-2",
+          "commit_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "started_at": "2026-01-01T00:00:00Z",
+          "observed_at": "2026-01-01T00:10:00Z",
+          "orchestrator_session_id": "architect-session",
+          "from_state": "Test",
+          "to_state": "Done",
+          "operation": "complete",
+          "second_review_required": false,
+          "integration": {
+            "required": false,
+            "reason": "Single serialized change; no integration batch."
+          },
+          "runtime": {
+            "harness": "official-codex",
+            "native_provider": "codex",
+            "allowed_providers": [
+              "codex"
+            ],
+            "capabilities": [
+              "model-routing-v2",
+              "handoff-evidence-v2"
+            ],
+            "models": [
+              {
+                "provider": "codex",
+                "model": "luna",
+                "efforts": [
+                  "medium",
+                  "xhigh"
+                ],
+                "availability": "available",
+                "quota": "unknown"
+              },
+              {
+                "provider": "codex",
+                "model": "terra",
+                "efforts": [
+                  "medium",
+                  "high"
+                ],
+                "availability": "available",
+                "quota": "available"
+              },
+              {
+                "provider": "codex",
+                "model": "sol",
+                "efforts": [
+                  "high"
+                ],
+                "availability": "available",
+                "quota": "available"
+              }
+            ]
+          },
+          "assignments": {
+            "executor": {
+              "provider": "codex",
+              "model": "terra",
+              "effort": "medium",
+              "request": {
+                "routing": "routine"
+              }
+            },
+            "reviewer": {
+              "provider": "codex",
+              "model": "terra",
+              "effort": "medium",
+              "request": {
+                "routing": "routine"
+              }
+            },
+            "tester": {
+              "provider": "codex",
+              "model": "terra",
+              "effort": "medium",
+              "request": {
+                "routing": "routine"
+              }
+            }
+          },
+          "sessions": {
+            "executor": "executor-session",
+            "reviewer": "executor-session",
+            "tester": "tester-session"
+          },
+          "selected_runs": {
+            "executor": "exec-2",
+            "reviewer": "review-2",
+            "tester": "test-2"
+          }
+        },
+        "records": [
+          {
+            "run_id": "exec-2",
+            "attempt_id": "attempt-2",
+            "ticket_id": "APP-100",
+            "role": "executor",
+            "provider": "codex",
+            "model": "terra",
+            "effort": "medium",
+            "session_id": "executor-session",
+            "commit_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "outcome": "pass",
+            "started_at": "2026-01-01T00:00:00Z",
+            "completed_at": "2026-01-01T00:01:00Z"
+          },
+          {
+            "run_id": "review-2",
+            "attempt_id": "attempt-2",
+            "ticket_id": "APP-100",
+            "role": "reviewer",
+            "provider": "codex",
+            "model": "terra",
+            "effort": "medium",
+            "session_id": "executor-session",
+            "commit_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "outcome": "pass",
+            "started_at": "2026-01-01T00:02:00Z",
+            "completed_at": "2026-01-01T00:03:00Z"
+          },
+          {
+            "run_id": "test-2",
+            "attempt_id": "attempt-2",
+            "ticket_id": "APP-100",
+            "role": "tester",
+            "provider": "codex",
+            "model": "terra",
+            "effort": "medium",
+            "session_id": "tester-session",
+            "commit_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "outcome": "pass",
+            "started_at": "2026-01-01T00:04:00Z",
+            "completed_at": "2026-01-01T00:05:00Z"
+          }
+        ]
+      }
+    },
+    {
+      "name": "rejects-commit-mismatch",
+      "expected": "commit-mismatch",
+      "payload": {
+        "snapshot": {
+          "mode": "enforced",
+          "ticket_id": "APP-100",
+          "attempt_id": "attempt-2",
+          "commit_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "started_at": "2026-01-01T00:00:00Z",
+          "observed_at": "2026-01-01T00:10:00Z",
+          "orchestrator_session_id": "architect-session",
+          "from_state": "Test",
+          "to_state": "Done",
+          "operation": "complete",
+          "second_review_required": false,
+          "integration": {
+            "required": false,
+            "reason": "Single serialized change; no integration batch."
+          },
+          "runtime": {
+            "harness": "official-codex",
+            "native_provider": "codex",
+            "allowed_providers": [
+              "codex"
+            ],
+            "capabilities": [
+              "model-routing-v2",
+              "handoff-evidence-v2"
+            ],
+            "models": [
+              {
+                "provider": "codex",
+                "model": "luna",
+                "efforts": [
+                  "medium",
+                  "xhigh"
+                ],
+                "availability": "available",
+                "quota": "unknown"
+              },
+              {
+                "provider": "codex",
+                "model": "terra",
+                "efforts": [
+                  "medium",
+                  "high"
+                ],
+                "availability": "available",
+                "quota": "available"
+              },
+              {
+                "provider": "codex",
+                "model": "sol",
+                "efforts": [
+                  "high"
+                ],
+                "availability": "available",
+                "quota": "available"
+              }
+            ]
+          },
+          "assignments": {
+            "executor": {
+              "provider": "codex",
+              "model": "terra",
+              "effort": "medium",
+              "request": {
+                "routing": "routine"
+              }
+            },
+            "reviewer": {
+              "provider": "codex",
+              "model": "terra",
+              "effort": "medium",
+              "request": {
+                "routing": "routine"
+              }
+            },
+            "tester": {
+              "provider": "codex",
+              "model": "terra",
+              "effort": "medium",
+              "request": {
+                "routing": "routine"
+              }
+            }
+          },
+          "sessions": {
+            "executor": "executor-session",
+            "reviewer": "reviewer-session",
+            "tester": "tester-session"
+          },
+          "selected_runs": {
+            "executor": "exec-2",
+            "reviewer": "review-2",
+            "tester": "test-2"
+          }
+        },
+        "records": [
+          {
+            "run_id": "exec-2",
+            "attempt_id": "attempt-2",
+            "ticket_id": "APP-100",
+            "role": "executor",
+            "provider": "codex",
+            "model": "terra",
+            "effort": "medium",
+            "session_id": "executor-session",
+            "commit_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "outcome": "pass",
+            "started_at": "2026-01-01T00:00:00Z",
+            "completed_at": "2026-01-01T00:01:00Z"
+          },
+          {
+            "run_id": "review-2",
+            "attempt_id": "attempt-2",
+            "ticket_id": "APP-100",
+            "role": "reviewer",
+            "provider": "codex",
+            "model": "terra",
+            "effort": "medium",
+            "session_id": "reviewer-session",
+            "commit_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "outcome": "pass",
+            "started_at": "2026-01-01T00:02:00Z",
+            "completed_at": "2026-01-01T00:03:00Z"
+          },
+          {
+            "run_id": "test-2",
+            "attempt_id": "attempt-2",
+            "ticket_id": "APP-100",
+            "role": "tester",
+            "provider": "codex",
+            "model": "terra",
+            "effort": "medium",
+            "session_id": "tester-session",
+            "commit_sha": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "outcome": "pass",
+            "started_at": "2026-01-01T00:04:00Z",
+            "completed_at": "2026-01-01T00:05:00Z"
+          }
+        ]
+      }
+    },
+    {
+      "name": "rejects-direct-done",
+      "expected": "completion-operation-required",
+      "payload": {
+        "snapshot": {
+          "mode": "enforced",
+          "ticket_id": "APP-100",
+          "attempt_id": "attempt-2",
+          "commit_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "started_at": "2026-01-01T00:00:00Z",
+          "observed_at": "2026-01-01T00:10:00Z",
+          "orchestrator_session_id": "architect-session",
+          "from_state": "Test",
+          "to_state": "Done",
+          "operation": "transition",
+          "second_review_required": false,
+          "integration": {
+            "required": false,
+            "reason": "Single serialized change; no integration batch."
+          },
+          "runtime": {
+            "harness": "official-codex",
+            "native_provider": "codex",
+            "allowed_providers": [
+              "codex"
+            ],
+            "capabilities": [
+              "model-routing-v2",
+              "handoff-evidence-v2"
+            ],
+            "models": [
+              {
+                "provider": "codex",
+                "model": "luna",
+                "efforts": [
+                  "medium",
+                  "xhigh"
+                ],
+                "availability": "available",
+                "quota": "unknown"
+              },
+              {
+                "provider": "codex",
+                "model": "terra",
+                "efforts": [
+                  "medium",
+                  "high"
+                ],
+                "availability": "available",
+                "quota": "available"
+              },
+              {
+                "provider": "codex",
+                "model": "sol",
+                "efforts": [
+                  "high"
+                ],
+                "availability": "available",
+                "quota": "available"
+              }
+            ]
+          },
+          "assignments": {
+            "executor": {
+              "provider": "codex",
+              "model": "terra",
+              "effort": "medium",
+              "request": {
+                "routing": "routine"
+              }
+            },
+            "reviewer": {
+              "provider": "codex",
+              "model": "terra",
+              "effort": "medium",
+              "request": {
+                "routing": "routine"
+              }
+            },
+            "tester": {
+              "provider": "codex",
+              "model": "terra",
+              "effort": "medium",
+              "request": {
+                "routing": "routine"
+              }
+            }
+          },
+          "sessions": {
+            "executor": "executor-session",
+            "reviewer": "reviewer-session",
+            "tester": "tester-session"
+          },
+          "selected_runs": {
+            "executor": "exec-2",
+            "reviewer": "review-2",
+            "tester": "test-2"
+          }
+        },
+        "records": [
+          {
+            "run_id": "exec-2",
+            "attempt_id": "attempt-2",
+            "ticket_id": "APP-100",
+            "role": "executor",
+            "provider": "codex",
+            "model": "terra",
+            "effort": "medium",
+            "session_id": "executor-session",
+            "commit_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "outcome": "pass",
+            "started_at": "2026-01-01T00:00:00Z",
+            "completed_at": "2026-01-01T00:01:00Z"
+          },
+          {
+            "run_id": "review-2",
+            "attempt_id": "attempt-2",
+            "ticket_id": "APP-100",
+            "role": "reviewer",
+            "provider": "codex",
+            "model": "terra",
+            "effort": "medium",
+            "session_id": "reviewer-session",
+            "commit_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "outcome": "pass",
+            "started_at": "2026-01-01T00:02:00Z",
+            "completed_at": "2026-01-01T00:03:00Z"
+          },
+          {
+            "run_id": "test-2",
+            "attempt_id": "attempt-2",
+            "ticket_id": "APP-100",
+            "role": "tester",
+            "provider": "codex",
+            "model": "terra",
+            "effort": "medium",
+            "session_id": "tester-session",
+            "commit_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "outcome": "pass",
+            "started_at": "2026-01-01T00:04:00Z",
+            "completed_at": "2026-01-01T00:05:00Z"
+          }
+        ]
+      }
+    },
+    {
+      "name": "rejects-stale-attempt",
+      "expected": "stale-attempt",
+      "payload": {
+        "snapshot": {
+          "mode": "enforced",
+          "ticket_id": "APP-100",
+          "attempt_id": "attempt-2",
+          "commit_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "started_at": "2026-01-01T00:00:00Z",
+          "observed_at": "2026-01-01T00:10:00Z",
+          "orchestrator_session_id": "architect-session",
+          "from_state": "Test",
+          "to_state": "Done",
+          "operation": "complete",
+          "second_review_required": false,
+          "integration": {
+            "required": false,
+            "reason": "Single serialized change; no integration batch."
+          },
+          "runtime": {
+            "harness": "official-codex",
+            "native_provider": "codex",
+            "allowed_providers": [
+              "codex"
+            ],
+            "capabilities": [
+              "model-routing-v2",
+              "handoff-evidence-v2"
+            ],
+            "models": [
+              {
+                "provider": "codex",
+                "model": "luna",
+                "efforts": [
+                  "medium",
+                  "xhigh"
+                ],
+                "availability": "available",
+                "quota": "unknown"
+              },
+              {
+                "provider": "codex",
+                "model": "terra",
+                "efforts": [
+                  "medium",
+                  "high"
+                ],
+                "availability": "available",
+                "quota": "available"
+              },
+              {
+                "provider": "codex",
+                "model": "sol",
+                "efforts": [
+                  "high"
+                ],
+                "availability": "available",
+                "quota": "available"
+              }
+            ]
+          },
+          "assignments": {
+            "executor": {
+              "provider": "codex",
+              "model": "terra",
+              "effort": "medium",
+              "request": {
+                "routing": "routine"
+              }
+            },
+            "reviewer": {
+              "provider": "codex",
+              "model": "terra",
+              "effort": "medium",
+              "request": {
+                "routing": "routine"
+              }
+            },
+            "tester": {
+              "provider": "codex",
+              "model": "terra",
+              "effort": "medium",
+              "request": {
+                "routing": "routine"
+              }
+            }
+          },
+          "sessions": {
+            "executor": "executor-session",
+            "reviewer": "reviewer-session",
+            "tester": "tester-session"
+          },
+          "selected_runs": {
+            "executor": "exec-2",
+            "reviewer": "review-2",
+            "tester": "test-2"
+          }
+        },
+        "records": [
+          {
+            "run_id": "exec-2",
+            "attempt_id": "attempt-2",
+            "ticket_id": "APP-100",
+            "role": "executor",
+            "provider": "codex",
+            "model": "terra",
+            "effort": "medium",
+            "session_id": "executor-session",
+            "commit_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "outcome": "pass",
+            "started_at": "2026-01-01T00:00:00Z",
+            "completed_at": "2026-01-01T00:01:00Z"
+          },
+          {
+            "run_id": "review-2",
+            "attempt_id": "attempt-2",
+            "ticket_id": "APP-100",
+            "role": "reviewer",
+            "provider": "codex",
+            "model": "terra",
+            "effort": "medium",
+            "session_id": "reviewer-session",
+            "commit_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "outcome": "pass",
+            "started_at": "2026-01-01T00:02:00Z",
+            "completed_at": "2026-01-01T00:03:00Z"
+          },
+          {
+            "run_id": "test-2",
+            "attempt_id": "old-attempt",
+            "ticket_id": "APP-100",
+            "role": "tester",
+            "provider": "codex",
+            "model": "terra",
+            "effort": "medium",
+            "session_id": "tester-session",
+            "commit_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "outcome": "pass",
+            "started_at": "2026-01-01T00:04:00Z",
+            "completed_at": "2026-01-01T00:05:00Z"
+          }
+        ]
+      }
+    },
+    {
+      "name": "rejects-failed-selected-record",
+      "expected": "nonpassing-record",
+      "payload": {
+        "snapshot": {
+          "mode": "enforced",
+          "ticket_id": "APP-100",
+          "attempt_id": "attempt-2",
+          "commit_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "started_at": "2026-01-01T00:00:00Z",
+          "observed_at": "2026-01-01T00:10:00Z",
+          "orchestrator_session_id": "architect-session",
+          "from_state": "Test",
+          "to_state": "Done",
+          "operation": "complete",
+          "second_review_required": false,
+          "integration": {
+            "required": false,
+            "reason": "Single serialized change; no integration batch."
+          },
+          "runtime": {
+            "harness": "official-codex",
+            "native_provider": "codex",
+            "allowed_providers": [
+              "codex"
+            ],
+            "capabilities": [
+              "model-routing-v2",
+              "handoff-evidence-v2"
+            ],
+            "models": [
+              {
+                "provider": "codex",
+                "model": "luna",
+                "efforts": [
+                  "medium",
+                  "xhigh"
+                ],
+                "availability": "available",
+                "quota": "unknown"
+              },
+              {
+                "provider": "codex",
+                "model": "terra",
+                "efforts": [
+                  "medium",
+                  "high"
+                ],
+                "availability": "available",
+                "quota": "available"
+              },
+              {
+                "provider": "codex",
+                "model": "sol",
+                "efforts": [
+                  "high"
+                ],
+                "availability": "available",
+                "quota": "available"
+              }
+            ]
+          },
+          "assignments": {
+            "executor": {
+              "provider": "codex",
+              "model": "terra",
+              "effort": "medium",
+              "request": {
+                "routing": "routine"
+              }
+            },
+            "reviewer": {
+              "provider": "codex",
+              "model": "terra",
+              "effort": "medium",
+              "request": {
+                "routing": "routine"
+              }
+            },
+            "tester": {
+              "provider": "codex",
+              "model": "terra",
+              "effort": "medium",
+              "request": {
+                "routing": "routine"
+              }
+            }
+          },
+          "sessions": {
+            "executor": "executor-session",
+            "reviewer": "reviewer-session",
+            "tester": "tester-session"
+          },
+          "selected_runs": {
+            "executor": "exec-2",
+            "reviewer": "review-2",
+            "tester": "test-2"
+          }
+        },
+        "records": [
+          {
+            "run_id": "exec-2",
+            "attempt_id": "attempt-2",
+            "ticket_id": "APP-100",
+            "role": "executor",
+            "provider": "codex",
+            "model": "terra",
+            "effort": "medium",
+            "session_id": "executor-session",
+            "commit_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "outcome": "pass",
+            "started_at": "2026-01-01T00:00:00Z",
+            "completed_at": "2026-01-01T00:01:00Z"
+          },
+          {
+            "run_id": "review-2",
+            "attempt_id": "attempt-2",
+            "ticket_id": "APP-100",
+            "role": "reviewer",
+            "provider": "codex",
+            "model": "terra",
+            "effort": "medium",
+            "session_id": "reviewer-session",
+            "commit_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "outcome": "pass",
+            "started_at": "2026-01-01T00:02:00Z",
+            "completed_at": "2026-01-01T00:03:00Z"
+          },
+          {
+            "run_id": "test-2",
+            "attempt_id": "attempt-2",
+            "ticket_id": "APP-100",
+            "role": "tester",
+            "provider": "codex",
+            "model": "terra",
+            "effort": "medium",
+            "session_id": "tester-session",
+            "commit_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "outcome": "fail",
+            "started_at": "2026-01-01T00:04:00Z",
+            "completed_at": "2026-01-01T00:05:00Z"
+          }
+        ]
+      }
+    },
+    {
+      "name": "rejects-bad-timestamp",
+      "expected": "bad-timestamp",
+      "payload": {
+        "snapshot": {
+          "mode": "enforced",
+          "ticket_id": "APP-100",
+          "attempt_id": "attempt-2",
+          "commit_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "started_at": "2026-01-01T00:00:00Z",
+          "observed_at": "2026-01-01T00:10:00Z",
+          "orchestrator_session_id": "architect-session",
+          "from_state": "Test",
+          "to_state": "Done",
+          "operation": "complete",
+          "second_review_required": false,
+          "integration": {
+            "required": false,
+            "reason": "Single serialized change; no integration batch."
+          },
+          "runtime": {
+            "harness": "official-codex",
+            "native_provider": "codex",
+            "allowed_providers": [
+              "codex"
+            ],
+            "capabilities": [
+              "model-routing-v2",
+              "handoff-evidence-v2"
+            ],
+            "models": [
+              {
+                "provider": "codex",
+                "model": "luna",
+                "efforts": [
+                  "medium",
+                  "xhigh"
+                ],
+                "availability": "available",
+                "quota": "unknown"
+              },
+              {
+                "provider": "codex",
+                "model": "terra",
+                "efforts": [
+                  "medium",
+                  "high"
+                ],
+                "availability": "available",
+                "quota": "available"
+              },
+              {
+                "provider": "codex",
+                "model": "sol",
+                "efforts": [
+                  "high"
+                ],
+                "availability": "available",
+                "quota": "available"
+              }
+            ]
+          },
+          "assignments": {
+            "executor": {
+              "provider": "codex",
+              "model": "terra",
+              "effort": "medium",
+              "request": {
+                "routing": "routine"
+              }
+            },
+            "reviewer": {
+              "provider": "codex",
+              "model": "terra",
+              "effort": "medium",
+              "request": {
+                "routing": "routine"
+              }
+            },
+            "tester": {
+              "provider": "codex",
+              "model": "terra",
+              "effort": "medium",
+              "request": {
+                "routing": "routine"
+              }
+            }
+          },
+          "sessions": {
+            "executor": "executor-session",
+            "reviewer": "reviewer-session",
+            "tester": "tester-session"
+          },
+          "selected_runs": {
+            "executor": "exec-2",
+            "reviewer": "review-2",
+            "tester": "test-2"
+          }
+        },
+        "records": [
+          {
+            "run_id": "exec-2",
+            "attempt_id": "attempt-2",
+            "ticket_id": "APP-100",
+            "role": "executor",
+            "provider": "codex",
+            "model": "terra",
+            "effort": "medium",
+            "session_id": "executor-session",
+            "commit_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "outcome": "pass",
+            "started_at": "2026-01-01T00:00:00Z",
+            "completed_at": "2026-01-01T00:01:00Z"
+          },
+          {
+            "run_id": "review-2",
+            "attempt_id": "attempt-2",
+            "ticket_id": "APP-100",
+            "role": "reviewer",
+            "provider": "codex",
+            "model": "terra",
+            "effort": "medium",
+            "session_id": "reviewer-session",
+            "commit_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "outcome": "pass",
+            "started_at": "2026-01-01T00:02:00Z",
+            "completed_at": "2026-01-01T00:01:00Z"
+          },
+          {
+            "run_id": "test-2",
+            "attempt_id": "attempt-2",
+            "ticket_id": "APP-100",
+            "role": "tester",
+            "provider": "codex",
+            "model": "terra",
+            "effort": "medium",
+            "session_id": "tester-session",
+            "commit_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "outcome": "pass",
+            "started_at": "2026-01-01T00:04:00Z",
+            "completed_at": "2026-01-01T00:05:00Z"
+          }
+        ]
+      }
+    },
+    {
+      "name": "accepts-canonical-model-ids-codex",
+      "expected": "accept",
+      "payload": {
+        "snapshot": {
+          "mode": "enforced",
+          "ticket_id": "APP-100",
+          "attempt_id": "attempt-2",
+          "commit_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "started_at": "2026-01-01T00:00:00Z",
+          "observed_at": "2026-01-01T00:10:00Z",
+          "orchestrator_session_id": "architect-session",
+          "from_state": "Test",
+          "to_state": "Done",
+          "operation": "complete",
+          "second_review_required": false,
+          "integration": {
+            "required": false,
+            "reason": "Single serialized change; no integration batch."
+          },
+          "runtime": {
+            "harness": "official-codex",
+            "native_provider": "codex",
+            "allowed_providers": [
+              "codex"
+            ],
+            "capabilities": [
+              "model-routing-v2",
+              "handoff-evidence-v2"
+            ],
+            "models": [
+              {
+                "provider": "codex",
+                "model": "gpt-5.6-luna",
+                "efforts": [
+                  "medium",
+                  "xhigh"
+                ],
+                "availability": "available",
+                "quota": "unknown"
+              },
+              {
+                "provider": "codex",
+                "model": "gpt-5.6-terra",
+                "efforts": [
+                  "medium",
+                  "high"
+                ],
+                "availability": "available",
+                "quota": "available"
+              },
+              {
+                "provider": "codex",
+                "model": "gpt-5.6-sol",
+                "efforts": [
+                  "high"
+                ],
+                "availability": "available",
+                "quota": "available"
+              }
+            ]
+          },
+          "assignments": {
+            "executor": {
+              "provider": "codex",
+              "model": "gpt-5.6-terra",
+              "effort": "medium",
+              "request": {
+                "routing": "routine"
+              }
+            },
+            "reviewer": {
+              "provider": "codex",
+              "model": "gpt-5.6-terra",
+              "effort": "medium",
+              "request": {
+                "routing": "routine"
+              }
+            },
+            "tester": {
+              "provider": "codex",
+              "model": "gpt-5.6-terra",
+              "effort": "medium",
+              "request": {
+                "routing": "routine"
+              }
+            }
+          },
+          "sessions": {
+            "executor": "executor-session",
+            "reviewer": "reviewer-session",
+            "tester": "tester-session"
+          },
+          "selected_runs": {
+            "executor": "exec-2",
+            "reviewer": "review-2",
+            "tester": "test-2"
+          }
+        },
+        "records": [
+          {
+            "run_id": "exec-2",
+            "attempt_id": "attempt-2",
+            "ticket_id": "APP-100",
+            "role": "executor",
+            "provider": "codex",
+            "model": "gpt-5.6-terra",
+            "effort": "medium",
+            "session_id": "executor-session",
+            "commit_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "outcome": "pass",
+            "started_at": "2026-01-01T00:00:00Z",
+            "completed_at": "2026-01-01T00:01:00Z"
+          },
+          {
+            "run_id": "review-2",
+            "attempt_id": "attempt-2",
+            "ticket_id": "APP-100",
+            "role": "reviewer",
+            "provider": "codex",
+            "model": "gpt-5.6-terra",
+            "effort": "medium",
+            "session_id": "reviewer-session",
+            "commit_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "outcome": "pass",
+            "started_at": "2026-01-01T00:02:00Z",
+            "completed_at": "2026-01-01T00:03:00Z"
+          },
+          {
+            "run_id": "test-2",
+            "attempt_id": "attempt-2",
+            "ticket_id": "APP-100",
+            "role": "tester",
+            "provider": "codex",
+            "model": "gpt-5.6-terra",
+            "effort": "medium",
+            "session_id": "tester-session",
+            "commit_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "outcome": "pass",
+            "started_at": "2026-01-01T00:04:00Z",
+            "completed_at": "2026-01-01T00:05:00Z"
+          }
+        ]
+      }
+    },
+    {
+      "name": "accepts-canonical-model-ids-openai-codex",
+      "expected": "accept",
+      "payload": {
+        "snapshot": {
+          "mode": "enforced",
+          "ticket_id": "APP-100",
+          "attempt_id": "attempt-2",
+          "commit_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "started_at": "2026-01-01T00:00:00Z",
+          "observed_at": "2026-01-01T00:10:00Z",
+          "orchestrator_session_id": "architect-session",
+          "from_state": "Test",
+          "to_state": "Done",
+          "operation": "complete",
+          "second_review_required": false,
+          "integration": {
+            "required": false,
+            "reason": "Single serialized change; no integration batch."
+          },
+          "runtime": {
+            "harness": "official-codex",
+            "native_provider": "codex",
+            "allowed_providers": [
+              "codex"
+            ],
+            "capabilities": [
+              "model-routing-v2",
+              "handoff-evidence-v2"
+            ],
+            "models": [
+              {
+                "provider": "openai-codex",
+                "model": "gpt-5.6-luna",
+                "efforts": [
+                  "medium",
+                  "xhigh"
+                ],
+                "availability": "available",
+                "quota": "unknown"
+              },
+              {
+                "provider": "openai-codex",
+                "model": "gpt-5.6-terra",
+                "efforts": [
+                  "medium",
+                  "high"
+                ],
+                "availability": "available",
+                "quota": "available"
+              },
+              {
+                "provider": "openai-codex",
+                "model": "gpt-5.6-sol",
+                "efforts": [
+                  "high"
+                ],
+                "availability": "available",
+                "quota": "available"
+              }
+            ]
+          },
+          "assignments": {
+            "executor": {
+              "provider": "openai-codex",
+              "model": "gpt-5.6-terra",
+              "effort": "medium",
+              "request": {
+                "routing": "routine"
+              }
+            },
+            "reviewer": {
+              "provider": "openai-codex",
+              "model": "gpt-5.6-terra",
+              "effort": "medium",
+              "request": {
+                "routing": "routine"
+              }
+            },
+            "tester": {
+              "provider": "openai-codex",
+              "model": "gpt-5.6-terra",
+              "effort": "medium",
+              "request": {
+                "routing": "routine"
+              }
+            }
+          },
+          "sessions": {
+            "executor": "executor-session",
+            "reviewer": "reviewer-session",
+            "tester": "tester-session"
+          },
+          "selected_runs": {
+            "executor": "exec-2",
+            "reviewer": "review-2",
+            "tester": "test-2"
+          }
+        },
+        "records": [
+          {
+            "run_id": "exec-2",
+            "attempt_id": "attempt-2",
+            "ticket_id": "APP-100",
+            "role": "executor",
+            "provider": "openai-codex",
+            "model": "gpt-5.6-terra",
+            "effort": "medium",
+            "session_id": "executor-session",
+            "commit_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "outcome": "pass",
+            "started_at": "2026-01-01T00:00:00Z",
+            "completed_at": "2026-01-01T00:01:00Z"
+          },
+          {
+            "run_id": "review-2",
+            "attempt_id": "attempt-2",
+            "ticket_id": "APP-100",
+            "role": "reviewer",
+            "provider": "openai-codex",
+            "model": "gpt-5.6-terra",
+            "effort": "medium",
+            "session_id": "reviewer-session",
+            "commit_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "outcome": "pass",
+            "started_at": "2026-01-01T00:02:00Z",
+            "completed_at": "2026-01-01T00:03:00Z"
+          },
+          {
+            "run_id": "test-2",
+            "attempt_id": "attempt-2",
+            "ticket_id": "APP-100",
+            "role": "tester",
+            "provider": "openai-codex",
+            "model": "gpt-5.6-terra",
+            "effort": "medium",
+            "session_id": "tester-session",
+            "commit_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "outcome": "pass",
+            "started_at": "2026-01-01T00:04:00Z",
+            "completed_at": "2026-01-01T00:05:00Z"
+          }
+        ]
+      }
+    },
+    {
+      "name": "rejects-economy-judgment-null",
+      "expected": "invalid-economy",
+      "payload": {
+        "snapshot": {
+          "mode": "enforced",
+          "ticket_id": "APP-100",
+          "attempt_id": "attempt-2",
+          "commit_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "started_at": "2026-01-01T00:00:00Z",
+          "observed_at": "2026-01-01T00:10:00Z",
+          "orchestrator_session_id": "architect-session",
+          "from_state": "Test",
+          "to_state": "Done",
+          "operation": "complete",
+          "second_review_required": false,
+          "integration": {
+            "required": false,
+            "reason": "Single serialized change; no integration batch."
+          },
+          "runtime": {
+            "harness": "official-codex",
+            "native_provider": "codex",
+            "allowed_providers": [
+              "codex"
+            ],
+            "capabilities": [
+              "model-routing-v2",
+              "handoff-evidence-v2"
+            ],
+            "models": [
+              {
+                "provider": "codex",
+                "model": "luna",
+                "efforts": [
+                  "medium",
+                  "xhigh"
+                ],
+                "availability": "available",
+                "quota": "unknown"
+              },
+              {
+                "provider": "codex",
+                "model": "terra",
+                "efforts": [
+                  "medium",
+                  "high"
+                ],
+                "availability": "available",
+                "quota": "available"
+              },
+              {
+                "provider": "codex",
+                "model": "sol",
+                "efforts": [
+                  "high"
+                ],
+                "availability": "available",
+                "quota": "available"
+              }
+            ]
+          },
+          "assignments": {
+            "executor": {
+              "provider": "codex",
+              "model": "terra",
+              "effort": "medium",
+              "request": {
+                "routing": "routine"
+              }
+            },
+            "reviewer": {
+              "provider": "codex",
+              "model": "terra",
+              "effort": "medium",
+              "request": {
+                "routing": "routine"
+              }
+            },
+            "tester": {
+              "provider": "codex",
+              "model": "luna",
+              "effort": "medium",
+              "request": {
+                "routing": "economy",
+                "reason": "Named deterministic command",
+                "deterministic": true,
+                "commands": [
+                  "python3 test.py"
+                ],
+                "requires_judgment": null
+              }
+            }
+          },
+          "sessions": {
+            "executor": "executor-session",
+            "reviewer": "reviewer-session",
+            "tester": "tester-session"
+          },
+          "selected_runs": {
+            "executor": "exec-2",
+            "reviewer": "review-2",
+            "tester": "test-2"
+          }
+        },
+        "records": [
+          {
+            "run_id": "exec-2",
+            "attempt_id": "attempt-2",
+            "ticket_id": "APP-100",
+            "role": "executor",
+            "provider": "codex",
+            "model": "terra",
+            "effort": "medium",
+            "session_id": "executor-session",
+            "commit_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "outcome": "pass",
+            "started_at": "2026-01-01T00:00:00Z",
+            "completed_at": "2026-01-01T00:01:00Z"
+          },
+          {
+            "run_id": "review-2",
+            "attempt_id": "attempt-2",
+            "ticket_id": "APP-100",
+            "role": "reviewer",
+            "provider": "codex",
+            "model": "terra",
+            "effort": "medium",
+            "session_id": "reviewer-session",
+            "commit_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "outcome": "pass",
+            "started_at": "2026-01-01T00:02:00Z",
+            "completed_at": "2026-01-01T00:03:00Z"
+          },
+          {
+            "run_id": "test-2",
+            "attempt_id": "attempt-2",
+            "ticket_id": "APP-100",
+            "role": "tester",
+            "provider": "codex",
+            "model": "luna",
+            "effort": "medium",
+            "session_id": "tester-session",
+            "commit_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "outcome": "pass",
+            "started_at": "2026-01-01T00:04:00Z",
+            "completed_at": "2026-01-01T00:05:00Z"
+          }
+        ]
+      }
+    },
+    {
+      "name": "rejects-economy-judgment-array",
+      "expected": "invalid-economy",
+      "payload": {
+        "snapshot": {
+          "mode": "enforced",
+          "ticket_id": "APP-100",
+          "attempt_id": "attempt-2",
+          "commit_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "started_at": "2026-01-01T00:00:00Z",
+          "observed_at": "2026-01-01T00:10:00Z",
+          "orchestrator_session_id": "architect-session",
+          "from_state": "Test",
+          "to_state": "Done",
+          "operation": "complete",
+          "second_review_required": false,
+          "integration": {
+            "required": false,
+            "reason": "Single serialized change; no integration batch."
+          },
+          "runtime": {
+            "harness": "official-codex",
+            "native_provider": "codex",
+            "allowed_providers": [
+              "codex"
+            ],
+            "capabilities": [
+              "model-routing-v2",
+              "handoff-evidence-v2"
+            ],
+            "models": [
+              {
+                "provider": "codex",
+                "model": "luna",
+                "efforts": [
+                  "medium",
+                  "xhigh"
+                ],
+                "availability": "available",
+                "quota": "unknown"
+              },
+              {
+                "provider": "codex",
+                "model": "terra",
+                "efforts": [
+                  "medium",
+                  "high"
+                ],
+                "availability": "available",
+                "quota": "available"
+              },
+              {
+                "provider": "codex",
+                "model": "sol",
+                "efforts": [
+                  "high"
+                ],
+                "availability": "available",
+                "quota": "available"
+              }
+            ]
+          },
+          "assignments": {
+            "executor": {
+              "provider": "codex",
+              "model": "terra",
+              "effort": "medium",
+              "request": {
+                "routing": "routine"
+              }
+            },
+            "reviewer": {
+              "provider": "codex",
+              "model": "terra",
+              "effort": "medium",
+              "request": {
+                "routing": "routine"
+              }
+            },
+            "tester": {
+              "provider": "codex",
+              "model": "luna",
+              "effort": "medium",
+              "request": {
+                "routing": "economy",
+                "reason": "Named deterministic command",
+                "deterministic": true,
+                "commands": [
+                  "python3 test.py"
+                ],
+                "requires_judgment": []
+              }
+            }
+          },
+          "sessions": {
+            "executor": "executor-session",
+            "reviewer": "reviewer-session",
+            "tester": "tester-session"
+          },
+          "selected_runs": {
+            "executor": "exec-2",
+            "reviewer": "review-2",
+            "tester": "test-2"
+          }
+        },
+        "records": [
+          {
+            "run_id": "exec-2",
+            "attempt_id": "attempt-2",
+            "ticket_id": "APP-100",
+            "role": "executor",
+            "provider": "codex",
+            "model": "terra",
+            "effort": "medium",
+            "session_id": "executor-session",
+            "commit_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "outcome": "pass",
+            "started_at": "2026-01-01T00:00:00Z",
+            "completed_at": "2026-01-01T00:01:00Z"
+          },
+          {
+            "run_id": "review-2",
+            "attempt_id": "attempt-2",
+            "ticket_id": "APP-100",
+            "role": "reviewer",
+            "provider": "codex",
+            "model": "terra",
+            "effort": "medium",
+            "session_id": "reviewer-session",
+            "commit_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "outcome": "pass",
+            "started_at": "2026-01-01T00:02:00Z",
+            "completed_at": "2026-01-01T00:03:00Z"
+          },
+          {
+            "run_id": "test-2",
+            "attempt_id": "attempt-2",
+            "ticket_id": "APP-100",
+            "role": "tester",
+            "provider": "codex",
+            "model": "luna",
+            "effort": "medium",
+            "session_id": "tester-session",
+            "commit_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "outcome": "pass",
+            "started_at": "2026-01-01T00:04:00Z",
+            "completed_at": "2026-01-01T00:05:00Z"
+          }
+        ]
+      }
+    },
+    {
+      "name": "rejects-economy-judgment-object",
+      "expected": "invalid-economy",
+      "payload": {
+        "snapshot": {
+          "mode": "enforced",
+          "ticket_id": "APP-100",
+          "attempt_id": "attempt-2",
+          "commit_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "started_at": "2026-01-01T00:00:00Z",
+          "observed_at": "2026-01-01T00:10:00Z",
+          "orchestrator_session_id": "architect-session",
+          "from_state": "Test",
+          "to_state": "Done",
+          "operation": "complete",
+          "second_review_required": false,
+          "integration": {
+            "required": false,
+            "reason": "Single serialized change; no integration batch."
+          },
+          "runtime": {
+            "harness": "official-codex",
+            "native_provider": "codex",
+            "allowed_providers": [
+              "codex"
+            ],
+            "capabilities": [
+              "model-routing-v2",
+              "handoff-evidence-v2"
+            ],
+            "models": [
+              {
+                "provider": "codex",
+                "model": "luna",
+                "efforts": [
+                  "medium",
+                  "xhigh"
+                ],
+                "availability": "available",
+                "quota": "unknown"
+              },
+              {
+                "provider": "codex",
+                "model": "terra",
+                "efforts": [
+                  "medium",
+                  "high"
+                ],
+                "availability": "available",
+                "quota": "available"
+              },
+              {
+                "provider": "codex",
+                "model": "sol",
+                "efforts": [
+                  "high"
+                ],
+                "availability": "available",
+                "quota": "available"
+              }
+            ]
+          },
+          "assignments": {
+            "executor": {
+              "provider": "codex",
+              "model": "terra",
+              "effort": "medium",
+              "request": {
+                "routing": "routine"
+              }
+            },
+            "reviewer": {
+              "provider": "codex",
+              "model": "terra",
+              "effort": "medium",
+              "request": {
+                "routing": "routine"
+              }
+            },
+            "tester": {
+              "provider": "codex",
+              "model": "luna",
+              "effort": "medium",
+              "request": {
+                "routing": "economy",
+                "reason": "Named deterministic command",
+                "deterministic": true,
+                "commands": [
+                  "python3 test.py"
+                ],
+                "requires_judgment": {}
+              }
+            }
+          },
+          "sessions": {
+            "executor": "executor-session",
+            "reviewer": "reviewer-session",
+            "tester": "tester-session"
+          },
+          "selected_runs": {
+            "executor": "exec-2",
+            "reviewer": "review-2",
+            "tester": "test-2"
+          }
+        },
+        "records": [
+          {
+            "run_id": "exec-2",
+            "attempt_id": "attempt-2",
+            "ticket_id": "APP-100",
+            "role": "executor",
+            "provider": "codex",
+            "model": "terra",
+            "effort": "medium",
+            "session_id": "executor-session",
+            "commit_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "outcome": "pass",
+            "started_at": "2026-01-01T00:00:00Z",
+            "completed_at": "2026-01-01T00:01:00Z"
+          },
+          {
+            "run_id": "review-2",
+            "attempt_id": "attempt-2",
+            "ticket_id": "APP-100",
+            "role": "reviewer",
+            "provider": "codex",
+            "model": "terra",
+            "effort": "medium",
+            "session_id": "reviewer-session",
+            "commit_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "outcome": "pass",
+            "started_at": "2026-01-01T00:02:00Z",
+            "completed_at": "2026-01-01T00:03:00Z"
+          },
+          {
+            "run_id": "test-2",
+            "attempt_id": "attempt-2",
+            "ticket_id": "APP-100",
+            "role": "tester",
+            "provider": "codex",
+            "model": "luna",
+            "effort": "medium",
+            "session_id": "tester-session",
+            "commit_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "outcome": "pass",
+            "started_at": "2026-01-01T00:04:00Z",
+            "completed_at": "2026-01-01T00:05:00Z"
+          }
+        ]
+      }
+    },
+    {
+      "name": "rejects-economy-judgment-zero",
+      "expected": "invalid-economy",
+      "payload": {
+        "snapshot": {
+          "mode": "enforced",
+          "ticket_id": "APP-100",
+          "attempt_id": "attempt-2",
+          "commit_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "started_at": "2026-01-01T00:00:00Z",
+          "observed_at": "2026-01-01T00:10:00Z",
+          "orchestrator_session_id": "architect-session",
+          "from_state": "Test",
+          "to_state": "Done",
+          "operation": "complete",
+          "second_review_required": false,
+          "integration": {
+            "required": false,
+            "reason": "Single serialized change; no integration batch."
+          },
+          "runtime": {
+            "harness": "official-codex",
+            "native_provider": "codex",
+            "allowed_providers": [
+              "codex"
+            ],
+            "capabilities": [
+              "model-routing-v2",
+              "handoff-evidence-v2"
+            ],
+            "models": [
+              {
+                "provider": "codex",
+                "model": "luna",
+                "efforts": [
+                  "medium",
+                  "xhigh"
+                ],
+                "availability": "available",
+                "quota": "unknown"
+              },
+              {
+                "provider": "codex",
+                "model": "terra",
+                "efforts": [
+                  "medium",
+                  "high"
+                ],
+                "availability": "available",
+                "quota": "available"
+              },
+              {
+                "provider": "codex",
+                "model": "sol",
+                "efforts": [
+                  "high"
+                ],
+                "availability": "available",
+                "quota": "available"
+              }
+            ]
+          },
+          "assignments": {
+            "executor": {
+              "provider": "codex",
+              "model": "terra",
+              "effort": "medium",
+              "request": {
+                "routing": "routine"
+              }
+            },
+            "reviewer": {
+              "provider": "codex",
+              "model": "terra",
+              "effort": "medium",
+              "request": {
+                "routing": "routine"
+              }
+            },
+            "tester": {
+              "provider": "codex",
+              "model": "luna",
+              "effort": "medium",
+              "request": {
+                "routing": "economy",
+                "reason": "Named deterministic command",
+                "deterministic": true,
+                "commands": [
+                  "python3 test.py"
+                ],
+                "requires_judgment": 0
+              }
+            }
+          },
+          "sessions": {
+            "executor": "executor-session",
+            "reviewer": "reviewer-session",
+            "tester": "tester-session"
+          },
+          "selected_runs": {
+            "executor": "exec-2",
+            "reviewer": "review-2",
+            "tester": "test-2"
+          }
+        },
+        "records": [
+          {
+            "run_id": "exec-2",
+            "attempt_id": "attempt-2",
+            "ticket_id": "APP-100",
+            "role": "executor",
+            "provider": "codex",
+            "model": "terra",
+            "effort": "medium",
+            "session_id": "executor-session",
+            "commit_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "outcome": "pass",
+            "started_at": "2026-01-01T00:00:00Z",
+            "completed_at": "2026-01-01T00:01:00Z"
+          },
+          {
+            "run_id": "review-2",
+            "attempt_id": "attempt-2",
+            "ticket_id": "APP-100",
+            "role": "reviewer",
+            "provider": "codex",
+            "model": "terra",
+            "effort": "medium",
+            "session_id": "reviewer-session",
+            "commit_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "outcome": "pass",
+            "started_at": "2026-01-01T00:02:00Z",
+            "completed_at": "2026-01-01T00:03:00Z"
+          },
+          {
+            "run_id": "test-2",
+            "attempt_id": "attempt-2",
+            "ticket_id": "APP-100",
+            "role": "tester",
+            "provider": "codex",
+            "model": "luna",
+            "effort": "medium",
+            "session_id": "tester-session",
+            "commit_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "outcome": "pass",
+            "started_at": "2026-01-01T00:04:00Z",
+            "completed_at": "2026-01-01T00:05:00Z"
+          }
+        ]
+      }
+    },
+    {
+      "name": "rejects-economy-judgment-empty-string",
+      "expected": "invalid-economy",
+      "payload": {
+        "snapshot": {
+          "mode": "enforced",
+          "ticket_id": "APP-100",
+          "attempt_id": "attempt-2",
+          "commit_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "started_at": "2026-01-01T00:00:00Z",
+          "observed_at": "2026-01-01T00:10:00Z",
+          "orchestrator_session_id": "architect-session",
+          "from_state": "Test",
+          "to_state": "Done",
+          "operation": "complete",
+          "second_review_required": false,
+          "integration": {
+            "required": false,
+            "reason": "Single serialized change; no integration batch."
+          },
+          "runtime": {
+            "harness": "official-codex",
+            "native_provider": "codex",
+            "allowed_providers": [
+              "codex"
+            ],
+            "capabilities": [
+              "model-routing-v2",
+              "handoff-evidence-v2"
+            ],
+            "models": [
+              {
+                "provider": "codex",
+                "model": "luna",
+                "efforts": [
+                  "medium",
+                  "xhigh"
+                ],
+                "availability": "available",
+                "quota": "unknown"
+              },
+              {
+                "provider": "codex",
+                "model": "terra",
+                "efforts": [
+                  "medium",
+                  "high"
+                ],
+                "availability": "available",
+                "quota": "available"
+              },
+              {
+                "provider": "codex",
+                "model": "sol",
+                "efforts": [
+                  "high"
+                ],
+                "availability": "available",
+                "quota": "available"
+              }
+            ]
+          },
+          "assignments": {
+            "executor": {
+              "provider": "codex",
+              "model": "terra",
+              "effort": "medium",
+              "request": {
+                "routing": "routine"
+              }
+            },
+            "reviewer": {
+              "provider": "codex",
+              "model": "terra",
+              "effort": "medium",
+              "request": {
+                "routing": "routine"
+              }
+            },
+            "tester": {
+              "provider": "codex",
+              "model": "luna",
+              "effort": "medium",
+              "request": {
+                "routing": "economy",
+                "reason": "Named deterministic command",
+                "deterministic": true,
+                "commands": [
+                  "python3 test.py"
+                ],
+                "requires_judgment": ""
+              }
+            }
+          },
+          "sessions": {
+            "executor": "executor-session",
+            "reviewer": "reviewer-session",
+            "tester": "tester-session"
+          },
+          "selected_runs": {
+            "executor": "exec-2",
+            "reviewer": "review-2",
+            "tester": "test-2"
+          }
+        },
+        "records": [
+          {
+            "run_id": "exec-2",
+            "attempt_id": "attempt-2",
+            "ticket_id": "APP-100",
+            "role": "executor",
+            "provider": "codex",
+            "model": "terra",
+            "effort": "medium",
+            "session_id": "executor-session",
+            "commit_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "outcome": "pass",
+            "started_at": "2026-01-01T00:00:00Z",
+            "completed_at": "2026-01-01T00:01:00Z"
+          },
+          {
+            "run_id": "review-2",
+            "attempt_id": "attempt-2",
+            "ticket_id": "APP-100",
+            "role": "reviewer",
+            "provider": "codex",
+            "model": "terra",
+            "effort": "medium",
+            "session_id": "reviewer-session",
+            "commit_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "outcome": "pass",
+            "started_at": "2026-01-01T00:02:00Z",
+            "completed_at": "2026-01-01T00:03:00Z"
+          },
+          {
+            "run_id": "test-2",
+            "attempt_id": "attempt-2",
+            "ticket_id": "APP-100",
+            "role": "tester",
+            "provider": "codex",
+            "model": "luna",
+            "effort": "medium",
+            "session_id": "tester-session",
+            "commit_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "outcome": "pass",
+            "started_at": "2026-01-01T00:04:00Z",
+            "completed_at": "2026-01-01T00:05:00Z"
+          }
+        ]
+      }
+    }
   ]
 }

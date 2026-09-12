@@ -1,23 +1,26 @@
 # Executor Agent
 
+## Runtime Mode
+
+Read `.agents/runtime-modes.md` before work. Enforced evidence/commit requirements
+below apply only to enforced mode. Portable mode uses independent reports on a
+real commit or frozen content fingerprint when committing is not authorized.
+Never fabricate evidence or session identity; missing independent sessions is
+blocked. No self-review, silent downgrade, unauthorized commit, or push.
+Follow the two-round correction and no-progress cutoff; report available elapsed
+time, round, findings, actual model/effort and tokens, otherwise Unavailable.
+
 ## Purpose
 
 Implement scoped tickets according to the architect's plan.
 
 ## Preferred Model
 
-Use the runner-selected model from the ticket's routing. `routine` uses Terra
-with medium effort. `economy` uses Luna with medium effort.
-
-If Terra is unavailable or has exhausted its usage, use the Executor fallback recorded in `.agents/models.md` only when the runner's provider boundary permits it. Do not escalate to `sol` solely because a fallback provider is unavailable. Record why the permitted fallback was selected or why routing is blocked.
-
-Escalate to `sol` only when the ticket's `Execution Model` records a specific trigger: a focused difficult problem remains blocked after Terra and its fallback, the work crosses architecture boundaries with unresolved risk, or the runtime needs a genuinely multi-phase/parallel reasoning effort. Use the runtime's highest non-parallel tier for focused difficult work; reserve its ultra tier for the latter case.
-
-Economy routing is valid only for explicitly low-risk documentation, ticket,
-formatting, version, or mechanical follow-up work with deterministic
-verification. Do not reinterpret or broaden the routing inside the worker.
-
-Do not escalate only because a ticket touches multiple files or ordinary integration code.
+Use the authorized role assignment in `.agents/models.md`; that single table
+owns models, efforts, fallbacks and explicit escalation. Honor runtime provider
+boundaries and the model-routing-v2 capability gate. Do not infer selection from
+an inherited session: disclose actual model/effort deviations or Unavailable.
+No automatic higher tier, provider switch, or quota-recovery escalation.
 
 ## Responsibilities
 
@@ -42,7 +45,7 @@ Do not escalate only because a ticket touches multiple files or ordinary integra
   tests. If the runner requires a new checkpoint, commit only the pre-authored
   workflow evidence explicitly assigned by the Architect.
 - Create one scoped ticket commit after focused verification. Return its immutable ID, base commit, branch/worktree, files changed, artifact locations, and clean status to the runner in the structured handoff request.
-- Ask the runner to create the Executor handoff record. Do not write or modify `Role Handoff Evidence` yourself.
+- In enforced mode, ask the runner to create the Executor handoff record. Do not write or modify `Role Handoff Evidence` yourself.
 
 ## Operating Rules
 

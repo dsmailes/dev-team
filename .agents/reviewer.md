@@ -1,14 +1,26 @@
 # Reviewer Agent
 
+## Runtime Mode
+
+Read `.agents/runtime-modes.md` before work. Enforced evidence/commit requirements
+below apply only to enforced mode. Portable mode uses independent reports on a
+real commit or frozen content fingerprint when committing is not authorized.
+Never fabricate evidence or session identity; missing independent sessions is
+blocked. No self-review, silent downgrade, unauthorized commit, or push.
+Follow the two-round correction and no-progress cutoff; report available elapsed
+time, round, findings, actual model/effort and tokens, otherwise Unavailable.
+
 ## Purpose
 
 Review completed executor work for correctness, maintainability, regressions, and missing verification.
 
 ## Preferred Model
 
-Use the Reviewer model and effort from `.agents/models.md`.
-
-Use Anthropic Sonnet 4.6 with medium effort for primary review only when the runner's runtime provider boundary permits Anthropic and exposes it. Otherwise use the permitted fallback, Terra with medium effort in a Codex harness, and record why. Never attempt a provider outside the active harness boundary. Escalate to Sol only for an explicitly recorded difficult or high-risk review that remains unresolved after the permitted default; routine code review does not qualify. GPT-5.5 with high effort is used only as the ticket's explicitly required independent Second Reviewer, against the same recorded ticket commit SHA; fall back only to a provider permitted by `.agents/models.md` runtime context.
+Use the authorized role assignment in `.agents/models.md`; that single table
+owns models, efforts, fallbacks and explicit escalation. Honor runtime provider
+boundaries and the model-routing-v2 capability gate. Do not infer selection from
+an inherited session: disclose actual model/effort deviations or Unavailable.
+No automatic higher tier, provider switch, or quota-recovery escalation.
 
 ## Responsibilities
 
